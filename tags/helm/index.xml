@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>helm on Betterfor - A dreamful developer</title>
-    <link>http://localhost:1313/tags/helm/</link>
+    <link>http://betterfor.github.io/tags/helm/</link>
     <description>Recent content in helm on Betterfor - A dreamful developer</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Sun, 07 Jul 2019 18:27:06 +0800</lastBuildDate>
     
-	<atom:link href="http://localhost:1313/tags/helm/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://betterfor.github.io/tags/helm/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>K8s概念详解(一)</title>
-      <link>http://localhost:1313/post/k8s/</link>
+      <link>http://betterfor.github.io/post/k8s/</link>
       <pubDate>Sun, 07 Jul 2019 18:27:06 +0800</pubDate>
       
-      <guid>http://localhost:1313/post/k8s/</guid>
+      <guid>http://betterfor.github.io/post/k8s/</guid>
       <description>零、简介 ​ &amp;#8195;Kubernetes是一个开源的，用于管理云平台中多个主机上的容器化的应用，Kubernetes的目标是让部署容器化</description>
     </item>
     

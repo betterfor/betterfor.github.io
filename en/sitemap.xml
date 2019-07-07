@@ -1,18 +1,18 @@
-<?xml-stylesheet type="text/xsl" href="http://localhost:1313/sitemap.xsl"?>
+<?xml-stylesheet type="text/xsl" href="http://betterfor.github.io/sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://localhost:1313/en/</loc>
+    <loc>http://betterfor.github.io/en/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/en/categories/</loc>
+    <loc>http://betterfor.github.io/en/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://localhost:1313/en/tags/</loc>
+    <loc>http://betterfor.github.io/en/tags/</loc>
     <priority>0</priority>
   </url>
   
