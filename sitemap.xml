@@ -2,12 +2,12 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 	
 	<sitemap>
-	   	<loc>http://betterfor.github.io/en/sitemap.xml</loc>
+	   	<loc>https://betterfor.github.io/en/sitemap.xml</loc>
 		
 	</sitemap>
 	
 	<sitemap>
-	   	<loc>http://betterfor.github.io/zh-cn/sitemap.xml</loc>
+	   	<loc>https://betterfor.github.io/zh-cn/sitemap.xml</loc>
 		
 	   	<lastmod>2019-07-07T21:27:06+08:00</lastmod>
 		
