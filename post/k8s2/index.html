@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>K8s概念详解(二) - Betterfor - A dreamful developer</title>
+  
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+
+
+<meta name="applicable-device" content="pc,mobile">
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="author" content="betterfor" /><meta name="description" content="从零开始学习k8s，超详细，超具体" />
+<meta name="keywords" content="kubernetes, k8s基础概念" />
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.56.0-DEV" />
+
+
+<link rel="canonical" href="https://betterfor.github.io/post/k8s2/" />
+
+
+
+<link rel="icon" href="/favicon.ico" />
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/sass/jane.min.19ae5a432863a072ec64433bb1020bd6d3401129f87d6f2ad5af3bcfd84168a1.css" integrity="sha256-Ga5aQyhjoHLsZEM7sQIL1tNAESn4fW8q1a87z9hBaKE=" media="screen" crossorigin="anonymous">
+
+
+
+
+
+<meta property="og:title" content="K8s概念详解(二)" />
+<meta property="og:description" content="从零开始学习k8s，超详细，超具体" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://betterfor.github.io/post/k8s2/" />
+<meta property="article:published_time" content="2019-07-17T19:51:14+08:00" />
+<meta property="article:modified_time" content="2019-07-17T19:51:14+08:00" />
+<meta itemprop="name" content="K8s概念详解(二)">
+<meta itemprop="description" content="从零开始学习k8s，超详细，超具体">
+
+
+<meta itemprop="datePublished" content="2019-07-17T19:51:14&#43;08:00" />
+<meta itemprop="dateModified" content="2019-07-17T19:51:14&#43;08:00" />
+<meta itemprop="wordCount" content="10878">
+
+
+
+<meta itemprop="keywords" content="k8s,helm," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="K8s概念详解(二)"/>
+<meta name="twitter:description" content="从零开始学习k8s，超详细，超具体"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Betterfor</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://betterfor.github.io/">主页</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://betterfor.github.io/post/">全部文章</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://betterfor.github.io/tags/">标签</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://betterfor.github.io/categories/">分类</a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://github.com/betterfor" rel="noopener" target="_blank">
+              我的github
+              
+              <i class="iconfont">
+                <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M623.36 272.96 473.216 423.04C467.2 429.056 467.072 438.656 472.896 444.416c0 0-6.72-6.656 1.6 1.6C496.064 467.648 528.64 500.224 528.64 500.224 534.464 506.048 544 505.856 550.016 499.904l150.08-150.144 67.328 66.432c9.024 8.96 27.456 4.544 30.4-8.96 19.968-92.608 46.656-227.52 46.656-227.52 6.848-34.496-16.192-56.704-49.92-49.92 0 0-134.656 26.816-227.328 46.784C560.32 178.048 556.352 182.272 554.752 187.136c-3.2 6.208-3.008 14.208 3.776 20.992L623.36 272.96z"></path>
+  <path d="M841.152 457.152c-30.528 0-54.784 24.512-54.784 54.656l0 274.752L237.696 786.56 237.696 237.696l206.016 0c6.656 0 10.752 0 13.248 0C487.68 237.696 512 213.184 512 182.848 512 152.32 487.36 128 456.96 128L183.04 128C153.216 128 128 152.576 128 182.848c0 3.136 0.256 6.272 0.768 9.28C128.256 195.136 128 198.272 128 201.408l0 639.488c0 0.064 0 0.192 0 0.256 0 0.128 0 0.192 0 0.32 0 30.528 24.512 54.784 54.784 54.784l646.976 0c6.592 0 9.728 0 11.712 0 28.736 0 52.928-22.976 54.464-51.968C896 843.264 896 842.304 896 841.344l0-20.352L896 561.408 896 512.128C896 481.792 871.424 457.152 841.152 457.152z"></path>
+</svg>
+
+              </i>
+            </a>
+          
+        
+      </li><li class="mobile-menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://betterfor.github.io/about/">关于</a>
+          
+        
+      </li>
+    
+  </ul>
+</nav>
+
+
+  
+    
+
+
+
+
+
+
+  <link rel="stylesheet" href="/lib/photoswipe/photoswipe.min.css" />
+  <link rel="stylesheet" href="/lib/photoswipe/default-skin/default-skin.min.css" />
+
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+  
+
+  
+
+  <header id="header" class="header container">
+    <div class="logo-wrapper">
+  <a href="/" class="logo">
+    
+      Betterfor
+    
+  </a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://betterfor.github.io/">主页</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://betterfor.github.io/post/">全部文章</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://betterfor.github.io/tags/">标签</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://betterfor.github.io/categories/">分类</a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://github.com/betterfor" rel="noopener" target="_blank">
+              我的github
+              
+              <i class="iconfont">
+                <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M623.36 272.96 473.216 423.04C467.2 429.056 467.072 438.656 472.896 444.416c0 0-6.72-6.656 1.6 1.6C496.064 467.648 528.64 500.224 528.64 500.224 534.464 506.048 544 505.856 550.016 499.904l150.08-150.144 67.328 66.432c9.024 8.96 27.456 4.544 30.4-8.96 19.968-92.608 46.656-227.52 46.656-227.52 6.848-34.496-16.192-56.704-49.92-49.92 0 0-134.656 26.816-227.328 46.784C560.32 178.048 556.352 182.272 554.752 187.136c-3.2 6.208-3.008 14.208 3.776 20.992L623.36 272.96z"></path>
+  <path d="M841.152 457.152c-30.528 0-54.784 24.512-54.784 54.656l0 274.752L237.696 786.56 237.696 237.696l206.016 0c6.656 0 10.752 0 13.248 0C487.68 237.696 512 213.184 512 182.848 512 152.32 487.36 128 456.96 128L183.04 128C153.216 128 128 152.576 128 182.848c0 3.136 0.256 6.272 0.768 9.28C128.256 195.136 128 198.272 128 201.408l0 639.488c0 0.064 0 0.192 0 0.256 0 0.128 0 0.192 0 0.32 0 30.528 24.512 54.784 54.784 54.784l646.976 0c6.592 0 9.728 0 11.712 0 28.736 0 52.928-22.976 54.464-51.968C896 843.264 896 842.304 896 841.344l0-20.352L896 561.408 896 512.128C896 481.792 871.424 457.152 841.152 457.152z"></path>
+</svg>
+
+              </i>
+            </a>
+          
+
+        
+
+      </li>
+    
+        <li class="menu-item">
+        
+          
+          
+            <a class="menu-item-link" href="https://betterfor.github.io/about/">关于</a>
+          
+
+        
+
+      </li>
+    
+    
+  </ul>
+</nav>
+
+  </header>
+
+  <div id="mobile-panel">
+    <main id="main" class="main bg-llight">
+      <div class="content-wrapper">
+        <div id="content" class="content container">
+          <article class="post bg-white">
+    
+    <header class="post-header">
+      <h1 class="post-title">K8s概念详解(二)</h1>
+      
+      <div class="post-meta">
+        <time datetime="2019-07-17" class="post-time">
+          2019-07-17 19:51:14
+        </time>
+        <div class="post-category">
+            <a href="https://betterfor.github.io/categories/%E8%BF%90%E7%BB%B4/"> 运维 </a>
+            
+          </div>
+        <span class="more-meta"> 约 10878 字 </span>
+          <span class="more-meta"> 预计阅读 22 分钟 </span>
+
+        
+        
+
+        
+        
+      </div>
+    </header>
+
+    
+    
+<div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#四-通过service访问pod">四、通过Service访问Pod</a>
+<ul>
+<li>
+<ul>
+<li><a href="#4-1-创建service">4.1、创建Service</a></li>
+<li><a href="#4-2-cluster-ip底层实现">4.2、cluster IP底层实现</a></li>
+<li><a href="#4-3-dns访问service">4.3、DNS访问Service</a></li>
+<li><a href="#4-4-外网访问service">4.4、外网访问service</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#五-rolling-update">五、Rolling Update</a>
+<ul>
+<li>
+<ul>
+<li><a href="#5-1-升级">5.1、升级</a></li>
+<li><a href="#5-2-回滚">5.2、回滚</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#六-health-check">六、Health Check</a>
+<ul>
+<li>
+<ul>
+<li><a href="#6-1-默认的健康检查">6.1、默认的健康检查</a></li>
+<li><a href="#6-2-linveness探测">6.2、Linveness探测</a></li>
+<li><a href="#6-3-readliness探测">6.3、Readliness探测</a></li>
+<li><a href="#6-4-health-check在scale-up中的应用">6.4、Health Check在Scale Up中的应用</a></li>
+<li><a href="#6-5-healthy-check在滚动更新中的应用">6.5、Healthy Check在滚动更新中的应用</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#七-数据管理">七、数据管理</a>
+<ul>
+<li>
+<ul>
+<li><a href="#7-1-volume">7.1、Volume</a>
+<ul>
+<li><a href="#7-1-1-emptydir">7.1.1、emptyDir</a></li>
+<li><a href="#7-1-2-hostpath">7.1.2 hostPath</a></li>
+<li><a href="#7-1-3-外部storage-provider">7.1.3、外部Storage Provider</a></li>
+</ul></li>
+<li><a href="#7-2-persistentvolume-persistentvolumeclaim">7.2、PersistentVolume&amp;PersistentVolumeClaim</a>
+<ul>
+<li><a href="#7-2-1-nfs-persistentvolume">7.2.1、NFS PersistentVolume</a></li>
+<li><a href="#7-2-2-回收pv">7.2.2、回收PV</a></li>
+<li><a href="#8-2-3-pv动态供给">8.2.3、PV动态供给</a></li>
+</ul></li>
+<li><a href="#7-3-数据库例子">7.3、数据库例子</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+
+    
+    <div class="post-content">
+      
+
+<h3 id="四-通过service访问pod">四、通过Service访问Pod</h3>
+
+<h5 id="4-1-创建service">4.1、创建Service</h5>
+
+<p>kubernetes Service从逻辑上代表了一组Pod，具体是哪些pod是由label来挑选的。Service有自己的IP，而这个IP不变。客户端只需要访问Service的IP。kubernetes则负责建立和维护Service与Pod的映射关系。无论后端pod如何变化，对客户端不会有任何影响，因为service没变。</p>
+
+
+<link rel="stylesheet" href="/css/hugo-easy-gallery.css" />
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/service_labels.png" />
+    </div>
+    <a href="/content/post/k8s2/service_labels.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/service_ip.png" />
+    </div>
+    <a href="/content/post/k8s2/service_ip.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>pod分配了各自的IP，这些IP只能被kubernetes Cluster中的容器和节点访问。</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/curl_ip.png" />
+    </div>
+    <a href="/content/post/k8s2/curl_ip.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/service_apiVersion.png" />
+    </div>
+    <a href="/content/post/k8s2/service_apiVersion.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<ul>
+<li>v1是Service的apiVersion</li>
+<li>指明当前的资源为Service</li>
+<li>Service的名称为httpd-svc</li>
+<li>selector指明挑选哪些label为run：httpd的pod作为Service的后端</li>
+<li>将Service的8080端口映射到pod的80端口</li>
+</ul>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/svc.png" />
+    </div>
+    <a href="/content/post/k8s2/svc.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>httpd-svc分配到一个cluster-ip 10.106.65.48。可以通过该ip访问后端的httpd pod。根据前面的端口映射，这里要使用8080端口。另外，除了我们创建的httpd-svc，还有一个Service kubernetes，cluster内部通过这个Service访问kubernetes API Server。</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/httpd_svc.png" />
+    </div>
+    <a href="/content/post/k8s2/httpd_svc.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>endpoint罗列了3个pod的ip和端口，我们知道pod的ip是在容器中配置的，那么service的cluster ip是在哪配置的？cluster ip是怎么映射到pod IP的？是iptables。</p>
+
+<h5 id="4-2-cluster-ip底层实现">4.2、cluster IP底层实现</h5>
+
+<p>cluster IP是一个虚拟IP，由kubernetes 节点上的iptables规则管理。可以通过iptables-save命令答应当前节点的iptables规则</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/iptable1.png" />
+    </div>
+    <a href="/content/post/k8s2/iptable1.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<ul>
+<li>如果cluster内的pod（原地址来源10.244.0.0/16）要访问httpd-svc，则允许。</li>
+<li>其他源地址访问httpd-svc，跳转到规则KUBE-SVC-RL3JAE4GN7VOGDGP</li>
+</ul>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/iptable2.png" />
+    </div>
+    <a href="/content/post/k8s2/iptable2.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>各有1/3概率跳转到规则（后三条）</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/iptable3.png" />
+    </div>
+    <a href="/content/post/k8s2/iptable3.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>即将请求分别转发到后端的三个pod。通过上面的分析，我们得到结论：iptables将访问service的流量转发到后端pod，而且使用类似于轮询的负载均衡策略。cluster的每个节点都配置了相同的iptables规则，这样就确保整个cluster都能够通过service的cluster IP访问service。</p>
+
+<h5 id="4-3-dns访问service">4.3、DNS访问Service</h5>
+
+<p>在cluster中，除了可以通过cluster IP访问Service，kubernetes还提供更方便的DNS访问。kubeadm部署会默认安装kube-dns组件（没安装）。kube-dns是一个DNS服务器。每当有新的Service被创建，kube-dns会添加Service的DNS记录。</p>
+
+<p>cluster中的pod可以通过<SERVICE_NAME>.<NAMESPACE_NAME>访问Service。比如可以用httpd-svc.default访问Service httpd-svc</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/dns_svc.png" />
+    </div>
+    <a href="/content/post/k8s2/dns_svc.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<h5 id="4-4-外网访问service">4.4、外网访问service</h5>
+
+<ul>
+<li>clusterIP：service通过cluster内部的ip对外提供服务，只有cluster内的节点和pod可访问，这是默认的service类型。</li>
+<li>NodePort：service通过cluster节点的静态端口对外提供服务。cluster外部可通过<NodeIP>:<NodePort>访问service。</li>
+<li>LoadBalancer：service利用cloud provider特有的load balancer对外提供服务，cloud provider负责将load balancer的流量导向service。目前支持的cloud provider有GCP\AWS\AZUR等</li>
+</ul>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/nodeport.png" />
+    </div>
+    <a href="/content/post/k8s2/nodeport.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>添加type：NodePort</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/nodeport_svc.png" />
+    </div>
+    <a href="/content/post/k8s2/nodeport_svc.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>kubernetes依然会为httpd-svc分配一个clusterIP，不同的是</p>
+
+<ul>
+<li>EXTERNAL-IP为nodes，表示可通过cluster每个节点自身的ip访问service。</li>
+<li>port（s）为8080:31347.8080是cluster监听端口，31347则是节点上监听的端口。kubernetes会从30000-32767中分配一个可用的端口，每个节点都会监听此端口并将请求转发给service</li>
+</ul>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/port.png" />
+    </div>
+    <a href="/content/post/k8s2/port.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>与clusterIP一样，借助iptables。与clusterIP相比，每个节点的iptables中都增加规则</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/default_svc.png" />
+    </div>
+    <a href="/content/post/k8s2/default_svc.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>作用是负载均衡到每个pod。NodePort默认随机选择，可以用nodePort指定特定端口</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/nodeports.png" />
+    </div>
+    <a href="/content/post/k8s2/nodeports.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>现在配置文件有三个port</p>
+
+<ul>
+<li><p>nodePort是节点上的监听端口</p></li>
+
+<li><p>port是ClusterIP上监听端口</p></li>
+
+<li><p>targetPort是Pod监听端口</p></li>
+</ul>
+
+<p>最终，Node和ClusterIP在各自端口上接收到的请求都会通过iptables转发到Pod的targetPort。</p>
+
+<h3 id="五-rolling-update">五、Rolling Update</h3>
+
+<h5 id="5-1-升级">5.1、升级</h5>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/httpd_deploy31.png" />
+    </div>
+    <a href="/content/post/k8s2/httpd_deploy31.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>将配置文件中的镜像httpd:2.2.32</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/httpd_deploy32.png" />
+    </div>
+    <a href="/content/post/k8s2/httpd_deploy32.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<ul>
+<li>deployment httpd镜像更新为httpd：2.2.32</li>
+<li>新创建replicaset httpd-8bdffc6d8，镜像为httpd：2.2.32，并且管理三个新的pod</li>
+<li>之前的httpd-5ddb558f47里没有任何pod</li>
+<li>结论：replicaset httpd-5ddb558f47的三个httpd：2.2.31 pod被replicaset httpd-8bdffc6d8的三个httpd：2.2.32 Pod替换</li>
+</ul>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/httpd_deploy_describe.png" />
+    </div>
+    <a href="/content/post/k8s2/httpd_deploy_describe.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>每次更新只替换一个pod。每次替换的pod数量是可定制的，kubernetes提供了两个参数maxSurge和maxUnavailable来精细控制pod的替换个数。</p>
+
+<h5 id="5-2-回滚">5.2、回滚</h5>
+
+<p>kubectl apply每次更新应用时，kubernetes都会记录当前的配置，保存为一个revision（版次），这样就可以回退到某个特定的revision。默认配置下，kubernetes只会保留最近几个revision，可以在deployment配置文件中通过revisionHistoryLimit属性增加revision数量</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/httpd17.png" />
+    </div>
+    <a href="/content/post/k8s2/httpd17.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/httpd18.png" />
+    </div>
+    <a href="/content/post/k8s2/httpd18.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/httpd19.png" />
+    </div>
+    <a href="/content/post/k8s2/httpd19.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/apply_httpd.png" />
+    </div>
+    <a href="/content/post/k8s2/apply_httpd.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>&ndash;record的作用是将当前命令记录到revision记录中，这样就可以知道每个revision对应的是哪个配置文件。</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/revision.png" />
+    </div>
+    <a href="/content/post/k8s2/revision.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>CHANGE-CAUSE就是&ndash;record的结果。如果要回退到某个版本，比如revision 3</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/undo.png" />
+    </div>
+    <a href="/content/post/k8s2/undo.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>此时，revision历史记录也会发生相应的变化。所以执行kubectl apply时加上&ndash;record参数</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/rollout.png" />
+    </div>
+    <a href="/content/post/k8s2/rollout.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<h3 id="六-health-check">六、Health Check</h3>
+
+<p>强大的自愈能力是kubernetes这类容器编排引擎的一个重要特性。自愈的默认实现方式是自动重启发生故障的容器。初次之外，用户还可以利用Liveness和Readiness探测机制设置更精细的健康检查，进而实现如下需求：</p>
+
+<ul>
+<li>零停机部署</li>
+<li>避免故障无效的镜像</li>
+<li>更加安全的滚动升级</li>
+</ul>
+
+<h5 id="6-1-默认的健康检查">6.1、默认的健康检查</h5>
+
+<p>每个容器启动时会执行一个进程，此进程由Dockerfile的CMD或EntryPoint指定。如果进程退出时返回码非0，则认为容器发生故障，kubernetes就会根据restartPolicy重启容器。</p>
+
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: healthcheck
+  name: healthcheck
+spec:
+  restartPolicy: OnFailure
+  containers:
+  - name: healthcheck
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - sleep 10;exit 1
+</code></pre>
+
+<p>Pod的restartPolicy设置为OnFailure，默认为Alawys。sleep 10;exit 1模拟容器启动10秒后发生故障</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/healthCheck.png" />
+    </div>
+    <a href="/content/post/k8s2/healthCheck.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>可看到容器当前已经重启了2次。在上面的例子中，容器进程返回值非0，kubernetes则认为容器发生故障，需要重启。有不少情况是发生了故障，但容器并不会退出。比如访问web服务器时显示500内部错误，可能是系统超载，也可能是资源死锁，此时httpd进程并没有异常退出，在这种情况下重启容器可能是最直接、最有效的解决方案。</p>
+
+<h5 id="6-2-linveness探测">6.2、Linveness探测</h5>
+
+<p>Liveness探测让用户可以自定义判断容器是否健康的条件。如果探测失败，kubernetes就会重启容器。</p>
+
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: liveness
+  name: liveness
+spec:
+  restartPolicy: OnFailure
+  containers:
+  - name: liveness
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy;sleep 30;rm -rf /tmp/healthy;sleep 600
+    livenessProbe:
+      exec:
+        command:
+        - cat
+        - /tmp/healthy
+      initialDelaySeconds: 10
+      periodSeconds: 5
+</code></pre>
+
+<p>启动进程首先创建文件 /tmp/healthy，30秒后删除，在我们设定中，如果/tmp/healthy文件存在，则认为容器处于正常状态，反之则发生故障。</p>
+
+<ul>
+<li>探测方法：通过cat检查/tmp/healthy文件是否存在。如果命令执行成功，返回值为0，kubernetes则认为本次Liveness探测成功；如果命令返回值非0，本次Liveness探测失败</li>
+<li>initialDelaySeconds：10指定容器启动 10之后开始执行Liveness探测，我们一般会根据应用启动的准备时间来设置。比如某个应用正常启动要花30秒，那么initialDelaySeconds的值就应该大于30</li>
+<li>periodSeconds：5指定每5秒执行一次Liveness探测。kubernetes如果连续执行3次Liveness探测均失败，则会杀掉并重启容器。</li>
+</ul>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/events.png" />
+    </div>
+    <a href="/content/post/k8s2/events.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<h5 id="6-3-readliness探测">6.3、Readliness探测</h5>
+
+<p><strong>用户通过Liveness探测可以告诉kubernetes什么时候通过重启容器实现自愈；readliness探测则是告诉kubernetes什么时候可以将容器加入到service负载均衡池中</strong>，对外提供服务。</p>
+
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: readiness
+  name: readiness
+spec:
+  restartPolicy: OnFailure
+  containers:
+  - name: readiness
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy;sleep 30;rm -rf /tmp/healthy;sleep 600
+    readinessProbe:
+      exec:
+        command:
+        - cat
+        - /tmp/healthy
+      initialDelaySeconds: 10
+      periodSeconds: 5
+</code></pre>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/readliness.png" />
+    </div>
+    <a href="/content/post/k8s2/readliness.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>pod readiness的ready状态经历了如下变化</p>
+
+<ul>
+<li>刚被创建时，ready状态为不可用</li>
+<li>15秒后（initialDelaySeconds + periodSeconds），第一次进行Readiness探测并成功返回，设置ready可用</li>
+<li>30秒后，/tmp/healthy被删除，连续3次readiness探测均失败后，ready被设置为不可用</li>
+</ul>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/readliness_events.png" />
+    </div>
+    <a href="/content/post/k8s2/readliness_events.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<div class="shortcode-notice note">
+  <div class="shortcode-notice-title note">
+    
+      比较
+    
+  </div>
+  
+
+<p><strong>Liveness和Readiness比较</strong></p>
+
+<ul>
+<li>Liveness探测和readiness探测是两种health check机制，如果不特意配置，kubernetes将会对两种探测采取默认行为，即通过判断容器启动进程的返回值是否为0来判断探测是否成功</li>
+<li>两种探测的配置方法完全一样，支持的配置参数也一样，不同在于探测失败后的行为：Liveness探测是重启容器，readiness探测是将容器设置为不可用，不接受service转发的请求。</li>
+<li>Liveness探测和readiness探测是独立进行的，二者之间没有依赖，所以可以单独使用，也可以同时使用。用Liveness探测判断容器是否需要重启以实现自愈；用readiness探测判断容器是否已经准备好对外提供服务</li>
+</ul>
+
+<p></div></p>
+
+<h5 id="6-4-health-check在scale-up中的应用">6.4、Health Check在Scale Up中的应用</h5>
+
+<p>对于多副本应用，当执行Scale Up操作时，新副本会作为backend被添加到service的负载均衡中，与已有副本一起处理客户的请求。考虑到应用启动通常都需要一个准备阶段，比如加载缓存数据、连接数据库等，从容器启动到真正能够提供服务是需要一段时间的。我们可以通过readiness探测容器是否就绪，避免将请求发送到还没准备好的backend。</p>
+
+<pre><code class="language-yaml">apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels: 
+        run: web
+    spec:
+      containers:
+      - name: web
+        image: myhttpd
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            scheme: HTTP
+            path： /Healthy
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-svc
+spec:
+  selector:
+    run: web
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 80
+</code></pre>
+
+<p>重点关注readinessProbe部分。这里我们使用了不同于exec的另一种探测方法httpGet。kubernetes对于该方法探测成功的判断条件是http请求的返回码在200-400之间。</p>
+
+<ul>
+<li>schema指定协议，支持http（默认值）和https</li>
+<li>path指定访问路径</li>
+<li>port指定端口</li>
+</ul>
+
+<p>配置作用</p>
+
+<ul>
+<li>容器启动10秒后开始探测</li>
+<li>如果http：//【container_ip】：8080/healthy返回码不是200-400，表示容器没有就绪，不接受service web-svc的请求</li>
+<li>每隔5秒探测一次</li>
+<li>直到返回码为200-400，表明容器已经就绪，然后将其添加到web-svc的负载均衡中，开始处理客户请求</li>
+<li>探测会继续以5秒的间隔执行，如果连续发生3次失败，容器又会从负载均衡中移除，直到下次探测成功重新加入</li>
+</ul>
+
+<p>对于http：//【container_ip】：8080/healthy，应用可以实现自己的判断逻辑，比如检查所依赖的数据库是否就绪</p>
+
+<ul>
+<li>定义 /healthy的处理函数</li>
+<li>连接数据库并执行测试SQL</li>
+<li>测试成功，正常返回，代码200</li>
+<li>测试失败，返回错误代码503</li>
+<li>在8080端口监听</li>
+</ul>
+
+<p>对于生产环境中重要的应用，都建议配置Healthy Check，保证处理客户请求的容器都是准备就绪的Service backend</p>
+
+<h5 id="6-5-healthy-check在滚动更新中的应用">6.5、Healthy Check在滚动更新中的应用</h5>
+
+<p>Healthy Check另一个重要的应用场景是Rolling Update。试想一下，现有一个正常运行的多副本应用，接下来对应用进行更新（比如使用更高版本的image），kubernetes会启动新副本，发生如下事件</p>
+
+<ul>
+<li>正常情况下新副本需要10秒钟完成准备工作，在此之前无法响应业务请求</li>
+<li>由于人为配置错误，副本始终无法完成准备工作（比如无法连接后端数据库）</li>
+</ul>
+
+<p>因为新副本本身没有异常退出，默认Healthy Check机制会人为容器已经就绪，进而会逐步用新副本替换现有副本，其结果就是：当所有旧副本都被替换后，整个应用将无法处理请求，无法对外提供服务。如果这是发生在重要的生产系统上，后果非常严重。如果正确配置了Healthy Check，新副本只有通过了Readiness探测才会被添加到Service；没有通过探测，现有副本不会被全部替换，业务正常进行。</p>
+
+<pre><code class="language-yaml">apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  replicas: 10
+  template:
+    metadata:
+      labels:
+        run: app
+    spec:
+      containers:
+      - name: app
+        image: busybox
+        args:
+        - /bin/sh
+        - -c
+        - sleep 10; touch /tmp/healthy;sleep 30000
+        readinessProbe:
+          exec:
+            command:
+            - cat
+            - /tmp/healthy
+          initialDelaySeconds: 10
+          periodSeconds: 5
+</code></pre>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/appv1.png" />
+    </div>
+    <a href="/content/post/k8s2/appv1.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>接下来滚动更新应用，去掉 sleep 10; touch /tmp/healthy;</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/appv1R.png" />
+    </div>
+    <a href="/content/post/k8s2/appv1R.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>很显然，由于/tmp/healthy不存在，无法通过Readiness探测。先关注 kubectl get po：</p>
+
+<ol>
+<li>从Pod的Age栏可判断，头5个是新副本，目前处于Not Ready状态旧副本</li>
+<li>从当初10个减少到8个</li>
+</ol>
+
+<p>再看 kubectl get deployment app 输出：</p>
+
+<ol>
+<li>ready后的10表示期望的状态是10个Ready副本</li>
+<li>Available 表示处于Ready状态的副本数，即8个旧副本</li>
+<li>up-to-date表示当前已经完成更新的副本数，即5个副本</li>
+<li>总共8个旧副本+5个新副本</li>
+</ol>
+
+<p>在我们的设定中，新副本始终都无法通过Readiness探测，所以这个状态会一直保持下去。</p>
+
+<p>我们模拟了一个滚动更新失败的场景。幸运的是：Healthy Check帮我们屏蔽了有缺陷的副本，保留了大多数的旧副本，业务没有因更新失败收到影响。</p>
+
+<p>为什么新创建的副本数是5个，同时只销毁了2个旧副本？原因是：滚动更新通过参数maxSurge和maxUnavailable来控制副本替换的数量。</p>
+
+<ul>
+<li>maxSurge<br /></li>
+</ul>
+
+<p>此参数控制滚动更新过程中副本总数超过Ready上限。maxSurge可以是具体的整数（比如3），也可以是百分百，向上取整。maxSurge默认值为25%。 10 + ceil（10 * 25%） =13</p>
+
+<ul>
+<li>maxUnavailable<br /></li>
+</ul>
+
+<p>此参数控制滚动更新过程中，不可用的副本相占Ready的最大比例。maxUnavailable可以是具体的整数（比如3），也可以是百分百，向下取整。maxUnavailable默认值是25%。 10 - floor（10 * 25%） = 8</p>
+
+<p>maxSurge值越大，初创建的新副本就越多；maxUnavailable值越大，初销毁的旧副本数量就越多。理想情况下，我们这个案例滚动更新的过程为：</p>
+
+<ol>
+<li>创建3个新副本使副本总数达到13个；</li>
+<li>销毁2个旧副本使可用副本数降到8个</li>
+<li>当2个旧副本成功销毁时，再创建2个新副本，使副本总数保持为13个</li>
+<li>当新副本通过Readiness探测后，会使可用副本数增加，超过8</li>
+<li>进而可以继续销毁更多的旧副本，使可用副本数回到8</li>
+<li>旧副本的销毁使副本总数低于13，这样就允许创建更多的新副本</li>
+<li>这个过程会持续进行，最终所有的旧副本都会被新副本替换，滚动更新完成。</li>
+</ol>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/scaledup.png" />
+    </div>
+    <a href="/content/post/k8s2/scaledup.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>如果要定制maxSurge和maxUnavailable，进行配置。</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/scaleupSet.png" />
+    </div>
+    <a href="/content/post/k8s2/scaleupSet.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<h3 id="七-数据管理">七、数据管理</h3>
+
+<p>kubernetes管理存储资源</p>
+
+<h5 id="7-1-volume">7.1、Volume</h5>
+
+<p>容器和Pod是短暂的，生命周期可能很短，会被频繁地销毁和创建。容器销毁时，保存在容器内部文件系统中的数据都会被清除。为了持久化保持容器的数据，可以使用kubernetes Volume。Volume的生命周期独立于容器，Pod中的容器可能被销毁和重建，但Volume会被保留。</p>
+
+<p>本质上，kubernetes Volume是一个目录，这一点与Docker Volume类似。当Volume被mount 到Pod，Pod中的所有容器都可以访问这个Volume。kubernetes Volume也支持多种backend类型，包括emptyDir、hostPath、GCE Persistent Disk、AWS Elastic Block Store、NFS，Ceph等。Volume提供了对各种backend的抽象，容器在使用Volume读写数据的时候不需要关心数据是存放到本地节点的文件系统还是云硬盘上。对它来说，所有类型的Volume都是一个目录。</p>
+
+<h6 id="7-1-1-emptydir">7.1.1、emptyDir</h6>
+
+<p>emptyDir是最基础的Volume类型。正如其名，一个emptyDir Volume是Host上的一个空目录。emptyDir Volume对于容器来说是持久的，对于Pod来说则不是。当Pod从节点删除时，Volume的内容也会被删除。但是如果容器被销毁而Pod还在，则Volume不受影响。也就是说：<strong>emptyDir Volume的生命周期与Pod一致。</strong></p>
+
+<p>Pod中的所有容器都可以共享Volume，它们可以指定各自的mount路径</p>
+
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: producer-consumer
+spec:
+  containers:
+  - image: busybox
+    name: producer
+    volumeMounts:
+    - mountPath: /producer_dir
+      name: shared-volume
+    args:
+    - /bin/sh
+    - -c
+    - echo &quot;hello world&quot; &gt; /producer_dir/hello;sleep 3000
+
+
+  - image: busybox
+    name: consumer
+    volumeMounts:
+    - mountPath: /consumer_dir
+      name: shared-volume
+    args:
+    - /bin/sh
+    - -c
+    - cat /consumer_dir/hello;sleep 3000
+
+
+  volumes:
+  - name: shared-volume
+    emptyDir: {}
+</code></pre>
+
+<p>模拟一个producer-consumer场景。Pod有两个容器producer和consumer，它们共享一个Volume。producer负责往Volume中写数据，consumer则从Volume读取数据。</p>
+
+<ol>
+<li>文件最底部volumes定义了一个emptyDir类型的Volume shared-volume</li>
+<li>producer容器将share-volume mount到/producer_dir目录</li>
+<li>producer通过echo将数据写到文件hello里</li>
+<li>consumer容器将share-volume mount到/consumer_dir目录</li>
+<li>consumer通过cat从文件hello读数据</li>
+</ol>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/consumer_log.png" />
+    </div>
+    <a href="/content/post/k8s2/consumer_log.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>kubectl logs显示容器consumer成功读取到producer写入的数据，验证两个容器共享emptyDir Volume。因为emptyDir是Docker Host文件系统里的目录，其效果相当于执行了docker run -v /producer_dir和docker run -v /consumer_dir。通过docker inspect查看容器的详细配置信息</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/consumer_dir.png" />
+    </div>
+    <a href="/content/post/k8s2/consumer_dir.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/producer_dir.png" />
+    </div>
+    <a href="/content/post/k8s2/producer_dir.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>这里的/var/lib/kubelet/pods/9d85a541-661e-11e9-8ef0-080027eb7f76/volumes/kubernetes.io~empty-dir/shared-volume就是emptyDir在Host上的真正路径。</p>
+
+<p>emptyDir是Host上创建的临时目录，其优点是能够方便地为Pod中的容器提供共享存储，不需要额外的配置。它不具有持久性，如果Pod不存在了，emptyDir也就没有了。根据这个特性，emptyDir特别适合Pod中的容器需要临时共享存储空间的场景吗，比如前面的生产者消费者用例。</p>
+
+<h6 id="7-1-2-hostpath">7.1.2 hostPath</h6>
+
+<p>hostPath Volume的作用是将Docker Host文件系统中已经存在的目录mount给Pod容器。大部分应用都不会使用hostPath Volume，因为这实际增加了Pod与节点的耦合，限制了Pod的使用。不过那些需要访问kubernetes或Docker内部数据（配置文件和二进制库）的应用则需要使用hostPath。比如kube-apiserver和kube-controller-manager就是这样的应用，通过kubectl edit &ndash;namespace=kube-system pod kube-apiserver-master查看kube-apiserver Pod的配置，Volume的相关部分如下</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/hostpath.png" />
+    </div>
+    <a href="/content/post/k8s2/hostpath.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>这里定义了 三个hostPath：ca-certs、etc-pki、k8s-certs，分别对应Host目录/etc/ssl/certs、/etc/pki、/etc/kubernetes/pki</p>
+
+<p>如果Pod被销毁了，hostPath对应的目录还是会被保留，从这一点来看，hostPath的特性比emptyDir强。不过一旦Host崩溃了，hostPath也就无法访问了。</p>
+
+<h6 id="7-1-3-外部storage-provider">7.1.3、外部Storage Provider</h6>
+
+<p>如果kubernetes部署在诸如AWS、GCE、Azure等公有云上，可以直接使用云硬盘作为Volume。给一个AWS Elastic Block Store的例子</p>
+
+
+
+<div class="box">
+<figure  itemprop="associatedMedia"
+  itemscope itemtype="http://schema.org/ImageObject" >
+    <div class="img">
+      <img itemprop="thumbnail" src="/content/post/k8s2/aws.png" />
+    </div>
+    <a href="/content/post/k8s2/aws.png" itemprop="contentUrl"></a>
+  </figure>
+</div>
+
+
+<p>要在Pod中使用ESB Volume，必须先在AWS中创建，然后通过volume引用，其他云硬盘的使用方法可以参考各公有云商的官方文档。相比于emptyDir和hostPath，这些Volume类型的最大特点就是不依赖kubernetes。Volume的底层基础设施由独立的存储系统管理，与kubernetes集群是分离的。数据被持久化后，即使整个kubernetes崩溃也不会受损。</p>
+
+<p>当然，运维这样的存储系统通常不是一项简单的工作，特别是对可靠性、可用性和扩展性有较高要求的时候。</p>
+
+<h5 id="7-2-persistentvolume-persistentvolumeclaim">7.2、PersistentVolume&amp;PersistentVolumeClaim</h5>
+
+<p>Volume提供了非常好的数据持久化方案，不过在可管理性上还有不足。拿前面的AWS EBS例子来说，要使用Volume，Pod必须事先知道如下信息：</p>
+
+<ol>
+<li>当前Volume来自AWS EBS</li>
+<li>EBS Volume已经提前创建，并且知道确切的volume-id。</li>
+</ol>
+
+<p>Pod通常由应用的开发人员维护，而Volume则通常是由存储系统的管理员维护。</p>
+
+<p>kubernetes给出的解决方案是PersistentVolume和PersistentVolumeClaim</p>
+
+<p>PersistentVolume（PV）是外部存储系统中的一块存储空间，由管理员创建和维护。与Volume一样，PV 具有持久性，生命周期独立于Pod。PersistentVolumeClaim（PVC）是对PV的申请（Claim）。PVC通常由普通用户创建和维护。需要为Pod分配存储资源时，用户可以创建一个PVC，指明存储资源的容量大小和访问模式（比如只读）等信息，kubernetes会查找并提供满足条件的PV。</p>
+
+<p>有了PVC，用户只需要告诉kubernetes需要什么样的存储资源，而不必关心真正的空间从哪里分配、如何访问等底层信息。这些Storage Provider的底层信息交给管理员来处理，只有管理员才关心PV的细节信息。</p>
+
+<p>kubernetes支持多种类型的PV，比如AWS EBS、Ceph、NFS等。</p>
+
+<h6 id="7-2-1-nfs-persistentvolume">7.2.1、NFS PersistentVolume</h6>
+
+<p>作为准备工作，需要在master节点搭建一个NFS服务器。创建一个PV。</p>
+
+<pre><code class="language-yaml">apiVersion：v1
+kind: PersistentVolume
+metadata:
+  name: mypv1
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: nfs
+  nfs:
+    path: /nfsdata/pv1
+    server: 192.105.56.105
+</code></pre>
+
+<ol>
+<li><strong>capacity</strong>指定PV的容量为1GB</li>
+<li><strong>accessModes</strong>指定访问模式为ReadWriteOnce，支持的访问模式有3种：ReadWriteOnce，表示PV能以read-write模式mount到单个节点，ReadOnlyMany表示PV能以read-only模式到多个节点，ReadWriteMany表示PV能以read-write模式mount到多个节点</li>
+<li><strong>PersistentVolumeReclaimPolicy</strong>指定当PV的回收策略为Recycle，支持的策略有3种：Retain表示需要管理员手工回收；Recycle表示清除PV中的数据，效果相当于rm -rf /themount/*；Delete表示删除Storage Provider上的对应存储资源。</li>
+<li><strong>storageClassName</strong>指定PV的class为nfs。相当于为PV设置了一个分类，PVC可以指定class申请相应class的PV。</li>
+
+<li><p>指定PV在NFS服务器上对应的目录。</p>
+
+<pre><code class="language-yaml">kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+name: mypvc1
+spec:
+accessModes:
+- ReadWriteOnce
+resources:
+requests:
+  storage: 1Gi
+storageClassName: nfs
+</code></pre></li>
+</ol>
+
+<p>PVC就简单了，只需要指定PV的容量、访问模式和class。接下来就可以在Pod中使用存储了</p>
+
+<pre><code class="language-yaml">kind: Pod 
+apiVersion: v1
+metadata: 
+  name: mypod1
+spec: 
+  containers:
+    - name: mypod1
+      image: busybox
+      args:
+      - /bin/sh
+      - -c
+      - sleep 3000
+  volumes:
+  - name: mydata
+    persistentVolumeClaim:
+      claimName: mypvc1
+</code></pre>
+
+<p>与普通Volume的格式类似，在volumes中PVC指定使用mypvc1申请的Volume。</p>
+
+<h6 id="7-2-2-回收pv">7.2.2、回收PV</h6>
+
+<p>当不需要使用PV时，可用删除PVC回收PV。</p>
+
+<pre><code class="language-cmd">kubectl delete pvc mypvc1
+</code></pre>
+
+<p>当PVC mypvc1 被删除后，kubernetes启动了一个新的Pod recycle-for-mypv1，这个Pod的作用相当于清除PV mypv1的数据。此时mypv1的状态为Released，表示已经解除了与mypvc1的Bound，正在清除数据，此时不可用。</p>
+
+<p>当数据清除完毕，mypvc1的状态重新变为Available，此时可以被新的PVC申请。/nfsdata/pv1中的文件被删除。</p>
+
+<p>因为PV的回收策略设置为Recycle，所以数据会被清除，但这可能不是我们想要的结果。如果我们想要保留数据，可以将策略改为Retain。</p>
+
+<p>PV还支持Delete的回收策略，会删除PV在Storage Provider上对应的存储空间。NFS的PV不支持Delete。</p>
+
+<h6 id="8-2-3-pv动态供给">8.2.3、PV动态供给</h6>
+
+<p>提前创建PV，然后通过PVC申请PV并在Pod使用，这是静态供给（Static Provision）。如果没有满足PVC条件的PV，会动态创建PV。相对于静态供给，动态供给具有明显的优势：不需要提前创建PV，减少了管理员的工作量，效率高。动态供给是通过StorageClass实现的，StorageClass定义了如何创建PV。</p>
+
+<pre><code class="language-yaml">kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata: 
+  name: standard
+prosisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+reclaimPolicy: Retain
+</code></pre>
+
+<pre><code class="language-yaml">kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: slow
+prosisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+  zones: us-east-1d,
+</code></pre>
+
+<p>这两种StorageClass都会动态创建AWS EBS，不通电在于standard创建的是gp2类型的EBS，而slow创建的是io1类型的EBS。不同类型 的EBS支持的参数可参考AWS官方文档。StorageClass支持Delete和Retain两种reclaimPolicy，默认Delete与之前一样，PVC在申请PV时，只需要指定StorageClass、容量和访问模式即可</p>
+
+<h5 id="7-3-数据库例子">7.3、数据库例子</h5>
+
+<p>步骤为</p>
+
+<ol>
+<li>创建PV和PVC</li>
+<li>部署Mysql</li>
+<li>向Mysql添加数据</li>
+<li>模拟节点宕机故障，kubernetes将mysql自动迁移到其他节点上</li>
+<li>验证数据一致性</li>
+</ol>
+
+<p>首先创建PV和PVC</p>
+
+<pre><code class="language-yaml">apiVersion: v1
+kind: PersistentVolume
+metadata: 
+  name: mysql-pv
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capaticy:
+    storage: 1Gi
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs
+  nfs:
+    path: /nfsdata/mysql-pv
+    server: 192.168.56.105
+</code></pre>
+
+<pre><code class="language-yaml">kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mysql-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: nfs
+</code></pre>
+
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  ports: 
+  - port: 3306
+  selector:
+    app: mysql
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata: 
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        apps: mysql
+    spec:
+      containers:
+      - image: mysql: 5.6
+        name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc
+</code></pre>
+
+<p>下面通过客户端访问Service mysql</p>
+
+<pre><code class="language-cmd">kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -ppassword
+</code></pre>
+
+<p>进入到数据库，插入几条数据</p>
+
+<p>关闭node2节点，模拟节点宕机故障</p>
+
+<pre><code class="language-cmd">shutdown now
+</code></pre>
+
+<p>一段时间后，kubernetes将MySQL迁移到node1 。然后再进去，mysql服务恢复，数据完好无损。</p>
+
+    </div>
+
+    
+    
+<div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">betterfor</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">2019-07-17 19:51:14</span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content">原创文章，如需转载请注明文章作者和出处。谢谢！</span>
+  </p>
+</div>
+
+
+    
+    
+<div class="post-reward">
+  <input type="checkbox" name="reward" id="reward" hidden />
+  <label class="reward-button" for="reward">赞赏支持</label>
+  <div class="qr-code">
+    
+    
+      <label class="qr-code-image" for="reward">
+        <img class="image" src="/path/to/your/wechat-qr-code.png">
+        <span>微信打赏</span>
+      </label>
+    
+      <label class="qr-code-image" for="reward">
+        <img class="image" src="/path/to/your/alipay-qr-code.png">
+        <span>支付宝打赏</span>
+      </label>
+  </div>
+</div>
+
+    <footer class="post-footer">
+      <div class="post-tags">
+          <a href="https://betterfor.github.io/tags/k8s/">k8s</a>
+          <a href="https://betterfor.github.io/tags/helm/">helm</a>
+          
+        </div>
+
+      
+      <nav class="post-nav">
+        
+        
+          <a class="next" href="/post/k8s/">
+            <span class="next-text nav-default">K8s概念详解(一)</span>
+            <span class="prev-text nav-mobile">下一篇</span>
+            
+            <i class="iconfont">
+              <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="18" height="18">
+  <path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311 0.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889 0.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-0.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697C361.493148 60.273758 343.054193 61.470003 332.091514 74.487481z"></path>
+</svg>
+
+            </i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+
+  
+  
+
+  
+  
+
+  
+
+  
+  
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "betterfor/commons-for-blog"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+  
+
+  
+
+  
+
+  
+
+    
+
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="icon-links">
+  
+  
+    <a href="mailto:1697606384@qq.com" rel="me noopener" class="iconfont"
+      title="email" >
+      <svg class="icon" viewBox="0 0 1451 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M664.781909 681.472759 0 97.881301C0 3.997201 71.046997 0 71.046997 0L474.477909 0 961.649408 0 1361.641813 0C1361.641813 0 1432.688811 3.997201 1432.688811 97.881301L771.345323 681.472759C771.345323 681.472759 764.482731 685.154773 753.594283 688.65053L753.594283 688.664858C741.602731 693.493018 729.424896 695.068979 718.077952 694.839748 706.731093 695.068979 694.553173 693.493018 682.561621 688.664858L682.561621 688.65053C671.644501 685.140446 664.781909 681.472759 664.781909 681.472759L664.781909 681.472759ZM718.063616 811.603883C693.779541 811.016482 658.879232 802.205449 619.10784 767.734955 542.989056 701.759633 0 212.052267 0 212.052267L0 942.809523C0 942.809523 0 1024 83.726336 1024L682.532949 1024 753.579947 1024 1348.948139 1024C1432.688811 1024 1432.688811 942.809523 1432.688811 942.809523L1432.688811 212.052267C1432.688811 212.052267 893.138176 701.759633 817.019477 767.734955 777.248 802.205449 742.347691 811.03081 718.063616 811.603883L718.063616 811.603883Z"></path>
+</svg>
+
+    </a>
+  
+    <a href="http://github.com/betterfor" rel="me noopener" class="iconfont"
+      title="github"  target="_blank"
+      >
+      <svg class="icon" style="" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="36" height="36">
+  <path d="M512 12.672c-282.88 0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667 0-12.16-0.426667-44.373333-0.64-87.04-142.421333 30.890667-172.458667-68.693333-172.458667-68.693333C188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333 0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333 0 0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52 0.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667 0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72 0 68.522667-0.64 123.562667-0.64 140.202666 0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"></path>
+</svg>
+
+    </a>
+
+
+<a href="https://betterfor.github.io/index.xml" rel="noopener alternate" type="application/rss&#43;xml"
+    class="iconfont" title="rss" target="_blank">
+    <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="30" height="30">
+  <path d="M819.157333 1024C819.157333 574.592 449.408 204.8 0 204.8V0c561.706667 0 1024 462.293333 1024 1024h-204.842667zM140.416 743.04a140.8 140.8 0 0 1 140.501333 140.586667A140.928 140.928 0 0 1 140.074667 1024C62.72 1024 0 961.109333 0 883.626667s62.933333-140.544 140.416-140.586667zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667V345.173333c372.352 0 678.784 306.517333 678.784 678.826667z"></path>
+</svg>
+
+  </a>
+   
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - <a class="theme-link" href="https://github.com/xianmin/hugo-theme-jane">Jane</a>
+  </span>
+
+  <span class="copyright-year">
+    &copy;
+    2019
+    <span class="heart">
+      
+      <i class="iconfont">
+        <svg class="icon" viewBox="0 0 1025 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="14" height="14">
+  <path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7 0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1 0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2 0.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2 0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3 0.1-42.5-8-83.6-24-122.2z"
+   fill="#8a8a8a"></path>
+</svg>
+
+      </i>
+    </span><span class="author">
+        betterfor
+        
+      </span></span>
+
+  
+  
+
+  
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont">
+        
+        <svg class="icon" viewBox="0 0 1024 1024" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  width="35" height="35">
+  <path d="M510.866688 227.694839 95.449397 629.218702l235.761562 0-2.057869 328.796468 362.40389 0L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777l894.052392 0 0 131.813095L63.840492 195.775872 63.840492 63.962777 63.840492 63.962777zM63.840492 63.962777"></path>
+</svg>
+
+      </i>
+    </div>
+  </div>
+  
+<script type="text/javascript" src="/lib/jquery/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout-1.0.1.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="/js/main.dee43230127a73d039a734510fa896c89c3c7ce0cf0be0c7a7433f8fd69b76dc.js" integrity="sha256-3uQyMBJ6c9A5pzRRD6iWyJw8fODPC&#43;DHp0M/j9abdtw=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+  
+    <script type="text/javascript" src="/js/load-photoswipe.js"></script>
+    <script type="text/javascript" src="/lib/photoswipe/photoswipe.min.js"></script>
+    <script type="text/javascript" src="/lib/photoswipe/photoswipe-ui-default.min.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

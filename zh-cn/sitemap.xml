@@ -50,4 +50,11 @@
     <priority>0</priority>
   </url>
   
+  <url>
+    <loc>https://betterfor.github.io/about/</loc>
+    <lastmod>2019-07-07T18:19:22+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
 </urlset>

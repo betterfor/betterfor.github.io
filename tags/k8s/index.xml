@@ -5,10 +5,19 @@
     <link>https://betterfor.github.io/tags/k8s/</link>
     <description>Recent content in k8s on Betterfor - A dreamful developer</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 07 Jul 2019 18:27:06 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 17 Jul 2019 19:51:14 +0800</lastBuildDate>
     
 	<atom:link href="https://betterfor.github.io/tags/k8s/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>K8s概念详解(二)</title>
+      <link>https://betterfor.github.io/post/k8s2/</link>
+      <pubDate>Wed, 17 Jul 2019 19:51:14 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/post/k8s2/</guid>
+      <description>四、通过Service访问Pod 4.1、创建Service kubernetes Service从逻辑上代表了一组Pod，具体是哪些pod是由label来挑选的。</description>
+    </item>
     
     <item>
       <title>K8s概念详解(一)</title>
@@ -16,7 +25,7 @@
       <pubDate>Sun, 07 Jul 2019 18:27:06 +0800</pubDate>
       
       <guid>https://betterfor.github.io/post/k8s/</guid>
-      <description>零、简介 ​ &amp;#8195;Kubernetes是一个开源的，用于管理云平台中多个主机上的容器化的应用，Kubernetes的目标是让部署容器化</description>
+      <description>​ &amp;#8195;Kubernetes是一个开源的，用于管理云平台中多个主机上的容器化的应用，Kubernetes的目标是让部署容器化的应用简</description>
     </item>
     
   </channel>
