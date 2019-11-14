@@ -13,6 +13,12 @@ cd ./public
 git config user.name "betterfor"
 git config user.email "1697606384@qq.com"
 
+# delete other files
+rm -rf archetypes content data layouts resources static themes .travis.yml config.toml publish-to-pages.sh
+mv ./public/* ./
+rm -rf ./public
+
+
 git add .
 git commit -m "Travis CI Auto Builder at `date +"%Y-%m-%d %H:%M"`"
 

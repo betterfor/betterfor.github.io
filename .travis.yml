@@ -11,10 +11,6 @@ notifications:
     on_success: change
     on_failure: always
 
-env:
-  global:
-    # Github pages
-    - GITHUB_REF: github.com/betterfor/betterfor.github.io
 
 before_install:
   - wget https://github.com/gohugoio/hugo/releases/download/v0.59.1/hugo_0.59.1_Linux-64bit.tar.gz
@@ -23,3 +19,13 @@ before_install:
   
 script:
   - ./publish-to-pages.sh
+  
+  
+env:
+  global:
+    # Github pages
+    - GITHUB_REF: github.com/betterfor/betterfor.github.io
+    
+branches:
+  only:
+    - hugo

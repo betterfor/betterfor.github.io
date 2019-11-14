@@ -1,0 +1,115 @@
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    
+        <url>
+            <loc>https://betterfor.github.io/categories/</loc>
+            
+                <lastmod>2019-11-14T15:45:51+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/tags/hugo/</loc>
+            
+                <lastmod>2019-11-14T15:45:51+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/2019/08/basic-markdown-preview/</loc>
+            
+                <lastmod>2019-11-14T15:45:51+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/posts/</loc>
+            
+                <lastmod>2019-11-14T15:45:51+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/tags/</loc>
+            
+                <lastmod>2019-11-14T15:45:51+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/tags/%E4%B8%BB%E9%A2%98/</loc>
+            
+                <lastmod>2019-11-14T15:45:51+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/categories/%E9%A2%84%E8%A7%88/</loc>
+            
+                <lastmod>2019-11-14T15:45:51+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/</loc>
+            
+                <lastmod>2019-11-14T15:45:51+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+</urlset>
