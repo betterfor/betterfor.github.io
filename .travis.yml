@@ -14,7 +14,7 @@ notifications:
 env:
   global:
     # Github pages
-    - Github_Ref: github.com/betterfor/betterfor.github.io
+    - GITHUB_REF: github.com/betterfor/betterfor.github.io
 
 before_install:
   - wget https://github.com/gohugoio/hugo/releases/download/v0.59.1/hugo_0.59.1_Linux-64bit.tar.gz
