@@ -1,0 +1,25 @@
+language: go # 设置语言
+go: 
+  - "1.11"
+  - "1.12"
+  - "1.13"
+
+notifications:
+  email:
+    recipients:
+      -- 1687606384@qq.com
+    on_success: change
+    on_failure: always
+
+env:
+  global:
+    # Github pages
+    - Github_Ref: github.com/betterfor/betterfor.github.io
+
+before_install:
+  - wget https://github.com/gohugoio/hugo/releases/download/v0.59.1/hugo_0.59.1_Linux-64bit.tar.gz
+  - tar -xzvf hugo_0.59.1_Linux-64bit.tar.gz
+  - chmod +x ./publish-to-pages.sh
+  
+script:
+  - ./publish-to-pages.sh
