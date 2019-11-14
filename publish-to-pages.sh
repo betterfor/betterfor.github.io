@@ -12,6 +12,8 @@ cd ./blog && git checkout hugo
 git config user.name "betterfor"
 git config user.email "1697606384@qq.com"
 
+echo ${TOKEN_GITHUB}
+
 ls -l
 echo "will to delete template files"
 # delete other files
