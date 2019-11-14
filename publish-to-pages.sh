@@ -24,4 +24,4 @@ git add .
 git commit -m "Travis CI Auto Builder at `date +"%Y-%m-%d %H:%M"`"
 
 # push to master
-git push --force --quiet "https://${GITHUB_TOKEN}@${GITHUB_REF}" master:master
+git push --force --quiet "https://${TOKEN_GITHUB}@${GITHUB_REF}" master:master
