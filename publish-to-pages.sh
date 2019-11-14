@@ -8,19 +8,12 @@ cd ./blog && git checkout hugo
 # generate public file
 ../hugo
 
+cd ./public
+
+git init
 # add git config
 git config user.name "betterfor"
 git config user.email "1697606384@qq.com"
-
-# mv generate docs
-cp ./public ../public_copy
-cd ./blog && git checkout master
-
-echo "will to delete template files"
-# delete other files
-rm -rf archetypes content data layouts resources static themes .travis.yml config.toml publish-to-pages.sh
-mv ../public_copy/* ./
-
 
 git add .
 git commit -m "Travis CI Auto Builder at `date +"%Y-%m-%d %H:%M"`"
