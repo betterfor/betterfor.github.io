@@ -13,13 +13,13 @@ git config user.name "betterfor"
 git config user.email "1697606384@qq.com"
 
 # mv generate docs
-cp ./public ../
+cp ./public ../public_copy
 cd ./blog && git checkout master
 
 echo "will to delete template files"
 # delete other files
 rm -rf archetypes content data layouts resources static themes .travis.yml config.toml publish-to-pages.sh
-mv ../public/* ./
+mv ../public_copy/* ./
 
 
 git add .
