@@ -12,14 +12,14 @@ cd ./blog && git checkout hugo
 git config user.name "betterfor"
 git config user.email "1697606384@qq.com"
 
-echo ${TOKEN_GITHUB}
+# mv generate docs
+cp ./public ../
+cd ./blog && git checkout master
 
-ls -l
 echo "will to delete template files"
 # delete other files
 rm -rf archetypes content data layouts resources static themes .travis.yml config.toml publish-to-pages.sh
-mv ./public/* ./
-rm -rf ./public
+mv ../public/* ./
 
 
 git add .

@@ -1,8 +1,6 @@
 language: go # 设置语言
 go: 
   - "1.11"
-  - "1.12"
-  - "1.13"
 
 notifications:
   email:
