@@ -9,7 +9,7 @@ paginate = 8                                             # amount of posts in ea
 enableEmoji = true                                       # whether to use emoji code
 enableRobotsTXT = true                                   # whether to use robots.txt
 googleAnalytics = ""                                     # [UA-XXXXXXXX-X] google analytics code
-disqusShortname = "betterfor"                             # Disqus shortname to use Disqus in posts
+disqusShortname = ""                             # Disqus shortname to use Disqus in posts
 copyright = "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
                                                          # copyright description used only for seo schema
 
@@ -88,8 +88,8 @@ staticDir = ["static", "static/others"]               # static directories
   [params.cdn]                                       #### CSS and JS Files CDN
     fontawesome_free_css = ''                           # for example '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.10.1/css/all.min.css" integrity="sha256-fdcFNFiBMrNfWL6OcAGQz6jDgNTRxnrLEd4vJYFWScE=" crossorigin="anonymous">'
     animate_css = ''
-    gitalk_css = ''
-    gitalk_js = ''
+    gitalk_css = '<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>'
+    gitalk_js = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">'
     valine_js = ''
     jquery_js = ''
     lazysizes_js = ''
@@ -200,7 +200,7 @@ staticDir = ["static", "static/others"]               # static directories
 
   [params.gitalk]                                        # Gittalk Comment Config (https://github.com/gitalk/gitalk)
     owner = "betterfor"
-    repo = "betterfor.github.com"
+    repo = "betterfor.github.io"
     clientId = "8471cf5ee2098c86390e"
     clientSecret = "7c69bf90b7ec25c2c5923a9b6643794806d6a37e"
 
