@@ -64,7 +64,7 @@ staticDir = ["static", "static/others"]               # static directories
 
                                                       #### Home Page Info
   home_mode = "other"                                     # [post, other] home mode
-  avatar = "https://raw.githubusercontent.com/betterfor/betterfor.github.io/image/images/avatar.jpg"                          # URL of avatar shown in home page
+  avatar = "https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2019-11-26/avatar.jpg"                          # URL of avatar shown in home page
   subtitle = "要做的事情总找得出时间和机会；不愿意做的事情也总能找得出借口。"  # subtitle shown in home page
 
   socialShare = true                                     # whether to show social share links in post page
