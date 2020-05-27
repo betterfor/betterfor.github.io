@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>编程 on 风落云起</title>
+    <link>https://betterfor.github.io/tags/%E7%BC%96%E7%A8%8B/</link>
+    <description>Recent content in 编程 on 风落云起</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Tue, 26 Nov 2019 15:11:47 +0800</lastBuildDate>
+    
+	<atom:link href="https://betterfor.github.io/tags/%E7%BC%96%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>编码 Gbk To Utf8 </title>
+      <link>https://betterfor.github.io/2019/11/2019_11_26_gbktoutf8/</link>
+      <pubDate>Tue, 26 Nov 2019 15:11:47 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/2019/11/2019_11_26_gbktoutf8/</guid>
+      <description>通常爬取某个网页中，发现网页编码并不是 utf8 而是 gbk 。
+而golang有两种方法可以解决
+ https://github.com/axgle/mahonia
+1 2 3 4 5 6 7 8 9 10 11 12  package main import ( &amp;#34;fmt&amp;#34; &amp;#34;github.com/axgle/mahonia&amp;#34; ) func main(){ src:=&amp;#34;编码转换内容内容&amp;#34; enc := mahonia.NewEncoder(&amp;#34;gbk&amp;#34;) // converts a string from UTF-8 to gbk encoding. fmt.Println(enc.ConvertString(src)) }   https://godoc.org/golang.org/x/text/encoding/simplifiedchinese
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16  package main import ( &amp;#34;bytes&amp;#34; &amp;#34;fmt&amp;#34; &amp;#34;golang.</description>
+    </item>
+    
+  </channel>
+</rss>
