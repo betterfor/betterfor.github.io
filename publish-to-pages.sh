@@ -10,6 +10,7 @@ cd ./blog && git checkout hugo
 
 cd ./public
 
+
 git init
 # add git config
 git config user.name "betterfor"
