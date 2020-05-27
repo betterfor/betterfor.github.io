@@ -1,0 +1,32 @@
+name: Hugo site CI
+
+on:
+  push:
+    branches: [ hugo ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2.4.11
+        with:
+          hugo-version: '0.59.1'
+          extended: true
+      - name: Build
+        run: hugo --minify
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v2.5.1
+        env:
+          ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          EXTERNAL_REPOSITORY: betterfor/betterfor.github.io
+          PUBLISH_BRANCH: master
+          PUBLISH_DIR: ./public
