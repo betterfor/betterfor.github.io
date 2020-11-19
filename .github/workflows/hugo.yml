@@ -35,7 +35,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@3.5.9
+        uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
           ACCESS_TOKEN: ${{ secrets.HUGO_PAGES }}
           BRANCH: master
