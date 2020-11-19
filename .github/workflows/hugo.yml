@@ -37,6 +37,6 @@ jobs:
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@3.5.9
         with:
-          ACCESS_TOKEN: {{ secrets.HUGO_PAGES }}
+          ACCESS_TOKEN: ${{ secrets.HUGO_PAGES }}
           BRANCH: master
           FOLDER: public
