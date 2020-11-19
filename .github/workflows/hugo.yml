@@ -39,3 +39,4 @@ jobs:
         with:
           SSH: true
           BRANCH: master
+          FOLDER: public
