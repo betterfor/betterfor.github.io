@@ -1,1 +1,199 @@
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml"><url><loc>https://betterfor.github.io/2019/12/2019_12_13_question/</loc><lastmod>2020-05-27T15:07:06+08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://betterfor.github.io/posts/</loc><lastmod>2020-05-27T15:07:06+08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://betterfor.github.io/</loc><lastmod>2020-05-27T15:07:06+08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://betterfor.github.io/categories/</loc><lastmod>2020-05-27T15:07:06+08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://betterfor.github.io/tags/gbk/</loc><lastmod>2020-05-27T15:07:06+08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://betterfor.github.io/categories/golang/</loc><lastmod>2020-05-27T15:07:06+08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://betterfor.github.io/tags/</loc><lastmod>2020-05-27T15:07:06+08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://betterfor.github.io/tags/utf8/</loc><lastmod>2020-05-27T15:07:06+08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://betterfor.github.io/tags/%E7%BC%96%E7%A0%81/</loc><lastmod>2020-05-27T15:07:06+08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://betterfor.github.io/2019/11/2019_11_26_gbktoutf8/</loc><lastmod>2020-05-27T15:07:06+08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://betterfor.github.io/tags/%E7%BC%96%E7%A8%8B/</loc><lastmod>2020-05-27T15:07:06+08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://betterfor.github.io/tags/develop/</loc><lastmod>2020-05-27T15:07:06+08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://betterfor.github.io/tags/linux/</loc><lastmod>2020-05-27T15:07:06+08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url><loc>https://betterfor.github.io/2019/11/2019_11_15_cursor/</loc><lastmod>2020-05-27T15:07:06+08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url></urlset>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    
+        <url>
+            <loc>https://betterfor.github.io/2019/12/2019_12_13_question/</loc>
+            
+                <lastmod>2020-11-19T17:16:30+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/posts/</loc>
+            
+                <lastmod>2020-11-19T17:16:30+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/</loc>
+            
+                <lastmod>2020-11-19T17:16:30+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/categories/</loc>
+            
+                <lastmod>2020-11-19T17:16:30+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/tags/gbk/</loc>
+            
+                <lastmod>2020-11-19T17:16:30+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/categories/golang/</loc>
+            
+                <lastmod>2020-11-19T17:16:30+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/tags/</loc>
+            
+                <lastmod>2020-11-19T17:16:30+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/tags/utf8/</loc>
+            
+                <lastmod>2020-11-19T17:16:30+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/tags/%E7%BC%96%E7%A0%81/</loc>
+            
+                <lastmod>2020-11-19T17:16:30+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/2019/11/2019_11_26_gbktoutf8/</loc>
+            
+                <lastmod>2020-11-19T17:16:30+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/tags/%E7%BC%96%E7%A8%8B/</loc>
+            
+                <lastmod>2020-11-19T17:16:30+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/tags/develop/</loc>
+            
+                <lastmod>2020-11-19T17:16:30+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/tags/linux/</loc>
+            
+                <lastmod>2020-11-19T17:16:30+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/2019/11/2019_11_15_cursor/</loc>
+            
+                <lastmod>2020-11-19T17:16:30+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+</urlset>

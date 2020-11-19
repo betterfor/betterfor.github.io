@@ -1,44 +1,424 @@
-<!doctype html><html lang=zh><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><title>iota的使用 | 风落云起</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta name=Description content="LoveIt Theme Demo"><link rel=prev href=https://betterfor.github.io/2019/11/2019_11_26_gbktoutf8/><link rel=canonical href=https://betterfor.github.io/2019/12/2019_12_13_question/><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/site.webmanifest><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><meta name=msapplication-TileColor content="#da532c"><meta name=theme-color content="#ffffff"><meta name=twitter:card content="summary"><meta name=twitter:title content="iota的使用"><meta name=twitter:description content="请看题
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>iota的使用 | 风落云起</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noodp" />
+<meta name="Description" content="LoveIt Theme Demo">
+<link rel="prev" href="https://betterfor.github.io/2019/11/2019_11_26_gbktoutf8/" />
+<link rel="canonical" href="https://betterfor.github.io/2019/12/2019_12_13_question/" />
+<link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="iota的使用"/>
+<meta name="twitter:description" content="请看题
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15  const ( azero = iota aone = iota ) const ( bmsg = &#34;msg&#34; bzero = iota bone = iota ) func main() { fmt.Println(azero,aone) fmt.Println(bzero,bone) }   这段代码将输出什么？
-1 2  0 1 1 2    知识点：iota的使用 在一个常量声明代码中，如果iota没出现在第一行，则常量的初始值就是非0值"><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"iota的使用","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/betterfor.github.io\/2019\/12\/2019_12_13_question\/"},"image":{"@type":"ImageObject","url":"https:\/\/betterfor.github.io\/cover.png","width":800,"height":600},"genre":"posts","wordcount":52,"url":"https:\/\/betterfor.github.io\/2019\/12\/2019_12_13_question\/","datePublished":"2019-12-13T16:15:47\x2b08:00","dateModified":"2020-05-27T15:07:06\x2b08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":"XXXX","logo":{"@type":"ImageObject","url":"https:\/\/betterfor.github.io\/logo.png","width":127,"height":40}},"description":""}</script><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/css/lib/fontawesome-free/all.min.min.css><link rel=stylesheet href=/css/lib/animate/animate.min.min.css></head><body><script>window.isDark=(window.localStorage&&window.localStorage.getItem('theme'))==='dark';window.isDark&&document.body.classList.add('dark-theme');</script><div class=wrapper><nav class=navbar><div class=navbar-container><div class=navbar-header><a href=https://betterfor.github.io/>风落云起</a></div><div class=navbar-menu><a class=menu-item href=https://betterfor.github.io/posts/>文章</a>
-<a class=menu-item href=https://betterfor.github.io/tags/>标签</a>
-<a class=menu-item href=https://betterfor.github.io/categories/>种类</a>
-<a class=menu-item href=https://betterfor.github.io/about/>关于</a>
-<a href=javascript:void(0); class=theme-switch><i class="fas fa-adjust fa-rotate-180 fa-fw"></i></a></div></div></nav><nav class=navbar-mobile><div class=navbar-container><div class=navbar-header><div><a href=javascript:void(0); class=theme-switch><i class="fas fa-adjust fa-rotate-180 fa-fw"></i></a><a href=https://betterfor.github.io/>风落云起</a></div><div class=menu-toggle id=menu-toggle><span></span><span></span><span></span></div></div><div class=navbar-menu id=mobile-menu><a class=menu-item href=https://betterfor.github.io/posts/>文章</a>
-<a class=menu-item href=https://betterfor.github.io/tags/>标签</a>
-<a class=menu-item href=https://betterfor.github.io/categories/>种类</a>
-<a class=menu-item href=https://betterfor.github.io/about/>关于</a></div></div></nav><main class=main><div class=container><article class=post-warp><h1 class="post-title animated flipInX">iota的使用</h1><div class=post-meta><div class=post-meta-main><a class=author href=https://betterfor.github.io/ rel=author><i class="fas fa-user-circle fa-fw"></i>betterfor&nbsp;</a></div><div class=post-meta-other><i class="far fa-calendar-alt fa-fw"></i><time datetime=2019-12-13>2019-12-13</time>&nbsp;
-<i class="fas fa-pencil-alt fa-fw"></i>约 52 字&nbsp;
-<i class="far fa-clock fa-fw"></i>预计阅读 1 分钟&nbsp;</div></div><div class=post-content><p>请看题</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code class=language-go data-lang=go><span class=lnt> 1
-</span><span class=lnt> 2
-</span><span class=lnt> 3
-</span><span class=lnt> 4
-</span><span class=lnt> 5
-</span><span class=lnt> 6
-</span><span class=lnt> 7
-</span><span class=lnt> 8
-</span><span class=lnt> 9
-</span><span class=lnt>10
-</span><span class=lnt>11
-</span><span class=lnt>12
-</span><span class=lnt>13
-</span><span class=lnt>14
-</span><span class=lnt>15
-</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-go data-lang=go><span class=kd>const</span> <span class=p>(</span>
-	<span class=nx>azero</span> <span class=p>=</span> <span class=kc>iota</span>
-	<span class=nx>aone</span> <span class=p>=</span> <span class=kc>iota</span>
-<span class=p>)</span>
+ 1 2  0 1 1 2   知识点：iota的使用 在一个常量声明代码中，如果iota没出现在第一行，则常量的初始值就是非0值"/>
+<script type="application/ld+json">
+    {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "iota的使用",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https:\/\/betterfor.github.io\/2019\/12\/2019_12_13_question\/"
+    },
+    
+        "image": {
+            "@type": "ImageObject",
+            "url": "https:\/\/betterfor.github.io\/cover.png",
+            "width":  800 ,
+            "height":  600 
+        },
+    
+    "genre": "posts",
+    
+    "wordcount":  52 ,
+    "url": "https:\/\/betterfor.github.io\/2019\/12\/2019_12_13_question\/",
+    
+        "datePublished": "2019-12-13T16:15:47\u002b08:00",
+    
+    
+        "dateModified": "2020-11-19T17:16:30\u002b08:00",
+    
+    
+        "license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.",
+    
+    
+        "publisher": {
+            "@type": "Organization",
+            "name": "XXXX",
+            "logo": {
+            "@type": "ImageObject",
+            "url": "https:\/\/betterfor.github.io\/logo.png",
+            "width":  127 ,
+            "height":  40 
+            }
+        },
+    
+    
+    "description": ""
+    }
+    </script>
+<link rel="stylesheet" href="/css/style.min.css">
+<link rel="stylesheet" href="/css/lib/fontawesome-free/all.min.min.css">
 
-<span class=kd>const</span> <span class=p>(</span>
-	<span class=nx>bmsg</span> <span class=p>=</span> <span class=s>&#34;msg&#34;</span>
-	<span class=nx>bzero</span> <span class=p>=</span> <span class=kc>iota</span>
-	<span class=nx>bone</span> <span class=p>=</span> <span class=kc>iota</span>
-<span class=p>)</span>
+<link rel="stylesheet" href="/css/lib/animate/animate.min.min.css">
 
-<span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
-	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>azero</span><span class=p>,</span><span class=nx>aone</span><span class=p>)</span>
-	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>bzero</span><span class=p>,</span><span class=nx>bone</span><span class=p>)</span>
-<span class=p>}</span></code></pre></td></tr></table></div></div><p>这段代码将输出什么？</p><hr><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code class=language-c data-lang=c><span class=lnt>1
-</span><span class=lnt>2
-</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-c data-lang=c><span class=mi>0</span> <span class=mi>1</span>
-<span class=mi>1</span> <span class=mi>2</span>    </code></pre></td></tr></table></div></div><a class=post-dummy-target id=知识点-iota的使用></a><h5>知识点：iota的使用</h5><p>在一个常量声明代码中，如果iota没出现在第一行，则常量的初始值就是非0值</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>本文于 2020-05-27 更新</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md><span><a class=link-to-markdown href=https://betterfor.github.io/2019/12/2019_12_13_question/index.md target=_blank>阅读原始文档</a></span></div><div class=post-info-share><span><a href="//twitter.com/share?url=https%3a%2f%2fbetterfor.github.io%2f2019%2f12%2f2019_12_13_question%2f&amp;text=iota%e7%9a%84%e4%bd%bf%e7%94%a8&amp;via=xxxx" target=_blank title="Share on Twitter"><i class="fab fa-twitter fa-fw"></i></a><a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fbetterfor.github.io%2f2019%2f12%2f2019_12_13_question%2f" target=_blank title="Share on Facebook"><i class="fab fa-facebook-square fa-fw"></i></a><a href="//reddit.com/submit?url=https%3a%2f%2fbetterfor.github.io%2f2019%2f12%2f2019_12_13_question%2f&amp;title=iota%e7%9a%84%e4%bd%bf%e7%94%a8" target=_blank title="Share on Reddit"><i class="fab fa-reddit fa-fw"></i></a></span></div></div></div><div class=post-info-more><section></section><section><span><a href=javascript:window.history.back();>返回</a></span>&nbsp;|&nbsp;<span><a href=https://betterfor.github.io/>主页</a></span></section></div><div class=post-nav><a href=https://betterfor.github.io/2019/11/2019_11_26_gbktoutf8/ class=prev rel=prev title="编码 Gbk To Utf8"><i class="fas fa-angle-left fa-fw"></i>编码 Gbk To Utf8</a></div></div><div class=post-comment></div></article></div></main><footer class=footer><div class=copyright><div class=copyright-line>由 <a href=https://gohugo.io/ target=_blank rel="external nofollow noopener noreffer">Hugo</a> 强力驱动&nbsp;|&nbsp;主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="external nofollow noopener noreffer">LoveIt<i class="far fa-heart fa-fw"></i></a></div><div class=copyright-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2020</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://betterfor.github.io/>betterfor</a></span><span class=license>&nbsp;|&nbsp;<a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div></div></footer><script src=/js/lib/jquery/jquery.slim.min.min.js></script><script src=/js/lib/lazysizes/lazysizes.min.min.js></script><script src=/js/lib/smooth-scroll/smooth-scroll.polyfills.min.min.js></script><script>window.scroll=new SmoothScroll('[data-scroll]',{speed:300,speedAsDuration:true});</script><script src=/js/blog.min.js></script></div><a href=# class=dynamic-to-top id=dynamic-to-top data-scroll><span>&nbsp;</span></a></body></html>
+    </head>
+    <body>
+        <script>
+            window.isDark = (window.localStorage && window.localStorage.getItem('theme')) === 'dark';
+            window.isDark && document.body.classList.add('dark-theme');
+        </script>
+        <div class="wrapper">
+            <nav class="navbar">
+    <div class="navbar-container">
+        <div class="navbar-header">
+            <a href="https://betterfor.github.io/">风落云起</a>
+        </div>
+        <div class="navbar-menu">
+            
+            
+                <a class="menu-item" href="https://betterfor.github.io/posts/" title="">文章</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/tags/" title="">标签</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/categories/" title="">种类</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/about/" title="">关于</a>
+            
+            <a href="javascript:void(0);" class="theme-switch"><i class="fas fa-adjust fa-rotate-180 fa-fw"></i></a>
+        </div>
+    </div>
+</nav>
+<nav class="navbar-mobile">
+     <div class="navbar-container">
+        <div class="navbar-header">
+            <div><a href="javascript:void(0);" class="theme-switch"><i class="fas fa-adjust fa-rotate-180 fa-fw"></i></a><a href="https://betterfor.github.io/">风落云起</a></div>
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="navbar-menu" id="mobile-menu">
+            
+            
+                <a class="menu-item" href="https://betterfor.github.io/posts/" title="">文章</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/tags/" title="">标签</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/categories/" title="">种类</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/about/" title="">关于</a>
+            
+        </div>
+    </div>
+</nav><main class="main">
+                <div class="container">
+                    
+    
+    
+    
+
+    <article class="post-warp">
+        <h1 class="post-title animated flipInX">iota的使用</h1>
+
+        <div class="post-meta">
+            <div class="post-meta-main">
+                <a class="author" href="https://betterfor.github.io/" rel="author"><i class="fas fa-user-circle fa-fw"></i>betterfor&nbsp;</a>
+                
+            </div>
+            <div class="post-meta-other">
+                <i class="far fa-calendar-alt fa-fw"></i><time datetime=2019-12-13>2019-12-13</time>&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>约 52 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>预计阅读 1 分钟&nbsp;</div>
+        </div>
+
+        
+
+        
+
+        <div class="post-content">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <p>请看题</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">const</span> <span class="p">(</span>
+	<span class="nx">azero</span> <span class="p">=</span> <span class="kc">iota</span>
+	<span class="nx">aone</span> <span class="p">=</span> <span class="kc">iota</span>
+<span class="p">)</span>
+
+<span class="kd">const</span> <span class="p">(</span>
+	<span class="nx">bmsg</span> <span class="p">=</span> <span class="s">&#34;msg&#34;</span>
+	<span class="nx">bzero</span> <span class="p">=</span> <span class="kc">iota</span>
+	<span class="nx">bone</span> <span class="p">=</span> <span class="kc">iota</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">azero</span><span class="p">,</span><span class="nx">aone</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">bzero</span><span class="p">,</span><span class="nx">bone</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这段代码将输出什么？</p>
+<hr>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="mi">0</span> <span class="mi">1</span>
+<span class="mi">1</span> <span class="mi">2</span>    
+</code></pre></td></tr></table>
+</div>
+</div><a class="post-dummy-target" id="知识点iota的使用"></a><h5>知识点：iota的使用</h5>
+<p>在一个常量声明代码中，如果iota没出现在第一行，则常量的初始值就是非0值</p>
+
+        </div>
+
+        <div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>本文于 2020-11-19 更新</span>
+            </div>
+            <div class="post-info-license">
+                
+            </div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md">
+                
+                    
+                        <span><a class="link-to-markdown" href="https://betterfor.github.io/2019/12/2019_12_13_question/index.md" target="_blank">阅读原始文档</a></span>
+                    
+                
+            </div>
+            <div class="post-info-share">
+                
+                    <span>
+    
+        <a href="//twitter.com/share?url=https%3a%2f%2fbetterfor.github.io%2f2019%2f12%2f2019_12_13_question%2f&amp;text=iota%e7%9a%84%e4%bd%bf%e7%94%a8&amp;via=xxxx" target="_blank" title="Share on Twitter">
+            <i class="fab fa-twitter fa-fw"></i>
+        </a>
+    
+    
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fbetterfor.github.io%2f2019%2f12%2f2019_12_13_question%2f" target="_blank" title="Share on Facebook">
+            <i class="fab fa-facebook-square fa-fw"></i>
+        </a>
+    
+    
+        <a href="//reddit.com/submit?url=https%3a%2f%2fbetterfor.github.io%2f2019%2f12%2f2019_12_13_question%2f&amp;title=iota%e7%9a%84%e4%bd%bf%e7%94%a8" target="_blank" title="Share on Reddit">
+            <i class="fab fa-reddit fa-fw"></i>
+        </a>
+    
+    
+    
+    
+    
+    
+    
+    
+</span>
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section>
+            
+        </section>
+        <section>
+            <span><a href="javascript:window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="https://betterfor.github.io/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav">
+        
+            <a href="https://betterfor.github.io/2019/11/2019_11_26_gbktoutf8/" class="prev" rel="prev" title="编码 Gbk To Utf8 "><i class="fas fa-angle-left fa-fw"></i>编码 Gbk To Utf8 </a>
+        
+        
+    </div>
+</div>
+
+        <div class="post-comment">
+            
+            
+
+            
+        </div>
+    </article></div>
+            </main>
+            <footer class="footer">
+    <div class="copyright">
+        <div class="copyright-line">
+            由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreffer">Hugo</a> 强力驱动&nbsp;|&nbsp;主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="external nofollow noopener noreffer">LoveIt<i class="far fa-heart fa-fw"></i></a>
+        </div>
+        <div class="copyright-line">
+            <i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://betterfor.github.io/">betterfor</a></span><span class="license">&nbsp;|&nbsp;<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+    </div>
+</footer>
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+<script src="/js/lib/jquery/jquery.slim.min.min.js"></script>
+<script src="/js/lib/lazysizes/lazysizes.min.min.js"></script>
+<script src="/js/lib/smooth-scroll/smooth-scroll.polyfills.min.min.js"></script><script>window.scroll = new SmoothScroll('[data-scroll]', {speed: 300, speedAsDuration: true});</script>
+
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+
+
+<script src="/js/blog.min.js"></script>
+
+
+    
+</div>
+        <a href="#" class="dynamic-to-top" id="dynamic-to-top" data-scroll><span>&nbsp;</span></a>
+    </body>
+</html>
