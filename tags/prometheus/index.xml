@@ -7,7 +7,11 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Thu, 19 Nov 2020 18:03:03 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/prometheus/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 19 Nov 2020 18:03:03 +0800</lastBuildDate>
+    
+	<atom:link href="https://betterfor.github.io/tags/prometheus/index.xml" rel="self" type="application/rss+xml" />
+    
+    
     <item>
       <title>Prometheus</title>
       <link>https://betterfor.github.io/2020/11/prometheus/</link>
@@ -19,7 +23,7 @@
 github地址： github
 架构图
 下载与安装 二进制 下载地址
-1 2 3  tar xvfz prometheus-*.tar.gz cd prometheus-* ./prometheus --config.file=prometheus.yml   docker 1  docker run --name prometheus -d -p 127.0.0.1:9090:9090 prom/prometheus   helm 1 2 3 4 5 6 7 8 9 10  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts helm repo add stable https://charts.helm.sh/stable helm repo update # Helm 3 $ helm install [RELEASE_NAME] prometheus-community/prometheus # Helm 2 $ helm install --name [RELEASE_NAME] prometheus-community/prometheus   配置文件 1 2 3 4 5 6 7 8 9 10  global:scrape_interval:15s# 默认抓取间隔，15s向目标抓取一次数据external_labels:monitor:&amp;#39;codelab-monitor&amp;#39;# 抓取对象scrape_configs:- job_name:&amp;#39;prometheus&amp;#39;# 名称，会在每一条metrics添加标签{job_name:&amp;#34;prometheus&amp;#34;}scrape_interval:5s# 抓取时间static_configs:# 抓取对象- targets:[&amp;#39;localhost:9090&amp;#39;]  部署完毕后，我们可以看到这两个界面。</description>
+tar xvfz prometheus-*.tar.gz cd prometheus-* ./prometheus --config.file=prometheus.yml docker docker run --name prometheus -d -p 127.0.0.1:9090:9090 prom/prometheus helm helm repo add prometheus-community https://prometheus-community.github.io/helm-charts helm repo add stable https://charts.helm.sh/stable helm repo update # Helm 3 $ helm install [RELEASE_NAME] prometheus-community/prometheus # Helm 2 $ helm install --name [RELEASE_NAME] prometheus-community/prometheus 配置文件 1 2 3 4 5 6 7 8 9 10  global:scrape_interval:15s# 默认抓取间隔，15s向目标抓取一次数据external_labels:monitor:&amp;#39;codelab-monitor&amp;#39;# 抓取对象scrape_configs:-job_name:&amp;#39;prometheus&amp;#39;# 名称，会在每一条metrics添加标签{job_name:&amp;#34;prometheus&amp;#34;}scrape_interval:5s# 抓取时间static_configs:# 抓取对象-targets:[&amp;#39;localhost:9090&amp;#39;]  部署完毕后，我们可以看到这两个界面。</description>
     </item>
     
   </channel>
