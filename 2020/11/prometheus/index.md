@@ -1,7 +1,7 @@
-# Prometheus
+# Prometheus初步使用
 
 
-### 简介
+## 简介
 
 prometheus是一个开源的系统监控和警报工具包，最初由SoundCloud开发。自2012年始，许多公司和组织已经采用了prometheus，该项目拥有活跃的开发人员和用户社区。它现在是一个独立的开源项目，独立于任何公司进行维护。着重于此，prometheus在2016年加入CNCF，是继kubernetes之后第二个托管的项目。
 
@@ -11,11 +11,11 @@ github地址： [github](https://github.com/prometheus/prometheus)
 
 **架构图**
 
-![](<https://prometheus.io/assets/architecture.png>)
+![](https://prometheus.io/assets/architecture.png)
 
-### 下载与安装
+## 下载与安装
 
-#### 二进制
+### 二进制
 
 [下载地址](https://prometheus.io/download/)
 
@@ -25,13 +25,13 @@ cd prometheus-*
 ./prometheus --config.file=prometheus.yml
 ```
 
-#### docker 
+### docker 
 
 ```
 docker run --name prometheus -d -p 127.0.0.1:9090:9090 prom/prometheus
 ```
 
-#### helm
+### helm
 
 ```
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
@@ -46,7 +46,7 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 
 ```
 
-#### 配置文件
+### 配置文件
 
 ```yaml
 global:
@@ -92,7 +92,7 @@ scrape_configs:
       - targets: ['localhost:9100']
 ```
 
-#### 告警
+## 告警
 
 告警分为两个部分。首先需要在prometheus中添加告警规则，定义告警产生的逻辑，其次Altermanager将触发的警报转化为通知，例如邮件，呼叫和聊天消息。
 
@@ -142,7 +142,7 @@ groups:
 
 既然有一个被触发的告警，需要 Alertmanager 针对它做一些事。
 
-#### Alertmanager
+Alertmanager
 
 [下载地址](https://prometheus.io/download/)
 
