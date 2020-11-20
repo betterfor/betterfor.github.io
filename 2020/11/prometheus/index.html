@@ -22,7 +22,7 @@
 github地址： github
 架构图
 下载与安装 二进制 下载地址
-tar xvfz prometheus-*.tar.gz cd prometheus-* ./prometheus --config.file=prometheus.yml docker docker run --name prometheus -d -p 127.0.0.1:9090:9090 prom/prometheus helm helm repo add prometheus-community https://prometheus-community.github.io/helm-charts helm repo add stable https://charts.helm.sh/stable helm repo update # Helm 3 $ helm install [RELEASE_NAME] prometheus-community/prometheus # Helm 2 $ helm install --name [RELEASE_NAME] prometheus-community/prometheus 配置文件 1 2 3 4 5 6 7 8 9 10  global:scrape_interval:15s# 默认抓取间隔，15s向目标抓取一次数据external_labels:monitor:&#39;codelab-monitor&#39;# 抓取对象scrape_configs:-job_name:&#39;prometheus&#39;# 名称，会在每一条metrics添加标签{job_name:&#34;prometheus&#34;}scrape_interval:5s# 抓取时间static_configs:# 抓取对象-targets:[&#39;localhost:9090&#39;]  部署完毕后，我们可以看到这两个界面。"/>
+1 2 3  tar xvfz prometheus-*.tar.gz cd prometheus-* ./prometheus --config.file=prometheus.yml   docker 1  docker run --name prometheus -d -p 127.0.0.1:9090:9090 prom/prometheus   helm 1 2 3 4 5 6 7 8 9  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts helm repo add stable https://charts.helm.sh/stable helm repo update # Helm 3 $ helm install [RELEASE_NAME] prometheus-community/prometheus # Helm 2 $ helm install --name [RELEASE_NAME] prometheus-community/prometheus   配置文件 1 2 3 4 5 6 7 8 9 10  global:scrape_interval:15s# 默认抓取间隔，15s向目标抓取一次数据external_labels:monitor:&#39;codelab-monitor&#39;# 抓取对象scrape_configs:-job_name:&#39;prometheus&#39;# 名称，会在每一条metrics添加标签{job_name:&#34;prometheus&#34;}scrape_interval:5s# 抓取时间static_configs:# 抓取对象-targets:[&#39;localhost:9090&#39;]   部署完毕后，我们可以看到这两个界面。"/>
 <script type="application/ld+json">
     {
     "@context": "http://schema.org",
@@ -44,13 +44,13 @@ tar xvfz prometheus-*.tar.gz cd prometheus-* ./prometheus --config.file=promethe
     
         "keywords": "prometheus, golang",
     
-    "wordcount":  186 ,
+    "wordcount":  198 ,
     "url": "https:\/\/betterfor.github.io\/2020\/11\/prometheus\/",
     
         "datePublished": "2020-11-19T18:03:03\x2b08:00",
     
     
-        "dateModified": "2020-11-20T15:02:23\x2b08:00",
+        "dateModified": "2020-11-20T15:08:09\x2b08:00",
     
     
         "license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.",
@@ -145,7 +145,7 @@ tar xvfz prometheus-*.tar.gz cd prometheus-* ./prometheus --config.file=promethe
             </div>
             <div class="post-meta-other">
                 <i class="far fa-calendar-alt fa-fw"></i><time datetime=2020-11-19>2020-11-19</time>&nbsp;
-                <i class="fas fa-pencil-alt fa-fw"></i>约 186 字&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>约 198 字&nbsp;
                 <i class="far fa-clock fa-fw"></i>预计阅读 1 分钟&nbsp;</div>
         </div>
 
@@ -155,20 +155,31 @@ tar xvfz prometheus-*.tar.gz cd prometheus-* ./prometheus --config.file=promethe
                 <h2 class="post-toc-title">目录</h2>
                 <div class="post-toc-content always-active">
                     <nav id="TableOfContents">
-  <ul>
-    <li>
-      <ul>
-        <li><a href="#heading">简介</a></li>
-        <li><a href="#heading1">下载与安装</a></li>
-      </ul>
-    </li>
-    <li><a href="#exporter">安装exporter</a>
-      <ul>
-        <li></li>
-      </ul>
-    </li>
-    <li><a href="#heading5">总结</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#简介">简介</a></li>
+<li><a href="#下载与安装">下载与安装</a>
+<ul>
+<li><a href="#二进制">二进制</a></li>
+<li><a href="#docker">docker</a></li>
+<li><a href="#helm">helm</a></li>
+<li><a href="#配置文件">配置文件</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#安装exporter">安装exporter</a>
+<ul>
+<li>
+<ul>
+<li><a href="#告警">告警</a></li>
+<li><a href="#alertmanager">Alertmanager</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#总结">总结</a></li>
+</ul></li>
+</ul>
 </nav>
                 </div>
             </div>
@@ -179,20 +190,31 @@ tar xvfz prometheus-*.tar.gz cd prometheus-* ./prometheus --config.file=promethe
                         
                         
                         <nav id="TableOfContentsMobile">
-  <ul>
-    <li>
-      <ul>
-        <li><a href="#heading">简介</a></li>
-        <li><a href="#heading1">下载与安装</a></li>
-      </ul>
-    </li>
-    <li><a href="#exporter">安装exporter</a>
-      <ul>
-        <li></li>
-      </ul>
-    </li>
-    <li><a href="#heading5">总结</a></li>
-  </ul>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#简介">简介</a></li>
+<li><a href="#下载与安装">下载与安装</a>
+<ul>
+<li><a href="#二进制">二进制</a></li>
+<li><a href="#docker">docker</a></li>
+<li><a href="#helm">helm</a></li>
+<li><a href="#配置文件">配置文件</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#安装exporter">安装exporter</a>
+<ul>
+<li>
+<ul>
+<li><a href="#告警">告警</a></li>
+<li><a href="#alertmanager">Alertmanager</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#总结">总结</a></li>
+</ul></li>
+</ul>
 </nav>
                     </div>
                 </details>
@@ -224,22 +246,61 @@ tar xvfz prometheus-*.tar.gz cd prometheus-* ./prometheus --config.file=promethe
             
             
             
-            <a class="post-dummy-target" id="heading"></a><h3>简介</h3>
+            
+
+<a class="post-dummy-target" id="简介"></a><h3>简介</h3>
+
 <p>prometheus是一个开源的系统监控和警报工具包，最初由SoundCloud开发。自2012年始，许多公司和组织已经采用了prometheus，该项目拥有活跃的开发人员和用户社区。它现在是一个独立的开源项目，独立于任何公司进行维护。着重于此，prometheus在2016年加入CNCF，是继kubernetes之后第二个托管的项目。</p>
+
 <p>官网地址： <a href="https://prometheus.io/">Prometheus</a></p>
+
 <p>github地址： <a href="https://github.com/prometheus/prometheus">github</a></p>
+
 <p><strong>架构图</strong></p>
-<p><img src="https://prometheus.io/assets/architecture.png" alt=""></p>
-<a class="post-dummy-target" id="heading1"></a><h3>下载与安装</h3>
-<a class="post-dummy-target" id="heading2"></a><h4>二进制</h4>
+
+<p><figure><img src=/images/loading.svg data-sizes=auto data-src=https://prometheus.io/assets/architecture.png alt= class=lazyload><figcaption class=image-caption></figcaption></figure></p>
+
+<a class="post-dummy-target" id="下载与安装"></a><h3>下载与安装</h3>
+
+<a class="post-dummy-target" id="二进制"></a><h4>二进制</h4>
+
 <p><a href="https://prometheus.io/download/">下载地址</a></p>
-<pre><code>tar xvfz prometheus-*.tar.gz
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">tar xvfz prometheus-*.tar.gz
 cd prometheus-*
-./prometheus --config.file=prometheus.yml
-</code></pre><a class="post-dummy-target" id="docker"></a><h4>docker</h4>
-<pre><code>docker run --name prometheus -d -p 127.0.0.1:9090:9090 prom/prometheus
-</code></pre><a class="post-dummy-target" id="helm"></a><h4>helm</h4>
-<pre><code>helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+./prometheus --config.file=prometheus.yml</pre></td></tr></table>
+</div>
+</div>
+<a class="post-dummy-target" id="docker"></a><h4>docker</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">docker run --name prometheus -d -p 127.0.0.1:9090:9090 prom/prometheus</pre></td></tr></table>
+</div>
+</div>
+<a class="post-dummy-target" id="helm"></a><h4>helm</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo add stable https://charts.helm.sh/stable
 helm repo update
 
@@ -247,12 +308,13 @@ helm repo update
 $ helm install [RELEASE_NAME] prometheus-community/prometheus
 
 # Helm 2
-$ helm install --name [RELEASE_NAME] prometheus-community/prometheus
-
-</code></pre><a class="post-dummy-target" id="heading3"></a><h4>配置文件</h4>
+$ helm install --name [RELEASE_NAME] prometheus-community/prometheus</pre></td></tr></table>
+</div>
+</div>
+<a class="post-dummy-target" id="配置文件"></a><h4>配置文件</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -273,19 +335,25 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </span><span class="w">  </span>-<span class="w"> </span>job_name<span class="p">:</span><span class="w"> </span><span class="s1">&#39;prometheus&#39;</span><span class="w"> </span><span class="c"># 名称，会在每一条metrics添加标签{job_name:&#34;prometheus&#34;}</span><span class="w">
 </span><span class="w">    </span>scrape_interval<span class="p">:</span><span class="w"> </span>5s<span class="w"> </span><span class="c"># 抓取时间</span><span class="w">
 </span><span class="w">    </span>static_configs<span class="p">:</span><span class="w"> </span><span class="c"># 抓取对象</span><span class="w">
-</span><span class="w">      </span>-<span class="w"> </span>targets<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9090&#39;</span><span class="p">]</span><span class="w">
-</span></code></pre></td></tr></table>
+</span><span class="w">      </span>-<span class="w"> </span>targets<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9090&#39;</span><span class="p">]</span></code></pre></td></tr></table>
 </div>
-</div><p><img src="https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-20/graph.png" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-20/metrics.png" alt=""></p>
+</div>
+<p><figure><img src=/images/loading.svg data-sizes=auto data-src=https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-20/graph.png alt= class=lazyload><figcaption class=image-caption></figcaption></figure></p>
+
+<p><figure><img src=/images/loading.svg data-sizes=auto data-src=https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-20/metrics.png alt= class=lazyload><figcaption class=image-caption></figcaption></figure></p>
+
 <p>部署完毕后，我们可以看到这两个界面。</p>
-<a class="post-dummy-target" id="exporter"></a><h2>安装exporter</h2>
+
+<a class="post-dummy-target" id="安装exporter"></a><h2>安装exporter</h2>
+
 <p><a href="https://prometheus.io/docs/instrumenting/exporters/">exporters and integrations</a></p>
+
 <p>Node Exporter 暴露了如linux等UNIX系统的内核和机器级别的指标(indows用户应用wmi_exporter)。它提供了很多标准的指标如CPU、内存、磁盘空间、硬盘I/O和网络带宽。此外，它还提供了从负负载率平均值到主板温度等很多内核暴露的问题。</p>
+
 <p>下载运行之后，我们需要更新prometheus.yml，然后 <strong>重启</strong> prometheus加载新的配置</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -314,14 +382,15 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </span><span class="w">  </span>-<span class="w"> </span>job_name<span class="p">:</span><span class="w"> </span><span class="s1">&#39;node&#39;</span><span class="w">
 </span><span class="w">    </span>scrape_interval<span class="p">:</span><span class="w"> </span>5s<span class="w">
 </span><span class="w">    </span>static_configs<span class="p">:</span><span class="w">
-</span><span class="w">      </span>-<span class="w"> </span>targets<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9100&#39;</span><span class="p">]</span><span class="w">
-</span></code></pre></td></tr></table>
+</span><span class="w">      </span>-<span class="w"> </span>targets<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9100&#39;</span><span class="p">]</span></code></pre></td></tr></table>
 </div>
-</div><a class="post-dummy-target" id="heading4"></a><h4>告警</h4>
+</div>
+<a class="post-dummy-target" id="告警"></a><h4>告警</h4>
+
 <p>告警分为两个部分。首先需要在prometheus中添加告警规则，定义告警产生的逻辑，其次Altermanager将触发的警报转化为通知，例如邮件，呼叫和聊天消息。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -372,12 +441,11 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </span><span class="w">  </span>-<span class="w"> </span>job_name<span class="p">:</span><span class="w"> </span><span class="s1">&#39;node&#39;</span><span class="w">
 </span><span class="w">    </span>scrape_interval<span class="p">:</span><span class="w"> </span>5s<span class="w">
 </span><span class="w">    </span>static_configs<span class="p">:</span><span class="w">
-</span><span class="w">      </span>-<span class="w"> </span>targets<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9100&#39;</span><span class="p">]</span><span class="w">
-</span></code></pre></td></tr></table>
+</span><span class="w">      </span>-<span class="w"> </span>targets<span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9100&#39;</span><span class="p">]</span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -392,19 +460,25 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </span><span class="w">    </span>rules<span class="p">:</span><span class="w">
 </span><span class="w">    </span>-<span class="w"> </span>alert<span class="p">:</span><span class="w"> </span>InstanceDown<span class="w">
 </span><span class="w">      </span>expr<span class="p">:</span><span class="w"> </span>up<span class="w"> </span>==<span class="w"> </span><span class="m">0</span><span class="w">
-</span><span class="w">      </span>for<span class="p">:</span><span class="w"> </span>1m<span class="w">
-</span></code></pre></td></tr></table>
+</span><span class="w">      </span>for<span class="p">:</span><span class="w"> </span>1m</code></pre></td></tr></table>
 </div>
-</div><p>按照 evaluation_interval 的配置，InstanceDown告警每10s将被执行1次。如果持续1m收到数据，那么这个告警就会被触发。在达到设定的时间长度前，这个告警处于 <em>pending</em> 状态，在 Alerts 页面可以单击警告查看包括它的标签在内的更多详细信息。</p>
-<p><img src="https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-20/pending.png" alt=""></p>
-<p>**注：**通常建议至少5min以减少噪声从而减轻固有监控的各种情况。</p>
+</div>
+<p>按照 evaluation_interval 的配置，InstanceDown告警每10s将被执行1次。如果持续1m收到数据，那么这个告警就会被触发。在达到设定的时间长度前，这个告警处于 <em>pending</em> 状态，在 Alerts 页面可以单击警告查看包括它的标签在内的更多详细信息。</p>
+
+<p><figure><img src=/images/loading.svg data-sizes=auto data-src=https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-20/pending.png alt= class=lazyload><figcaption class=image-caption></figcaption></figure></p>
+
+<p><strong>注：</strong>通常建议至少5min以减少噪声从而减轻固有监控的各种情况。</p>
+
 <p>既然有一个被触发的告警，需要 Alertmanager 针对它做一些事。</p>
+
 <a class="post-dummy-target" id="alertmanager"></a><h4>Alertmanager</h4>
+
 <p><a href="https://prometheus.io/download/">下载地址</a></p>
+
 <p>现在需要为 Alertmanager 创建一个配置文件。这里有很多中方式让Alertmanager 通知到你。这里使用SMTP。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -414,7 +488,6 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-yaml" data-lang="yaml">global<span class="p">:</span><span class="w">
@@ -426,13 +499,15 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </span><span class="w"></span>receivers<span class="p">:</span><span class="w">
 </span><span class="w"></span>-<span class="w"> </span>name<span class="p">:</span><span class="w"> </span><span class="s1">&#39;example-email&#39;</span><span class="w">
 </span><span class="w">  </span>email_configs<span class="p">:</span><span class="w">
-</span><span class="w">  </span>-<span class="w"> </span>to<span class="p">:</span><span class="w"> </span><span class="s1">&#39;youraddress@example.org&#39;</span><span class="w">
-</span><span class="w">
-</span></code></pre></td></tr></table>
+</span><span class="w">  </span>-<span class="w"> </span>to<span class="p">:</span><span class="w"> </span><span class="s1">&#39;youraddress@example.org&#39;</span></code></pre></td></tr></table>
 </div>
-</div><p>启动Alertmanager，现在可以在浏览器输入 <em>http://localhost:9093</em> 来访问 Alertmanager，在这个页面你将看到触发的告警，如果所有的配置完成并正常启动，一两分钟后就会收到邮件告警通知。</p>
-<p><img src="https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-20/alertmanager.png" alt=""></p>
-<a class="post-dummy-target" id="heading5"></a><h2>总结</h2>
+</div>
+<p>启动Alertmanager，现在可以在浏览器输入 <em><a href="http://localhost:9093">http://localhost:9093</a></em> 来访问 Alertmanager，在这个页面你将看到触发的告警，如果所有的配置完成并正常启动，一两分钟后就会收到邮件告警通知。</p>
+
+<p><figure><img src=/images/loading.svg data-sizes=auto data-src=https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-20/alertmanager.png alt= class=lazyload><figcaption class=image-caption></figcaption></figure></p>
+
+<a class="post-dummy-target" id="总结"></a><h2>总结</h2>
+
 <p>这个prometheus由exporter、prometheus server、Alertmanager构成。exporter收集数据，prometheus server 拉取exporter数据，然后根据告警规则，将告警推送到Alertmanager处理。中间还衍生了许多其他组件，例如pushgateway(客户端将数据push到pushgateway，由prometheus定期拉取)，grafana等。</p>
 
         </div>
