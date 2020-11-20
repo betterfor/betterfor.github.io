@@ -64,7 +64,7 @@ staticDir = ["static", "static/others"]               # static directories
 
                                                       #### Home Page Info
   home_mode = "other"                                     # [post, other] home mode
-  avatar = "https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-19/logo.png"
+  avatar = "https://img-blog.csdnimg.cn/20201120194524232.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzI2NDUwNzY1,size_16,color_FFFFFF,t_70#pic_center"
   # avatar = "https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2019-11-26/avatar.jpg"                          # URL of avatar shown in home page
   subtitle = "要做的事情总找得出时间和机会；不愿意做的事情也总能找得出借口。"  # subtitle shown in home page
 
@@ -112,12 +112,12 @@ staticDir = ["static", "static/others"]               # static directories
 
   [params.social]                                        # Social Info in home page
     GitHub = "github.com/betterfor"
-    Linkedin = "xxxx"
-    Twitter = "xxxx"
+    #Linkedin = "xxxx"
+    #Twitter = "xxxx"
     #Instagram = "xxxx"
-    #Email = "xxxx"
-    Facebook = "xxxx"
-    Telegram = "xxxx"
+    Email = "1697606384@qq.com"
+    #Facebook = "xxxx"
+    #Telegram = "xxxx"
     #Medium = "xxxx"
     #Gitlab = "xxxx"
     #Youtubelegacy = "xxxx"
@@ -171,9 +171,9 @@ staticDir = ["static", "static/others"]               # static directories
 
   [params.share]                                         # Social Share Links in post page
     enable = true
-    Twitter = true
-    Facebook = true
-    Reddit = true
+    #Twitter = false
+    #Facebook = false
+    #Reddit = true
     #Linkedin = true
     #Pinterest = true
     #HackerNews = true
