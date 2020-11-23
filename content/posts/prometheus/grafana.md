@@ -7,12 +7,12 @@ tags: ['linux','grafana']
 categories: ['golang']
 comment: true
 toc: true
-autoCollapseToc: false
+autoCollapseToc: true
 ---
 
 
 
-##  简介
+## 简介
 
 Grafana是一个跨平台的开源的度量分析和可视化工具，可以将采集的数据可视化展示，主要有六大特点：
 
