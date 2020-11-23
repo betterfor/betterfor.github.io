@@ -46,13 +46,13 @@ github地址： github
     
         "keywords": "prometheus, golang",
     
-    "wordcount":  258 ,
+    "wordcount":  257 ,
     "url": "https:\/\/betterfor.github.io\/2020\/11\/prometheus\/",
     
         "datePublished": "2020-11-19T18:03:03\u002b08:00",
     
     
-        "dateModified": "2020-11-23T16:25:09\u002b08:00",
+        "dateModified": "2020-11-23T17:59:21\u002b08:00",
     
     
         "license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.",
@@ -147,7 +147,7 @@ github地址： github
             </div>
             <div class="post-meta-other">
                 <i class="far fa-calendar-alt fa-fw"></i><time datetime=2020-11-19>2020-11-19</time>&nbsp;
-                <i class="fas fa-pencil-alt fa-fw"></i>约 258 字&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>约 257 字&nbsp;
                 <i class="far fa-clock fa-fw"></i>预计阅读 2 分钟&nbsp;</div>
         </div>
 
@@ -459,7 +459,7 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </div>
 </div><p>按照 evaluation_interval 的配置，InstanceDown告警每10s将被执行1次。如果持续1m收到数据，那么这个告警就会被触发。在达到设定的时间长度前，这个告警处于 <em>pending</em> 状态，在 Alerts 页面可以单击警告查看包括它的标签在内的更多详细信息。</p>
 <p><img src="https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-20/pending.png" alt=""></p>
-<p>**注：**通常建议至少5min以减少噪声从而减轻固有监控的各种情况。</p>
+<p><strong>注</strong>：通常建议至少5min以减少噪声从而减轻固有监控的各种情况。</p>
 <p>既然有一个被触发的告警，需要 Alertmanager 针对它做一些事。</p>
 <a class="post-dummy-target" id="alertmanager"></a><h2>Alertmanager</h2>
 <p>如何管理告警通知？
@@ -479,7 +479,6 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
-</span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">global</span><span class="p">:</span><span class="w">
@@ -492,7 +491,6 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </span><span class="w"></span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;example-email&#39;</span><span class="w">
 </span><span class="w">  </span><span class="nt">email_configs</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span>- <span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;youraddress@example.org&#39;</span><span class="w">
-</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
 </div><p>启动Alertmanager，现在可以在浏览器输入 <em>http://localhost:9093</em> 来访问 Alertmanager，在这个页面你将看到触发的告警，如果所有的配置<strong>正确</strong>并正常启动，一两分钟后就会收到邮件告警通知。</p>

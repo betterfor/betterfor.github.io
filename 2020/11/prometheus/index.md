@@ -159,7 +159,7 @@ groups:
 
 ![](https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-20/pending.png)
 
-**注：**通常建议至少5min以减少噪声从而减轻固有监控的各种情况。
+**注**：通常建议至少5min以减少噪声从而减轻固有监控的各种情况。
 
 既然有一个被触发的告警，需要 Alertmanager 针对它做一些事。
 
@@ -184,7 +184,6 @@ receivers:
 - name: 'example-email'
   email_configs:
   - to: 'youraddress@example.org'
-
 ```
 
 启动Alertmanager，现在可以在浏览器输入 *http://localhost:9093* 来访问 Alertmanager，在这个页面你将看到触发的告警，如果所有的配置**正确**并正常启动，一两分钟后就会收到邮件告警通知。
