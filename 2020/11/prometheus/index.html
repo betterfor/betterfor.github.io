@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Prometheus初步使用 | 风落云起</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>5分钟学会搭建Prometheus | 风落云起</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noodp" />
 <meta name="Description" content="LoveIt Theme Demo">
 <link rel="canonical" href="https://betterfor.github.io/2020/11/prometheus/" />
@@ -16,18 +16,20 @@
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#ffffff">
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Prometheus初步使用"/>
-<meta name="twitter:description" content="简介 prometheus是一个开源的系统监控和警报工具包，最初由SoundCloud开发。自2012年始，许多公司和组织已经采用了prometheus，该项目拥有活跃的开发人员和用户社区。它现在是一个独立的开源项目，独立于任何公司进行维护。着重于此，prometheus在2016年加入CNCF，是继kubernetes之后第二个托管的项目。
+<meta name="twitter:title" content="5分钟学会搭建Prometheus"/>
+<meta name="twitter:description" content="简介 prometheus是一个开源的系统监控和警报工具包，最初由SoundCloud开发。自2012年始，许多公司和组织已经采用了prometheus，该项目拥有活跃的开发人员和用户社区。 它现在是一个独立的开源项目，独立于任何公司进行维护。着重于此，prometheus在2016年加入CNCF，是继kubernetes之后第二个托管的项目。
 官网地址： Prometheus
 github地址： github
 架构图
-下载与安装 二进制 下载地址
-1 2 3  tar xvfz prometheus-*.tar.gz cd prometheus-* ./prometheus --config.file=prometheus.yml   docker 1  docker run --name prometheus -d -p 127.0.0.1:9090:9090 prom/prometheus   helm 1 2 3 4 5 6 7 8 9 10  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts helm repo add stable https://charts.helm.sh/stable helm repo update # Helm 3 $ helm install [RELEASE_NAME] prometheus-community/prometheus # Helm 2 $ helm install --name [RELEASE_NAME] prometheus-community/prometheus   配置文件 1 2 3 4 5 6 7 8 9 10  global:scrape_interval:15s# 默认抓取间隔，15s向目标抓取一次数据external_labels:monitor:&#39;codelab-monitor&#39;# 抓取对象scrape_configs:- job_name:&#39;prometheus&#39;# 名称，会在每一条metrics添加标签{job_name:&#34;prometheus&#34;}scrape_interval:5s# 抓取时间static_configs:# 抓取对象- targets:[&#39;localhost:9090&#39;]  部署完毕后，我们可以看到这两个界面。"/>
+下载与安装 安装方式有很多种，如果你是windows用户，那么只需要在本地起个二进制服务就可以。如果你是linux用户，可以通过docker等更加灵活方式部署。
+二进制 二进制下载地址
+1 2 3  tar xvfz prometheus-*.tar.gz cd prometheus-* ./prometheus --config.file=prometheus.yml   当然你可以下载最新的源码进行编译获取最新的二进制文件。
+1 2 3 4 5 6  mkdir -p $GOPATH/src/github.com/prometheus cd $GOPATH/src/github.com/prometheus git clone https://github.com/prometheus/prometheus.git cd prometheus make build ./prometheus -config.file=your_config.yml   docker 1 2  # 使用 /opt/prometheus/prometheus.yml 的配置 docker run --name prometheus -d -p 127.0.0.1:9090:9090 -v /opt/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus   helm 1 2 3 4 5 6 7 8 9 10  helm repo add prometheus-community https://prometheus-community."/>
 <script type="application/ld+json">
     {
     "@context": "http://schema.org",
     "@type": "BlogPosting",
-    "headline": "Prometheus初步使用",
+    "headline": "5分钟学会搭建Prometheus",
     "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": "https:\/\/betterfor.github.io\/2020\/11\/prometheus\/"
@@ -44,13 +46,13 @@ github地址： github
     
         "keywords": "prometheus, golang",
     
-    "wordcount":  220 ,
+    "wordcount":  258 ,
     "url": "https:\/\/betterfor.github.io\/2020\/11\/prometheus\/",
     
         "datePublished": "2020-11-19T18:03:03\u002b08:00",
     
     
-        "dateModified": "2020-11-20T19:48:32\u002b08:00",
+        "dateModified": "2020-11-23T16:25:09\u002b08:00",
     
     
         "license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.",
@@ -132,7 +134,7 @@ github地址： github
     
 
     <article class="post-warp">
-        <h1 class="post-title animated flipInX">Prometheus初步使用</h1>
+        <h1 class="post-title animated flipInX">5分钟学会搭建Prometheus</h1>
 
         <div class="post-meta">
             <div class="post-meta-main">
@@ -145,7 +147,7 @@ github地址： github
             </div>
             <div class="post-meta-other">
                 <i class="far fa-calendar-alt fa-fw"></i><time datetime=2020-11-19>2020-11-19</time>&nbsp;
-                <i class="fas fa-pencil-alt fa-fw"></i>约 220 字&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>约 258 字&nbsp;
                 <i class="far fa-clock fa-fw"></i>预计阅读 2 分钟&nbsp;</div>
         </div>
 
@@ -166,7 +168,8 @@ github地址： github
       </ul>
     </li>
     <li><a href="#安装exporter">安装exporter</a></li>
-    <li><a href="#告警">告警</a></li>
+    <li><a href="#告警通知">告警通知</a></li>
+    <li><a href="#alertmanager">Alertmanager</a></li>
     <li><a href="#总结">总结</a></li>
   </ul>
 </nav>
@@ -190,7 +193,8 @@ github地址： github
       </ul>
     </li>
     <li><a href="#安装exporter">安装exporter</a></li>
-    <li><a href="#告警">告警</a></li>
+    <li><a href="#告警通知">告警通知</a></li>
+    <li><a href="#alertmanager">Alertmanager</a></li>
     <li><a href="#总结">总结</a></li>
   </ul>
 </nav>
@@ -225,14 +229,16 @@ github地址： github
             
             
             <a class="post-dummy-target" id="简介"></a><h2>简介</h2>
-<p>prometheus是一个开源的系统监控和警报工具包，最初由SoundCloud开发。自2012年始，许多公司和组织已经采用了prometheus，该项目拥有活跃的开发人员和用户社区。它现在是一个独立的开源项目，独立于任何公司进行维护。着重于此，prometheus在2016年加入CNCF，是继kubernetes之后第二个托管的项目。</p>
+<p>prometheus是一个开源的系统监控和警报工具包，最初由SoundCloud开发。自2012年始，许多公司和组织已经采用了prometheus，该项目拥有活跃的开发人员和用户社区。
+它现在是一个独立的开源项目，独立于任何公司进行维护。着重于此，prometheus在2016年加入CNCF，是继kubernetes之后第二个托管的项目。</p>
 <p>官网地址： <a href="https://prometheus.io/">Prometheus</a></p>
 <p>github地址： <a href="https://github.com/prometheus/prometheus">github</a></p>
 <p><strong>架构图</strong></p>
 <p><img src="https://prometheus.io/assets/architecture.png" alt=""></p>
 <a class="post-dummy-target" id="下载与安装"></a><h2>下载与安装</h2>
+<p>安装方式有很多种，如果你是windows用户，那么只需要在本地起个二进制服务就可以。如果你是linux用户，可以通过docker等更加灵活方式部署。</p>
 <a class="post-dummy-target" id="二进制"></a><h3>二进制</h3>
-<p><a href="https://prometheus.io/download/">下载地址</a></p>
+<p><a href="https://prometheus.io/download/">二进制下载地址</a></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
@@ -245,13 +251,34 @@ cd prometheus-*
 ./prometheus --config.file=prometheus.yml
 </code></pre></td></tr></table>
 </div>
+</div><p>当然你可以下载最新的源码进行编译获取最新的二进制文件。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">mkdir -p $GOPATH/src/github.com/prometheus
+cd $GOPATH/src/github.com/prometheus
+git clone https://github.com/prometheus/prometheus.git
+cd prometheus
+make build
+./prometheus -config.file=your_config.yml
+</code></pre></td></tr></table>
+</div>
 </div><a class="post-dummy-target" id="docker"></a><h3>docker</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker run --name prometheus -d -p 127.0.0.1:9090:9090 prom/prometheus
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># 使用 /opt/prometheus/prometheus.yml 的配置
+docker run --name prometheus -d -p 127.0.0.1:9090:9090 -v /opt/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
 </code></pre></td></tr></table>
 </div>
 </div><a class="post-dummy-target" id="helm"></a><h3>helm</h3>
@@ -282,6 +309,7 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </code></pre></td></tr></table>
 </div>
 </div><a class="post-dummy-target" id="配置文件"></a><h3>配置文件</h3>
+<p>prometheus已经能够起来了，我们也需要对服务做一些个性化的配置，让prometheus能够获取到数据。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -299,7 +327,7 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 <pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">global</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">15s</span><span class="w"> </span><span class="c"># 默认抓取间隔，15s向目标抓取一次数据</span><span class="w">
 </span><span class="w">  </span><span class="nt">external_labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">monitor</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;codelab-monitor&#39;</span><span class="w">
+</span><span class="w">    </span><span class="nt">monitor</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;prometheus-monitor&#39;</span><span class="w">
 </span><span class="w"></span><span class="c"># 抓取对象</span><span class="w">
 </span><span class="w"></span><span class="nt">scrape_configs</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span>- <span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;prometheus&#39;</span><span class="w"> </span><span class="c"># 名称，会在每一条metrics添加标签{job_name:&#34;prometheus&#34;}</span><span class="w">
@@ -310,10 +338,11 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </div>
 </div><p><img src="https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-20/graph.png" alt=""></p>
 <p><img src="https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-20/metrics.png" alt=""></p>
-<p>部署完毕后，我们可以看到这两个界面。</p>
+<p><strong>重启</strong>完毕后，我们可以看到这两个界面。</p>
 <a class="post-dummy-target" id="安装exporter"></a><h2>安装exporter</h2>
+<p>如何获取数据源？从下面的链接你可以挑选一些官方或非官方的exporter来监控你的服务。</p>
 <p><a href="https://prometheus.io/docs/instrumenting/exporters/">exporters and integrations</a></p>
-<p>Node Exporter 暴露了如linux等UNIX系统的内核和机器级别的指标(indows用户应用wmi_exporter)。它提供了很多标准的指标如CPU、内存、磁盘空间、硬盘I/O和网络带宽。此外，它还提供了从负负载率平均值到主板温度等很多内核暴露的问题。</p>
+<p>例如：Node Exporter 暴露了如linux等UNIX系统的内核和机器级别的指标(windows用户应用wmi_exporter)。它提供了很多标准的指标如CPU、内存、磁盘空间、硬盘I/O和网络带宽。此外，它还提供了从负载率平均值到主板温度等很多内核暴露的问题。</p>
 <p>下载运行之后，我们需要更新prometheus.yml，然后 <strong>重启</strong> prometheus加载新的配置</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -349,7 +378,8 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </span><span class="w">      </span>- <span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9100&#39;</span><span class="p">]</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
-</div><a class="post-dummy-target" id="告警"></a><h2>告警</h2>
+</div><a class="post-dummy-target" id="告警通知"></a><h2>告警通知</h2>
+<p>如果你需要设定特定的规则，例如cpu/内存超过了设定值，需要将告警数据发送到你的邮件、微信、钉钉等，那么你就需要Alertmanager。</p>
 <p>告警分为两个部分。首先需要在prometheus中添加告警规则，定义告警产生的逻辑，其次Altermanager将触发的警报转化为通知，例如邮件，呼叫和聊天消息。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -431,7 +461,10 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 <p><img src="https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-20/pending.png" alt=""></p>
 <p>**注：**通常建议至少5min以减少噪声从而减轻固有监控的各种情况。</p>
 <p>既然有一个被触发的告警，需要 Alertmanager 针对它做一些事。</p>
-<p>Alertmanager</p>
+<a class="post-dummy-target" id="alertmanager"></a><h2>Alertmanager</h2>
+<p>如何管理告警通知？
+比如我只想工作时间收到告警，那么可以设置告警事件为09:00-21:00。
+比如我某个服务不想收到通知，那么可以暂时关闭通知。</p>
 <p><a href="https://prometheus.io/download/">下载地址</a></p>
 <p>现在需要为 Alertmanager 创建一个配置文件。这里有很多中方式让Alertmanager 通知到你。这里使用SMTP。</p>
 <div class="highlight"><div class="chroma">
@@ -462,10 +495,12 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
-</div><p>启动Alertmanager，现在可以在浏览器输入 <em>http://localhost:9093</em> 来访问 Alertmanager，在这个页面你将看到触发的告警，如果所有的配置完成并正常启动，一两分钟后就会收到邮件告警通知。</p>
+</div><p>启动Alertmanager，现在可以在浏览器输入 <em>http://localhost:9093</em> 来访问 Alertmanager，在这个页面你将看到触发的告警，如果所有的配置<strong>正确</strong>并正常启动，一两分钟后就会收到邮件告警通知。</p>
 <p><img src="https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-20/alertmanager.png" alt=""></p>
 <a class="post-dummy-target" id="总结"></a><h2>总结</h2>
-<p>这个prometheus由exporter、prometheus server、Alertmanager构成。exporter收集数据，prometheus server 拉取exporter数据，然后根据告警规则，将告警推送到Alertmanager处理。中间还衍生了许多其他组件，例如pushgateway(客户端将数据push到pushgateway，由prometheus定期拉取)，grafana等。</p>
+<p>这个prometheus由exporter、prometheus server、Alertmanager构成。
+exporter收集数据，prometheus server 拉取exporter数据，然后根据告警规则，将告警推送到Alertmanager处理。
+中间还衍生了许多其他组件，例如pushgateway(客户端将数据push到pushgateway，由prometheus定期拉取)，grafana图标页面等。</p>
 
         </div>
 
@@ -473,7 +508,7 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>本文于 2020-11-20 更新</span>
+                <span>本文于 2020-11-23 更新</span>
             </div>
             <div class="post-info-license">
                 

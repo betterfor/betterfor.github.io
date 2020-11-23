@@ -1,9 +1,10 @@
-# Prometheus初步使用
+# 5分钟学会搭建Prometheus
 
 
 ## 简介
 
-prometheus是一个开源的系统监控和警报工具包，最初由SoundCloud开发。自2012年始，许多公司和组织已经采用了prometheus，该项目拥有活跃的开发人员和用户社区。它现在是一个独立的开源项目，独立于任何公司进行维护。着重于此，prometheus在2016年加入CNCF，是继kubernetes之后第二个托管的项目。
+prometheus是一个开源的系统监控和警报工具包，最初由SoundCloud开发。自2012年始，许多公司和组织已经采用了prometheus，该项目拥有活跃的开发人员和用户社区。
+它现在是一个独立的开源项目，独立于任何公司进行维护。着重于此，prometheus在2016年加入CNCF，是继kubernetes之后第二个托管的项目。
 
 官网地址： [Prometheus](https://prometheus.io/)
 
@@ -14,10 +15,11 @@ github地址： [github](https://github.com/prometheus/prometheus)
 ![](https://prometheus.io/assets/architecture.png)
 
 ## 下载与安装
+安装方式有很多种，如果你是windows用户，那么只需要在本地起个二进制服务就可以。如果你是linux用户，可以通过docker等更加灵活方式部署。
 
 ### 二进制
 
-[下载地址](https://prometheus.io/download/)
+[二进制下载地址](https://prometheus.io/download/)
 
 ```
 tar xvfz prometheus-*.tar.gz
@@ -25,10 +27,22 @@ cd prometheus-*
 ./prometheus --config.file=prometheus.yml
 ```
 
+当然你可以下载最新的源码进行编译获取最新的二进制文件。
+
+```
+mkdir -p $GOPATH/src/github.com/prometheus
+cd $GOPATH/src/github.com/prometheus
+git clone https://github.com/prometheus/prometheus.git
+cd prometheus
+make build
+./prometheus -config.file=your_config.yml
+```
+
 ### docker 
 
 ```
-docker run --name prometheus -d -p 127.0.0.1:9090:9090 prom/prometheus
+# 使用 /opt/prometheus/prometheus.yml 的配置
+docker run --name prometheus -d -p 127.0.0.1:9090:9090 -v /opt/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
 ```
 
 ### helm
@@ -48,11 +62,13 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 
 ### 配置文件
 
+prometheus已经能够起来了，我们也需要对服务做一些个性化的配置，让prometheus能够获取到数据。
+
 ```yaml
 global:
   scrape_interval: 15s # 默认抓取间隔，15s向目标抓取一次数据
   external_labels:
-    monitor: 'codelab-monitor'
+    monitor: 'prometheus-monitor'
 # 抓取对象
 scrape_configs:
   - job_name: 'prometheus' # 名称，会在每一条metrics添加标签{job_name:"prometheus"}
@@ -65,13 +81,16 @@ scrape_configs:
 
 ![](https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-20/metrics.png)
 
-部署完毕后，我们可以看到这两个界面。
+**重启**完毕后，我们可以看到这两个界面。
 
 ## 安装exporter
 
+如何获取数据源？从下面的链接你可以挑选一些官方或非官方的exporter来监控你的服务。
+
 [exporters and integrations](https://prometheus.io/docs/instrumenting/exporters/)
 
-Node Exporter 暴露了如linux等UNIX系统的内核和机器级别的指标(indows用户应用wmi_exporter)。它提供了很多标准的指标如CPU、内存、磁盘空间、硬盘I/O和网络带宽。此外，它还提供了从负负载率平均值到主板温度等很多内核暴露的问题。
+
+例如：Node Exporter 暴露了如linux等UNIX系统的内核和机器级别的指标(windows用户应用wmi_exporter)。它提供了很多标准的指标如CPU、内存、磁盘空间、硬盘I/O和网络带宽。此外，它还提供了从负载率平均值到主板温度等很多内核暴露的问题。
 
 下载运行之后，我们需要更新prometheus.yml，然后 **重启** prometheus加载新的配置
 
@@ -92,7 +111,9 @@ scrape_configs:
       - targets: ['localhost:9100']
 ```
 
-## 告警
+## 告警通知
+
+如果你需要设定特定的规则，例如cpu/内存超过了设定值，需要将告警数据发送到你的邮件、微信、钉钉等，那么你就需要Alertmanager。
 
 告警分为两个部分。首先需要在prometheus中添加告警规则，定义告警产生的逻辑，其次Altermanager将触发的警报转化为通知，例如邮件，呼叫和聊天消息。
 
@@ -142,7 +163,11 @@ groups:
 
 既然有一个被触发的告警，需要 Alertmanager 针对它做一些事。
 
-Alertmanager
+## Alertmanager
+
+如何管理告警通知？
+比如我只想工作时间收到告警，那么可以设置告警事件为09:00-21:00。
+比如我某个服务不想收到通知，那么可以暂时关闭通知。
 
 [下载地址](https://prometheus.io/download/)
 
@@ -162,13 +187,13 @@ receivers:
 
 ```
 
-启动Alertmanager，现在可以在浏览器输入 *http://localhost:9093* 来访问 Alertmanager，在这个页面你将看到触发的告警，如果所有的配置完成并正常启动，一两分钟后就会收到邮件告警通知。
+启动Alertmanager，现在可以在浏览器输入 *http://localhost:9093* 来访问 Alertmanager，在这个页面你将看到触发的告警，如果所有的配置**正确**并正常启动，一两分钟后就会收到邮件告警通知。
 
 ![](https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-20/alertmanager.png)
 
-
-
 ## 总结
 
-这个prometheus由exporter、prometheus server、Alertmanager构成。exporter收集数据，prometheus server 拉取exporter数据，然后根据告警规则，将告警推送到Alertmanager处理。中间还衍生了许多其他组件，例如pushgateway(客户端将数据push到pushgateway，由prometheus定期拉取)，grafana等。
+这个prometheus由exporter、prometheus server、Alertmanager构成。
+exporter收集数据，prometheus server 拉取exporter数据，然后根据告警规则，将告警推送到Alertmanager处理。
+中间还衍生了许多其他组件，例如pushgateway(客户端将数据push到pushgateway，由prometheus定期拉取)，grafana图标页面等。
 
