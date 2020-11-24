@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>golang on 风落云起</title>
-    <link>https://betterfor.github.io/tags/golang/</link>
-    <description>Recent content in golang on 风落云起</description>
+    <title>prometheus on 风落云起</title>
+    <link>https://betterfor.github.io/categories/prometheus/</link>
+    <description>Recent content in prometheus on 风落云起</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Fri, 20 Nov 2020 15:45:29 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 20 Nov 2020 15:45:29 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/categories/prometheus/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Golang exporter的使用方法</title>
       <link>https://betterfor.github.io/2020/11/exporter/</link>
@@ -20,22 +20,6 @@
 简单的exporter服务 先写一个简单的http服务，在9095端口启动了一个能够为prometheus提供监控指标的HTTP服务。你可以在 http://localhost:9095/metrics 看到这些指标。
 1 2 3 4 5 6 7 8 9 10 11 12 13 14  package main import ( &amp;#34;github.com/prometheus/client_golang/prometheus/promhttp&amp;#34; &amp;#34;net/http&amp;#34; ) func main() { http.HandleFunc(&amp;#34;/&amp;#34;, func(w http.ResponseWriter, r *http.Request) { w.Write([]byte(&amp;#34;hello world&amp;#34;)) }) http.Handle(&amp;#34;/metrics&amp;#34;,promhttp.Handler()) http.ListenAndServe(&amp;#34;:9095&amp;#34;,nil) }   虽然偶尔会手动访问/metrics页面查看指标数据，但是将指标数据导入prometheus才方便。
 1 2 3 4 5 6 7 8 9 10  global:scrape_interval:15s# 默认抓取间隔，15s向目标抓取一次数据external_labels:monitor:&amp;#39;prometheus-monitor&amp;#39;# 抓取对象scrape_configs:- job_name:&amp;#39;exporter&amp;#39;# 名称，会在每一条metrics添加标签{job_name:&amp;#34;prometheus&amp;#34;}scrape_interval:5s# 抓取时间static_configs:# 抓取对象- targets:[&amp;#39;localhost:9095&amp;#39;]  那么在 http://localhost:9090/ 浏览器输入 PromQL 表达式 go_info,就会看到如图的结果 监控指标 Counter(计数器类型) Counter记录的是事件的数量或大小，只增不减，除非发生重置。</description>
-    </item>
-    
-    <item>
-      <title>5分钟学会搭建Prometheus</title>
-      <link>https://betterfor.github.io/2020/11/prometheus/</link>
-      <pubDate>Thu, 19 Nov 2020 18:03:03 +0800</pubDate>
-      
-      <guid>https://betterfor.github.io/2020/11/prometheus/</guid>
-      <description>简介 prometheus是一个开源的系统监控和警报工具包，最初由SoundCloud开发。自2012年始，许多公司和组织已经采用了prometheus，该项目拥有活跃的开发人员和用户社区。 它现在是一个独立的开源项目，独立于任何公司进行维护。着重于此，prometheus在2016年加入CNCF，是继kubernetes之后第二个托管的项目。
-官网地址： Prometheus
-github地址： github
-架构图
-下载与安装 安装方式有很多种，如果你是windows用户，那么只需要在本地起个二进制服务就可以。如果你是linux用户，可以通过docker等更加灵活方式部署。
-二进制 二进制下载地址
-1 2 3  tar xvfz prometheus-*.tar.gz cd prometheus-* ./prometheus --config.file=prometheus.yml   当然你可以下载最新的源码进行编译获取最新的二进制文件。
-1 2 3 4 5 6  mkdir -p $GOPATH/src/github.com/prometheus cd $GOPATH/src/github.com/prometheus git clone https://github.com/prometheus/prometheus.git cd prometheus make build ./prometheus -config.file=your_config.yml   docker 1 2  # 使用 /opt/prometheus/prometheus.yml 的配置 docker run --name prometheus -d -p 127.0.0.1:9090:9090 -v /opt/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus   helm 1 2 3 4 5 6 7 8 9 10  helm repo add prometheus-community https://prometheus-community.</description>
     </item>
     
   </channel>
