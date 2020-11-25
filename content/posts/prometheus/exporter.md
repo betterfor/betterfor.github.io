@@ -12,13 +12,13 @@ autoCollapseToc: false
 
 ## 前言
 
-在开始监控你的服务之前，你需要通过添加prometheus客户端来添加检测。
+在开始监控你的服务之前，你需要通过添加prometheus客户端来添加监控。
 可以找 [第三方exporter](https://prometheus.io/docs/instrumenting/exporters/) 监控你的服务，也可以自己编写exporter。
 
 目前已经有很多不同的语言编写的客户端库，包括官方提供的Go，Java，Python，Ruby。
-[已有客户端库](<https://prometheus.io/docs/instrumenting/clientlibs/>)
+[已有客户端库](https://prometheus.io/docs/instrumenting/clientlibs/)
 
-在了解编写exporter之前，可以先[5分钟学会搭建prometheus](<https://betterfor.github.io/2020/11/prometheus/>)
+在了解编写exporter之前，可以先[5分钟学会搭建prometheus](https://betterfor.github.io/2020/11/prometheus/)
 
 ## 简单的exporter服务
 
@@ -41,7 +41,7 @@ func main() {
 }
 ```
 
-![metrics](https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-23/9095metrics.png)
+![metrics](https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-24/9095metrics2.png)
 
 虽然偶尔会手动访问/metrics页面查看指标数据，但是将指标数据导入prometheus才方便。
 ```yaml
@@ -78,7 +78,8 @@ package main
 
 import (
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+    "github.com/prometheus/client_golang/prometheus/promhttp"
 	"net/http"
 	"time"
 )
@@ -88,6 +89,11 @@ var (
 		Name: "hq_failture_total",
 		Help: "failure counts",
 	},[]string{"device"})
+    // 可以使用promauto自动注册
+    success = promauto.NewCounterVec(prometheus.CounterOpts{
+    	Name: "hq_failture_total",
+    	Help: "failure counts",
+    },[]string{"device"})
 )
 
 func init() {
