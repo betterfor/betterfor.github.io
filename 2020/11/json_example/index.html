@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>如何自定义让json解析出自定义值 | 风落云起</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noodp" />
+<meta name="Description" content="LoveIt Theme Demo">
+<link rel="prev" href="https://betterfor.github.io/2020/11/exporter/" />
+<link rel="next" href="https://betterfor.github.io/2020/11/catelog/" />
+<link rel="canonical" href="https://betterfor.github.io/2020/11/json_example/" />
+<link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="如何自定义让json解析出自定义值"/>
+<meta name="twitter:description" content="简介 先来看一下 json.Unmarshal 的注释
+大意是 json 解析的时候会调用 Unmarshaler 的接口。那么我们就可以自定义解析数据了。
+先看一个例子
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38  package main import ( &#34;encoding/json&#34; &#34;fmt&#34; &#34;time&#34; ) const textJson = `{&#34;name&#34;:&#34;xiaoming&#34;,&#34;duration&#34;:&#34;5s&#34;}` func main() { var o Object json.Unmarshal([]byte(textJson),&amp;o) fmt.Printf(&#34;%&#43;v\n&#34;,o) } type Object struct { Name string Time time."/>
+<script type="application/ld+json">
+    {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "如何自定义让json解析出自定义值",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https:\/\/betterfor.github.io\/2020\/11\/json_example\/"
+    },
+    
+        "image": {
+            "@type": "ImageObject",
+            "url": "https:\/\/betterfor.github.io\/cover.png",
+            "width":  800 ,
+            "height":  600 
+        },
+    
+    "genre": "posts",
+    
+        "keywords": "json, develop",
+    
+    "wordcount":  678 ,
+    "url": "https:\/\/betterfor.github.io\/2020\/11\/json_example\/",
+    
+        "datePublished": "2020-11-25T09:54:07\u002b08:00",
+    
+    
+        "dateModified": "2020-11-25T15:19:14\u002b08:00",
+    
+    
+        "license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.",
+    
+    
+        "publisher": {
+            "@type": "Organization",
+            "name": "XXXX",
+            "logo": {
+            "@type": "ImageObject",
+            "url": "https:\/\/betterfor.github.io\/logo.png",
+            "width":  127 ,
+            "height":  40 
+            }
+        },
+    
+    
+    "description": ""
+    }
+    </script>
+<link rel="stylesheet" href="/css/style.min.css">
+<link rel="stylesheet" href="/css/lib/fontawesome-free/all.min.min.css">
+
+<link rel="stylesheet" href="/css/lib/animate/animate.min.min.css">
+
+    </head>
+    <body>
+        <script>
+            window.isDark = (window.localStorage && window.localStorage.getItem('theme')) === 'dark';
+            window.isDark && document.body.classList.add('dark-theme');
+        </script>
+        <div class="wrapper">
+            <nav class="navbar">
+    <div class="navbar-container">
+        <div class="navbar-header">
+            <a href="https://betterfor.github.io/">风落云起</a>
+        </div>
+        <div class="navbar-menu">
+            
+            
+                <a class="menu-item" href="https://betterfor.github.io/posts/" title="">文章</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/tags/" title="">标签</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/categories/" title="">种类</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/about/" title="">关于</a>
+            
+            <a href="javascript:void(0);" class="theme-switch"><i class="fas fa-adjust fa-rotate-180 fa-fw"></i></a>
+        </div>
+    </div>
+</nav>
+<nav class="navbar-mobile">
+     <div class="navbar-container">
+        <div class="navbar-header">
+            <div><a href="javascript:void(0);" class="theme-switch"><i class="fas fa-adjust fa-rotate-180 fa-fw"></i></a><a href="https://betterfor.github.io/">风落云起</a></div>
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="navbar-menu" id="mobile-menu">
+            
+            
+                <a class="menu-item" href="https://betterfor.github.io/posts/" title="">文章</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/tags/" title="">标签</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/categories/" title="">种类</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/about/" title="">关于</a>
+            
+        </div>
+    </div>
+</nav><main class="main">
+                <div class="container">
+                    
+    
+    
+    
+
+    <article class="post-warp">
+        <h1 class="post-title animated flipInX">如何自定义让json解析出自定义值</h1>
+
+        <div class="post-meta">
+            <div class="post-meta-main">
+                <a class="author" href="https://betterfor.github.io/" rel="author"><i class="fas fa-user-circle fa-fw"></i>betterfor&nbsp;</a>
+                <span class="post-category">
+                        收录于
+                        <i class="far fa-folder fa-fw"></i><a href="https://betterfor.github.io/categories/golang/">golang</a>
+                            
+                    </span>
+            </div>
+            <div class="post-meta-other">
+                <i class="far fa-calendar-alt fa-fw"></i><time datetime=2020-11-25>2020-11-25</time>&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>约 678 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>预计阅读 4 分钟&nbsp;</div>
+        </div>
+
+        
+
+        <div class="post-toc" id="post-toc">
+                <h2 class="post-toc-title">目录</h2>
+                <div class="post-toc-content always-active">
+                    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#简介">简介</a></li>
+  </ul>
+</nav>
+                </div>
+            </div>
+            <div class="post-toc-mobile" id="post-toc-mobile">
+                <details>
+                    <summary><div class="post-toc-title"><span>目录</span><span><i class="details icon fas fa-angle-down"></i></span></div></summary>
+                    <div class="post-toc-content">
+                        
+                        
+                        <nav id="TableOfContentsMobile">
+  <ul>
+    <li><a href="#简介">简介</a></li>
+  </ul>
+</nav>
+                    </div>
+                </details>
+            </div>
+
+        <div class="post-content">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <a class="post-dummy-target" id="简介"></a><h2>简介</h2>
+<p>先来看一下 json.Unmarshal 的注释</p>
+<p><img src="https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-25/json_annotation.png" alt=""></p>
+<p>大意是 json 解析的时候会调用 Unmarshaler 的接口。那么我们就可以自定义解析数据了。</p>
+<p>先看一个例子</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+   <span class="s">&#34;encoding/json&#34;</span>
+   <span class="s">&#34;fmt&#34;</span>
+   <span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">const</span> <span class="nx">textJson</span> <span class="p">=</span> <span class="s">`{&#34;name&#34;:&#34;xiaoming&#34;,&#34;duration&#34;:&#34;5s&#34;}`</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+   <span class="kd">var</span> <span class="nx">o</span> <span class="nx">Object</span>
+   <span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">textJson</span><span class="p">),</span><span class="o">&amp;</span><span class="nx">o</span><span class="p">)</span>
+   <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%+v\n&#34;</span><span class="p">,</span><span class="nx">o</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">Object</span> <span class="kd">struct</span> <span class="p">{</span>
+   <span class="nx">Name</span> <span class="kt">string</span>
+   <span class="nx">Time</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">o</span> <span class="o">*</span><span class="nx">Object</span><span class="p">)</span> <span class="nf">UnmarshalJSON</span><span class="p">(</span><span class="nx">data</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+   <span class="nx">tmp</span> <span class="o">:=</span> <span class="kd">struct</span> <span class="p">{</span>
+      <span class="nx">Name</span>   <span class="kt">string</span> <span class="s">`json:&#34;name&#34;`</span>
+      <span class="nx">Duration</span> <span class="kt">string</span>    <span class="s">`json:&#34;duration&#34;`</span>
+   <span class="p">}{}</span>
+   <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span><span class="o">&amp;</span><span class="nx">tmp</span><span class="p">)</span>
+   <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">err</span>
+   <span class="p">}</span>
+   <span class="nx">dur</span><span class="p">,</span><span class="nx">err</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">ParseDuration</span><span class="p">(</span><span class="nx">tmp</span><span class="p">.</span><span class="nx">Duration</span><span class="p">)</span>
+   <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">err</span>
+   <span class="p">}</span>
+   <span class="nx">o</span><span class="p">.</span><span class="nx">Name</span> <span class="p">=</span> <span class="nx">tmp</span><span class="p">.</span><span class="nx">Name</span>
+   <span class="nx">o</span><span class="p">.</span><span class="nx">Time</span> <span class="p">=</span> <span class="nx">dur</span>
+   <span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>你可能觉得打印的数据和textJson没什么区别。
+但是实际上打印的o.Time是个时间类型的数据了，从string转到time.Duration类型，这个可以很轻松的转换。</p>
+<p><em>但是这里还会有一个坑</em>，来看另一个例子</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;encoding/json&#34;</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">testJSON</span> <span class="p">=</span> <span class="s">`{&#34;num&#34;:5,&#34;duration&#34;:&#34;5s&#34;}`</span>
+
+<span class="kd">type</span> <span class="nx">Nested</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">Dur</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span> <span class="s">`json:&#34;duration&#34;`</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">n</span> <span class="o">*</span><span class="nx">Nested</span><span class="p">)</span> <span class="nf">UnmarshalJSON</span><span class="p">(</span><span class="nx">data</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="o">*</span><span class="nx">n</span> <span class="p">=</span> <span class="nx">Nested</span><span class="p">{}</span>
+	<span class="nx">tmp</span> <span class="o">:=</span> <span class="kd">struct</span> <span class="p">{</span>
+		<span class="nx">Dur</span> <span class="kt">string</span> <span class="s">`json:&#34;duration&#34;`</span>
+	<span class="p">}{}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;parsing nested json %s \n&#34;</span><span class="p">,</span> <span class="nb">string</span><span class="p">(</span><span class="nx">data</span><span class="p">))</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">tmp</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;failed to parse nested: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+		<span class="k">return</span> <span class="nx">err</span>
+	<span class="p">}</span>
+	<span class="nx">tmpDur</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">ParseDuration</span><span class="p">(</span><span class="nx">tmp</span><span class="p">.</span><span class="nx">Dur</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;failed to parse duration: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+		<span class="k">return</span> <span class="nx">err</span>
+	<span class="p">}</span>
+	<span class="p">(</span><span class="o">*</span><span class="nx">n</span><span class="p">).</span><span class="nx">Dur</span> <span class="p">=</span> <span class="nx">tmpDur</span>
+	<span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">Object</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">Nested</span>
+	<span class="nx">Num</span> <span class="kt">int</span> <span class="s">`json:&#34;num&#34;`</span>
+<span class="p">}</span>
+
+<span class="c1">//uncommenting this method still doesnt help.
+</span><span class="c1">//tmp is parsed with the completed json at Nested
+</span><span class="c1">//which doesnt take care of Num field, so Num is zero value.
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">o</span> <span class="o">*</span><span class="nx">Object</span><span class="p">)</span> <span class="nf">UnmarshalJSON</span><span class="p">(</span><span class="nx">data</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="o">*</span><span class="nx">o</span> <span class="p">=</span> <span class="nx">Object</span><span class="p">{}</span>
+	<span class="nx">tmp</span> <span class="o">:=</span> <span class="kd">struct</span> <span class="p">{</span>
+		<span class="nx">Nested</span>
+		<span class="nx">Num</span> <span class="kt">int</span> <span class="s">`json:&#34;num&#34;`</span>
+	<span class="p">}{}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;parsing object json %s \n&#34;</span><span class="p">,</span> <span class="nb">string</span><span class="p">(</span><span class="nx">data</span><span class="p">))</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">tmp</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;failed to parse object: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+		<span class="k">return</span> <span class="nx">err</span>
+	<span class="p">}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;tmp object: %+v \n&#34;</span><span class="p">,</span> <span class="nx">tmp</span><span class="p">)</span>
+	<span class="p">(</span><span class="o">*</span><span class="nx">o</span><span class="p">).</span><span class="nx">Num</span> <span class="p">=</span> <span class="nx">tmp</span><span class="p">.</span><span class="nf">Num</span>
+	<span class="p">(</span><span class="o">*</span><span class="nx">o</span><span class="p">).</span><span class="nx">Nested</span> <span class="p">=</span> <span class="nx">tmp</span><span class="p">.</span><span class="nx">Nested</span>
+	<span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">obj</span> <span class="o">:=</span> <span class="nx">Object</span><span class="p">{}</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">testJSON</span><span class="p">),</span> <span class="o">&amp;</span><span class="nx">obj</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;failed to parse result: %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;result: %+v \n&#34;</span><span class="p">,</span> <span class="nx">obj</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>最终输出的结果是</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-text" data-lang="text">parsing object json {&#34;num&#34;:5,&#34;duration&#34;:&#34;5s&#34;} 
+parsing nested json {&#34;num&#34;:5,&#34;duration&#34;:&#34;5s&#34;} 
+tmp object: {Nested:{Dur:5s} Num:0} 
+result: {Nested:{Dur:5s} Num:0} 
+</code></pre></td></tr></table>
+</div>
+</div><p>这里你可能要疑问了，为什么数据丢失了，num从5变成了0？</p>
+<p>那么为什么会出现这种情况呢？</p>
+<p>用一个简单的例子说明一下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+
+<span class="kd">type</span> <span class="nx">Funer</span> <span class="kd">interface</span><span class="p">{</span>
+   <span class="nf">Name</span><span class="p">()</span><span class="kt">string</span>
+   <span class="nf">PrintName</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">A</span> <span class="kd">struct</span> <span class="p">{</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><span class="nx">A</span><span class="p">)</span> <span class="nf">Name</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
+   <span class="k">return</span> <span class="s">&#34;a&#34;</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><span class="nx">A</span><span class="p">)</span> <span class="nf">PrintName</span><span class="p">()</span> <span class="p">{</span>
+   <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nf">Name</span><span class="p">())</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">B</span> <span class="kd">struct</span> <span class="p">{</span>
+   <span class="nx">A</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">B</span><span class="p">)</span> <span class="nf">Name</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
+   <span class="k">return</span> <span class="s">&#34;b&#34;</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">getBer</span><span class="p">()</span> <span class="nx">Funer</span> <span class="p">{</span>
+   <span class="k">return</span> <span class="o">&amp;</span><span class="nx">B</span><span class="p">{}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+   <span class="nx">b</span> <span class="o">:=</span> <span class="nf">getBer</span><span class="p">()</span>
+   <span class="nx">b</span><span class="p">.</span><span class="nf">PrintName</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这是一个类似继承的实现，它最终会打印 a 。</p>
+<p>这是因为golang没有继承方法，它只会调用自己的指针的数据，如果是C/C++，它会实现多态，打印 b 。</p>
+<p>这样就会导致 json 数据的接口调用是从外部到内部的接口调用，谁的指针方法就实现谁的指针方法。</p>
+<p>那么上面那种情况证明解决呢？</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+   <span class="s">&#34;encoding/json&#34;</span>
+   <span class="s">&#34;fmt&#34;</span>
+   <span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">testJSON</span> <span class="p">=</span> <span class="s">`{&#34;num&#34;:5,&#34;duration&#34;:&#34;5s&#34;}`</span>
+
+<span class="kd">type</span> <span class="nx">Nested</span> <span class="kd">struct</span> <span class="p">{</span>
+   <span class="nx">Dur</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span> <span class="s">`json:&#34;duration&#34;`</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">obj</span> <span class="o">*</span><span class="nx">Object</span><span class="p">)</span> <span class="nf">UnmarshalJSON</span><span class="p">(</span><span class="nx">data</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+   <span class="nx">tmp</span> <span class="o">:=</span> <span class="kd">struct</span> <span class="p">{</span>
+      <span class="nx">Dur</span> <span class="kt">string</span> <span class="s">`json:&#34;duration&#34;`</span>
+      <span class="nx">Num</span> <span class="kt">int</span>    <span class="s">`json:&#34;num&#34;`</span>
+   <span class="p">}{}</span>
+   <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">tmp</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">err</span>
+   <span class="p">}</span>
+
+   <span class="nx">dur</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">ParseDuration</span><span class="p">(</span><span class="nx">tmp</span><span class="p">.</span><span class="nx">Dur</span><span class="p">)</span>
+   <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">err</span>
+   <span class="p">}</span>
+   <span class="nx">obj</span><span class="p">.</span><span class="nx">Dur</span> <span class="p">=</span> <span class="nx">dur</span>
+   <span class="nx">obj</span><span class="p">.</span><span class="nx">Num</span> <span class="p">=</span> <span class="nx">tmp</span><span class="p">.</span><span class="nx">Num</span>
+   <span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">Object</span> <span class="kd">struct</span> <span class="p">{</span>
+   <span class="nx">Nested</span>
+   <span class="nx">Num</span> <span class="kt">int</span> <span class="s">`json:&#34;num&#34;`</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">_</span> <span class="nx">json</span><span class="p">.</span><span class="nx">Unmarshaler</span> <span class="p">=</span> <span class="p">(</span><span class="o">*</span><span class="nx">Object</span><span class="p">)(</span><span class="kc">nil</span><span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+   <span class="nx">obj</span> <span class="o">:=</span> <span class="nx">Object</span><span class="p">{}</span>
+   <span class="nx">_</span> <span class="p">=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">testJSON</span><span class="p">),</span> <span class="o">&amp;</span><span class="nx">obj</span><span class="p">)</span>
+   <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;result: %+v \n&#34;</span><span class="p">,</span> <span class="nx">obj</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在内部不使用继承，通过的结构来解析数据就可以了。</p>
+
+        </div>
+
+        <div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>本文于 2020-11-25 更新</span>
+            </div>
+            <div class="post-info-license">
+                
+            </div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md">
+                
+                    
+                        <span><a class="link-to-markdown" href="https://betterfor.github.io/2020/11/json_example/index.md" target="_blank">阅读原始文档</a></span>
+                    
+                
+            </div>
+            <div class="post-info-share">
+                
+                    <span>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</span>
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section>
+            
+                
+                    <span class="tag">
+                        <a href="https://betterfor.github.io/tags/json/"><i class="fas fa-tag fa-fw"></i>json</a>
+                    </span>
+                
+                    <span class="tag">
+                        <a href="https://betterfor.github.io/tags/develop/"><i class="fas fa-tag fa-fw"></i>develop</a>
+                    </span>
+                
+            
+        </section>
+        <section>
+            <span><a href="javascript:window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="https://betterfor.github.io/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav">
+        
+            <a href="https://betterfor.github.io/2020/11/exporter/" class="prev" rel="prev" title="Golang exporter的使用方法"><i class="fas fa-angle-left fa-fw"></i>Golang exporter的使用方法</a>
+        
+        
+            <a href="https://betterfor.github.io/2020/11/catelog/" class="next" rel="next" title="golang源码解析目录">golang源码解析目录<i class="fas fa-angle-right fa-fw"></i></a>
+        
+    </div>
+</div>
+
+        <div class="post-comment">
+            
+            
+
+            
+        </div>
+    </article></div>
+            </main>
+            <footer class="footer">
+    <div class="copyright">
+        <div class="copyright-line">
+            由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreffer">Hugo</a> 强力驱动&nbsp;|&nbsp;主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="external nofollow noopener noreffer">LoveIt<i class="far fa-heart fa-fw"></i></a>
+        </div>
+        <div class="copyright-line">
+            <i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://betterfor.github.io/">betterfor</a></span><span class="license">&nbsp;|&nbsp;<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+    </div>
+</footer>
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+<script src="/js/lib/jquery/jquery.slim.min.min.js"></script>
+<script src="/js/lib/lazysizes/lazysizes.min.min.js"></script>
+<script src="/js/lib/smooth-scroll/smooth-scroll.polyfills.min.min.js"></script><script>window.scroll = new SmoothScroll('[data-scroll]', {speed: 300, speedAsDuration: true});</script>
+
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+
+
+<script src="/js/blog.min.js"></script>
+
+
+    
+</div>
+        <a href="#" class="dynamic-to-top" id="dynamic-to-top" data-scroll><span>&nbsp;</span></a>
+    </body>
+</html>

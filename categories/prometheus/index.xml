@@ -14,7 +14,7 @@
       <pubDate>Fri, 20 Nov 2020 15:45:29 +0800</pubDate>
       
       <guid>https://betterfor.github.io/2020/11/exporter/</guid>
-      <description>前言 在开始监控你的服务之前，你需要通过添加prometheus客户端来添加检测。 可以找 第三方exporter 监控你的服务，也可以自己编写exporter。
+      <description>前言 在开始监控你的服务之前，你需要通过添加prometheus客户端来添加监控。 可以找 第三方exporter 监控你的服务，也可以自己编写exporter。
 目前已经有很多不同的语言编写的客户端库，包括官方提供的Go，Java，Python，Ruby。 已有客户端库
 在了解编写exporter之前，可以先5分钟学会搭建prometheus
 简单的exporter服务 先写一个简单的http服务，在9095端口启动了一个能够为prometheus提供监控指标的HTTP服务。你可以在 http://localhost:9095/metrics 看到这些指标。

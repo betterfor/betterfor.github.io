@@ -7,6 +7,7 @@
 <meta name="robots" content="noodp" />
 <meta name="Description" content="LoveIt Theme Demo">
 <link rel="prev" href="https://betterfor.github.io/2020/11/prometheus/" />
+<link rel="next" href="https://betterfor.github.io/2020/11/json_example/" />
 <link rel="canonical" href="https://betterfor.github.io/2020/11/exporter/" />
 <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -18,7 +19,7 @@
 <meta name="theme-color" content="#ffffff">
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Golang exporter的使用方法"/>
-<meta name="twitter:description" content="前言 在开始监控你的服务之前，你需要通过添加prometheus客户端来添加检测。 可以找 第三方exporter 监控你的服务，也可以自己编写exporter。
+<meta name="twitter:description" content="前言 在开始监控你的服务之前，你需要通过添加prometheus客户端来添加监控。 可以找 第三方exporter 监控你的服务，也可以自己编写exporter。
 目前已经有很多不同的语言编写的客户端库，包括官方提供的Go，Java，Python，Ruby。 已有客户端库
 在了解编写exporter之前，可以先5分钟学会搭建prometheus
 简单的exporter服务 先写一个简单的http服务，在9095端口启动了一个能够为prometheus提供监控指标的HTTP服务。你可以在 http://localhost:9095/metrics 看到这些指标。
@@ -45,13 +46,13 @@
     
         "keywords": "golang",
     
-    "wordcount":  537 ,
+    "wordcount":  555 ,
     "url": "https:\/\/betterfor.github.io\/2020\/11\/exporter\/",
     
         "datePublished": "2020-11-20T15:45:29\u002b08:00",
     
     
-        "dateModified": "2020-11-24T14:01:39\u002b08:00",
+        "dateModified": "2020-11-25T15:19:14\u002b08:00",
     
     
         "license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.",
@@ -146,7 +147,7 @@
             </div>
             <div class="post-meta-other">
                 <i class="far fa-calendar-alt fa-fw"></i><time datetime=2020-11-20>2020-11-20</time>&nbsp;
-                <i class="fas fa-pencil-alt fa-fw"></i>约 537 字&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>约 555 字&nbsp;
                 <i class="far fa-clock fa-fw"></i>预计阅读 3 分钟&nbsp;</div>
         </div>
 
@@ -224,7 +225,7 @@
             
             
             <a class="post-dummy-target" id="前言"></a><h2>前言</h2>
-<p>在开始监控你的服务之前，你需要通过添加prometheus客户端来添加检测。
+<p>在开始监控你的服务之前，你需要通过添加prometheus客户端来添加监控。
 可以找 <a href="https://prometheus.io/docs/instrumenting/exporters/">第三方exporter</a> 监控你的服务，也可以自己编写exporter。</p>
 <p>目前已经有很多不同的语言编写的客户端库，包括官方提供的Go，Java，Python，Ruby。
 <a href="https://prometheus.io/docs/instrumenting/clientlibs/">已有客户端库</a></p>
@@ -265,7 +266,7 @@
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><img src="https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-23/9095metrics.png" alt="metrics"></p>
+</div><p><img src="https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-24/9095metrics2.png" alt="metrics"></p>
 <p>虽然偶尔会手动访问/metrics页面查看指标数据，但是将指标数据导入prometheus才方便。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -352,13 +353,20 @@ Add(float64)
 </span><span class="lnt">35
 </span><span class="lnt">36
 </span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
 
 <span class="kn">import</span> <span class="p">(</span>
 	<span class="s">&#34;github.com/prometheus/client_golang/prometheus&#34;</span>
-	<span class="s">&#34;github.com/prometheus/client_golang/prometheus/promhttp&#34;</span>
+	<span class="s">&#34;github.com/prometheus/client_golang/prometheus/promauto&#34;</span>
+    <span class="s">&#34;github.com/prometheus/client_golang/prometheus/promhttp&#34;</span>
 	<span class="s">&#34;net/http&#34;</span>
 	<span class="s">&#34;time&#34;</span>
 <span class="p">)</span>
@@ -368,6 +376,11 @@ Add(float64)
 		<span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;hq_failture_total&#34;</span><span class="p">,</span>
 		<span class="nx">Help</span><span class="p">:</span> <span class="s">&#34;failure counts&#34;</span><span class="p">,</span>
 	<span class="p">},[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;device&#34;</span><span class="p">})</span>
+    <span class="c1">// 可以使用promauto自动注册
+</span><span class="c1"></span>    <span class="nx">success</span> <span class="p">=</span> <span class="nx">promauto</span><span class="p">.</span><span class="nf">NewCounterVec</span><span class="p">(</span><span class="nx">prometheus</span><span class="p">.</span><span class="nx">CounterOpts</span><span class="p">{</span>
+    	<span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;hq_failture_total&#34;</span><span class="p">,</span>
+    	<span class="nx">Help</span><span class="p">:</span> <span class="s">&#34;failure counts&#34;</span><span class="p">,</span>
+    <span class="p">},[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;device&#34;</span><span class="p">})</span>
 <span class="p">)</span>
 
 <span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
@@ -729,7 +742,7 @@ histogram_quantile(0.95,rate(hq_failture_total_bucket[1m]))</p>
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>本文于 2020-11-24 更新</span>
+                <span>本文于 2020-11-25 更新</span>
             </div>
             <div class="post-info-license">
                 
@@ -781,6 +794,8 @@ histogram_quantile(0.95,rate(hq_failture_total_bucket[1m]))</p>
         
             <a href="https://betterfor.github.io/2020/11/prometheus/" class="prev" rel="prev" title="5分钟学会搭建Prometheus"><i class="fas fa-angle-left fa-fw"></i>5分钟学会搭建Prometheus</a>
         
+        
+            <a href="https://betterfor.github.io/2020/11/json_example/" class="next" rel="next" title="如何自定义让json解析出自定义值">如何自定义让json解析出自定义值<i class="fas fa-angle-right fa-fw"></i></a>
         
     </div>
 </div>
