@@ -15,3 +15,5 @@ autoCollapseToc: false
 我打算从头开始，了解源码的实现
 
 // todo updated
+
+[前言](./prestudy.md)
