@@ -7,7 +7,27 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Wed, 25 Nov 2020 09:54:07 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/develop/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 25 Nov 2020 15:25:38 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/develop/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>golang源码剖析 准备</title>
+      <link>https://betterfor.github.io/2020/11/prestudy/</link>
+      <pubDate>Wed, 25 Nov 2020 15:25:38 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/2020/11/prestudy/</guid>
+      <description>语言版本 golang 1.15.5
+初学golang 1、go语言之旅
+2、搭建开发环境
+3、有人喜欢看文档，有人喜欢看视频，各凭喜好，找到自己适合的方式了解语法
+4、看一本教程
+5、过一遍标准库
+6、上手一个项目
+这些方法步骤学习资料在其他地方已经有很多了，这里就不赘述了。
+参考资料 官方标准库
+官方标准库中文版
+Go语言标准库 (不全)
+gopkg (部分)</description>
+    </item>
+    
     <item>
       <title>如何自定义让json解析出自定义值</title>
       <link>https://betterfor.github.io/2020/11/json_example/</link>
