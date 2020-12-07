@@ -9,7 +9,7 @@
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
     <lastBuildDate>Sun, 06 Dec 2020 15:19:21 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>链表</title>
+      <title>常见的数据结构--链表</title>
       <link>https://betterfor.github.io/2020/12/list/</link>
       <pubDate>Sun, 06 Dec 2020 15:19:21 +0800</pubDate>
       
@@ -30,9 +30,9 @@
 初学golang 1、go语言之旅
 2、搭建开发环境
 3、有人喜欢看文档，有人喜欢看视频，各凭喜好，找到自己适合的方式了解语法
-4、看一本教程
-5、过一遍标准库
-6、上手一个项目
+4、看一本教程书
+5、熟悉与了解标准库
+6、实际操作一个项目
 这些方法步骤学习资料在其他地方已经有很多了，这里就不赘述了。
 参考资料 官方标准库
 官方标准库中文版
@@ -49,7 +49,8 @@ gopkg (部分)</description>
       <description>学习完golang，上手过几个项目，了解过框架，工具等，怎么提高自己？
 我打算从头开始，了解源码的实现
 // todo updated
-前言</description>
+前言
+[]</description>
     </item>
     
     <item>

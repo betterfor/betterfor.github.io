@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>golang on 风落云起</title>
-    <link>https://betterfor.github.io/tags/golang/</link>
-    <description>Recent content in golang on 风落云起</description>
+    <title>application on 风落云起</title>
+    <link>https://betterfor.github.io/categories/application/</link>
+    <description>Recent content in application on 风落云起</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Fri, 20 Nov 2020 15:45:29 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 20 Nov 2020 15:45:29 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/categories/application/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Golang exporter的使用方法</title>
       <link>https://betterfor.github.io/2020/11/exporter/</link>
