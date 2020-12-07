@@ -3,8 +3,8 @@ title: "Golang exporter的使用方法"
 date: 2020-11-20T15:45:29+08:00
 draft: false
 
-tags: ['golang']
-categories: ['prometheus']
+tags: ['prometheus']
+categories: ['application']
 comment: true
 toc: true
 autoCollapseToc: false

@@ -3,8 +3,8 @@ title: "如何使用Github Action来部署博客"
 date: 2020-11-20T20:17:48+08:00
 draft: true
 
-tags: ['tool']
-categories: ['blog']
+tags: ['github']
+categories: ['other']
 comment: true
 toc: true
 autoCollapseToc: false

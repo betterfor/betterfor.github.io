@@ -3,8 +3,8 @@ title: "5分钟学会搭建Prometheus"
 date: 2020-11-19T18:03:03+08:00
 draft: false
 
-tags: ['prometheus','golang']
-categories: ['golang']
+tags: ['prometheus']
+categories: ['application']
 comment: true
 toc: true
 autoCollapseToc: false

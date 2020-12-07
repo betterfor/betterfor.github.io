@@ -3,8 +3,8 @@ title: "Grafana"
 date: 2020-11-20T10:26:46+08:00
 draft: true
 
-tags: ['linux','grafana']
-categories: ['golang']
+tags: ['grafana']
+categories: ['application']
 comment: true
 toc: true
 autoCollapseToc: true
