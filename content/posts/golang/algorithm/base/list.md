@@ -12,8 +12,6 @@ autoCollapseToc: false
 
 提到数据结构，第一个就是链表。通过一组任意的存储单元来存储线性表中的数据元素。
 
-
-
 # 链表
 
 链表：**线性表的链式存储**
@@ -51,15 +49,12 @@ func main() {
 		fmt.Println(newNode.data)
 		newNode = newNode.next
 	}
+    // Output：
+    // 1
+    // 2
+    // 3
+
 }
-```
-
-打印出
-
-```
-1
-2
-3
 ```
 
 结构体 `LinkNode` 有两个字段，一个是存放数据的`data`，另一个是指向下一个节点`next`。这种从一个节点指向下一个节点的结构，都称为链表。
