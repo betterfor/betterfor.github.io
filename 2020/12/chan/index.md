@@ -1,4 +1,4 @@
-# Chan
+# 常见的数据结构--chan
 
 
 介绍一下Golang channel的内部实现，包括channel的数据结构及相关操作的代码实现。

@@ -9,7 +9,7 @@
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
     <lastBuildDate>Wed, 09 Dec 2020 10:25:54 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Chan</title>
+      <title>常见的数据结构--chan</title>
       <link>https://betterfor.github.io/2020/12/chan/</link>
       <pubDate>Wed, 09 Dec 2020 10:25:54 +0800</pubDate>
       
@@ -26,6 +26,18 @@
       <guid>https://betterfor.github.io/2020/12/map/</guid>
       <description>很多的业务场景都会用到map，在其他语言可能成为set/集合等，主要就是key:value格式。
 1 2 3 4 5 6 7 8 9 10 11 12 13  // A map is just a hash table. The data is arranged // into an array of buckets. Each bucket contains up to // 8 key/elem pairs. The low-order bits of the hash are // used to select a bucket. Each bucket contains a few // high-order bits of each hash to distinguish the entries // within a single bucket.</description>
+    </item>
+    
+    <item>
+      <title>常见的数据结构--切片</title>
+      <link>https://betterfor.github.io/2020/12/slice/</link>
+      <pubDate>Mon, 07 Dec 2020 09:18:56 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/2020/12/slice/</guid>
+      <description>在使用过程中，我们经常会用到数组这一数据结构，而在golang中，提供了数组和切片两种，数组是固定长度的且长度为定值，而切片是可以扩张的数组。
+本章内容参考 runtime/slice.go
+内部数据结构 1 2 3 4 5  type slice struct { array unsafe.Pointer// 数据  len int // 长度  cap int // 容量 }   我们可以通过下面的代码输出slice：
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31  package main import ( &amp;#34;fmt&amp;#34; &amp;#34;unsafe&amp;#34; ) func main() { data := make([]int,0,3) fmt.</description>
     </item>
     
     <item>
