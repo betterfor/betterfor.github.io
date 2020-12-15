@@ -1,7 +1,7 @@
 ---
 title: "6道有趣的智力题"
 date: 2020-12-15T20:28:08+08:00
-draft: true
+draft: false
 
 tags: ['智力']
 categories: ['logic']
