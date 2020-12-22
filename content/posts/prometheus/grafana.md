@@ -4,7 +4,7 @@ date: 2020-11-20T10:26:46+08:00
 draft: true
 
 tags: ['grafana']
-categories: ['application']
+categories: ['golang']
 comment: true
 toc: true
 autoCollapseToc: true

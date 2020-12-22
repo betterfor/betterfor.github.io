@@ -4,7 +4,7 @@ date: 2020-11-19T18:03:03+08:00
 draft: false
 
 tags: ['prometheus']
-categories: ['application']
+categories: ['golang']
 comment: true
 toc: true
 autoCollapseToc: false
