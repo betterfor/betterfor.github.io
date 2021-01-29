@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>中等 on 风落云起</title>
+    <link>https://betterfor.github.io/tags/%E4%B8%AD%E7%AD%89/</link>
+    <description>Recent content in 中等 on 风落云起</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Thu, 28 Jan 2021 16:17:54 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/%E4%B8%AD%E7%AD%89/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>LEETCODE 002. </title>
+      <link>https://betterfor.github.io/2021/01/002/</link>
+      <pubDate>Thu, 28 Jan 2021 16:17:54 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/2021/01/002/</guid>
+      <description>众所周知啊，链表题是题库一个比较大的分类。那么今天我们开始解决第一道链表题。
+那么什么是链表呢？
+1 2 3 4  type ListNode struct { Val int Next *ListNode }   我们通常把这种结构成为链表。
+那么链表有什么样的特点呢？
+ 顺序存储结构 插入和删除只能修改指针，不能随机存取   那么来看看今天的题~
+给出两个 非空 的链表用来表示两个非负的整数。 其中，它们各自的位数是按照 逆序 的方式存储的，并且它们的每个节点只能存储 一位 数字。
+如果，我们将这两个数相加起来，则会返回一个新的链表来表示它们的和。
+可能看到这里会感觉到云里雾里，来看看一个示例：
+这样一看是不是就很清晰明了了。
+也就是说我们只要按照链表的顺序相加，如果和大于10，需要进位，所以我们需要一个数 carry 来保存进位数。
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27  func addTwoNumbers(l1, l2 *ListNode) *ListNode { var head = new(ListNode) current := head var carry int for l1 !</description>
+    </item>
+    
+  </channel>
+</rss>

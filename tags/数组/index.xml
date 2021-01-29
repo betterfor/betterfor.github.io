@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>数组 on 风落云起</title>
+    <link>https://betterfor.github.io/tags/%E6%95%B0%E7%BB%84/</link>
+    <description>Recent content in 数组 on 风落云起</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Thu, 28 Jan 2021 14:25:18 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/%E6%95%B0%E7%BB%84/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>LEETCODE 001. 两数之和</title>
+      <link>https://betterfor.github.io/2021/01/001/</link>
+      <pubDate>Thu, 28 Jan 2021 14:25:18 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/2021/01/001/</guid>
+      <description>众所周知啊，leetcode有一道&amp;quot;神题&amp;quot;，有多神呢？来看一组数据
+超过百万的提交，通过率达到一半!!!
+那么这道题是哪一题呢？相信很多聪明的小伙伴已经猜出来了，就是第一题。
+俗话说，万事开头难，只要肯放弃，只要肯攀登。
+那么今天，我们就来看看这道题到底有多难。
+ 请看题
+给定一个整数数组nums和一个整数目标值target， 请你在该数组中找出和为目标值的那两个整数， 并返回它们的数组下标。
+咦~，看起来好像很简单，我们只要让每个数和他后面的数依次相加，比较target，就能得到结果。
+话不多说，立刻来手写代码
+1 2 3 4 5 6 7 8 9 10  func twoSum(nums []int,target int) []int { for i := 0; i &amp;lt; len(nums); i++ { for j := i+1; j &amp;lt; len(nums); j++ { if nums[i] + nums[j] == target { return []int{i,j} } } } return nil }   执行-&amp;gt;提交
+有问题~ 属实有问题~
+居然还有将近8%的用户超过了这方法， 这可是时间复杂度达到O(n^2^),空间复杂度达到O(1)的暴力法啊。
+那要怎么超过其他人呢？</description>
+    </item>
+    
+  </channel>
+</rss>
