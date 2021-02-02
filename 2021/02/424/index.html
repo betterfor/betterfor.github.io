@@ -3,12 +3,11 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>LEETCODE 002. 两数相加 | 风落云起</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LEETCODE 424. 替换后的最长重复字符 | 风落云起</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noodp" />
 <meta name="Description" content="算法题解">
-<link rel="prev" href="https://betterfor.github.io/2021/01/001/" />
-<link rel="next" href="https://betterfor.github.io/2021/02/888/" />
-<link rel="canonical" href="https://betterfor.github.io/2021/01/002/" />
+<link rel="prev" href="https://betterfor.github.io/2021/02/888/" />
+<link rel="canonical" href="https://betterfor.github.io/2021/02/424/" />
 <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -18,16 +17,16 @@
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#ffffff">
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="LEETCODE 002. 两数相加"/>
+<meta name="twitter:title" content="LEETCODE 424. 替换后的最长重复字符"/>
 <meta name="twitter:description" content="算法题解"/>
 <script type="application/ld+json">
     {
     "@context": "http://schema.org",
     "@type": "BlogPosting",
-    "headline": "LEETCODE 002. 两数相加",
+    "headline": "LEETCODE 424. 替换后的最长重复字符",
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https:\/\/betterfor.github.io\/2021\/01\/002\/"
+        "@id": "https:\/\/betterfor.github.io\/2021\/02\/424\/"
     },
     
         "image": {
@@ -39,12 +38,12 @@
     
     "genre": "posts",
     
-        "keywords": "中等, 链表",
+        "keywords": "中等, 双指针",
     
-    "wordcount":  168 ,
-    "url": "https:\/\/betterfor.github.io\/2021\/01\/002\/",
+    "wordcount":  141 ,
+    "url": "https:\/\/betterfor.github.io\/2021\/02\/424\/",
     
-        "datePublished": "2021-01-28T16:17:54\u002b08:00",
+        "datePublished": "2021-02-02T21:31:07\u002b08:00",
     
     
         "dateModified": "2021-02-02T22:26:18\u002b08:00",
@@ -129,7 +128,7 @@
     
 
     <article class="post-warp">
-        <h1 class="post-title animated flipInX">LEETCODE 002. 两数相加</h1>
+        <h1 class="post-title animated flipInX">LEETCODE 424. 替换后的最长重复字符</h1>
 
         <div class="post-meta">
             <div class="post-meta-main">
@@ -141,8 +140,8 @@
                     </span>
             </div>
             <div class="post-meta-other">
-                <i class="far fa-calendar-alt fa-fw"></i><time datetime=2021-01-28>2021-01-28</time>&nbsp;
-                <i class="fas fa-pencil-alt fa-fw"></i>约 168 字&nbsp;
+                <i class="far fa-calendar-alt fa-fw"></i><time datetime=2021-02-02>2021-02-02</time>&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>约 141 字&nbsp;
                 <i class="far fa-clock fa-fw"></i>预计阅读 1 分钟&nbsp;</div>
         </div>
 
@@ -151,7 +150,14 @@
         <div class="post-toc" id="post-toc">
                 <h2 class="post-toc-title">目录</h2>
                 <div class="post-toc-content always-active">
-                    <nav id="TableOfContents"></nav>
+                    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#题目">题目</a></li>
+    <li><a href="#示例">示例</a></li>
+    <li><a href="#题解">题解</a></li>
+    <li><a href="#复杂度分析">复杂度分析</a></li>
+  </ul>
+</nav>
                 </div>
             </div>
             <div class="post-toc-mobile" id="post-toc-mobile">
@@ -160,7 +166,14 @@
                     <div class="post-toc-content">
                         
                         
-                        <nav id="TableOfContentsMobile"></nav>
+                        <nav id="TableOfContentsMobile">
+  <ul>
+    <li><a href="#题目">题目</a></li>
+    <li><a href="#示例">示例</a></li>
+    <li><a href="#题解">题解</a></li>
+    <li><a href="#复杂度分析">复杂度分析</a></li>
+  </ul>
+</nav>
                     </div>
                 </details>
             </div>
@@ -191,38 +204,40 @@
             
             
             
-            <p>众所周知啊，链表题是题库一个比较大的分类。那么今天我们开始解决第一道链表题。</p>
-<p>那么什么是链表呢？</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">ListNode</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">Val</span>  <span class="kt">int</span>
-	<span class="nx">Next</span> <span class="o">*</span><span class="nx">ListNode</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>我们通常把这种结构成为链表。</p>
-<p>那么链表有什么样的特点呢？</p>
+            <p>大家好，我是沉迷于刷题的小耗。</p>
+<p>今天给大家带来的是力扣424题：<strong>替换后的最长重复字符</strong></p>
+<a class="post-dummy-target" id="题目"></a><h2>题目</h2>
+<p>给你一个仅由大写英文字母组成的字符串，你可以将任意位置上的字符替换成另外的字符，总共可最多替换 <em>k</em> 次。在执行上述操作后，找到包含重复字母的最长子串的长度。</p>
+<a class="post-dummy-target" id="示例"></a><h2>示例</h2>
+<p><strong>示例 1:</strong></p>
+<p><strong>输入:</strong>
+s =&ldquo;ABAB&rdquo;, k = 2</p>
+<p><strong>输出:</strong>
+4</p>
+<p><strong>解释:</strong>
+用两个&quot;A&quot;替换为两个&quot;B&quot;,反之亦然。</p>
+<p><strong>示例 2:</strong></p>
+<p><strong>输入:</strong>
+s =&ldquo;AABABBA&rdquo;, k = 1</p>
+<p><strong>输出:</strong>
+4</p>
+<p><strong>解释:</strong>
+将中间的一个&quot;A&quot;替换为&quot;B&quot;,字符串变为 &ldquo;AABBBBA&rdquo;。
+子串&quot;BBBB&quot;有最长重复字母, 答案为 4。</p>
+<a class="post-dummy-target" id="题解"></a><h2>题解</h2>
+<p>1、暴力法(不实现)</p>
+<p>思路：</p>
 <ul>
-<li>顺序存储结构</li>
-<li>插入和删除只能修改指针，不能随机存取</li>
+<li>如果子串中所有的字符都一样就延伸子串</li>
+<li>如果当前子串出现至少两种字符，就要替换使得所有的字符都一样，并且重复、连续的部分更长。</li>
 </ul>
-<hr>
-<p>那么来看看今天的题~</p>
-<p>给出两个 <strong>非空</strong> 的链表用来表示两个非负的整数。
-其中，它们各自的位数是按照 <strong>逆序</strong> 的方式存储的，并且它们的每个节点只能存储 <strong>一位</strong> 数字。</p>
-<p>如果，我们将这两个数相加起来，则会返回一个新的链表来表示它们的和。</p>
-<p>可能看到这里会感觉到云里雾里，来看看一个示例：</p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p>这样一看是不是就很清晰明了了。</p>
-<p>也就是说我们只要按照链表的顺序相加，如果和大于10，需要进位，所以我们需要一个数 <code>carry</code> 来保存进位数。</p>
+<p>暴力解法的时间复杂度O(n^3^)。</p>
+<p>缺点：</p>
+<p>做了很多重复的工作，子串和子串有很多重复的部分，重复扫描了很多次。</p>
+<p>2、优化方法</p>
+<p>优化字符串查找子串，我们能够想到两种方法，动态规划和滑动窗口。而本题动态规划没有得到明显的递推关系，所以是要用滑动窗口。</p>
+<p>所以题目的意思可以转化为</p>
+<p><em>枚举字符串中每个位置作为右端点，然后找到其最左端点的位置，满足该区间内除了出现次数最多的那一类字符外，剩余的字符数量不超过k个。</em></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -249,43 +264,38 @@
 </span><span class="lnt">22
 </span><span class="lnt">23
 </span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">addTwoNumbers</span><span class="p">(</span><span class="nx">l1</span><span class="p">,</span> <span class="nx">l2</span> <span class="o">*</span><span class="nx">ListNode</span><span class="p">)</span> <span class="o">*</span><span class="nx">ListNode</span> <span class="p">{</span>
-	<span class="kd">var</span> <span class="nx">head</span> <span class="p">=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">ListNode</span><span class="p">)</span>
-	<span class="nx">current</span> <span class="o">:=</span> <span class="nx">head</span>
-	<span class="kd">var</span> <span class="nx">carry</span> <span class="kt">int</span>
-	<span class="k">for</span> <span class="nx">l1</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="o">||</span> <span class="nx">l2</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="kd">var</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">int</span>
-		<span class="k">if</span> <span class="nx">l1</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-			<span class="nx">x</span> <span class="p">=</span> <span class="nx">l1</span><span class="p">.</span><span class="nx">Val</span>
-		<span class="p">}</span>
-		<span class="k">if</span> <span class="nx">l2</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-			<span class="nx">y</span> <span class="p">=</span> <span class="nx">l2</span><span class="p">.</span><span class="nx">Val</span>
-		<span class="p">}</span>
-		<span class="nx">current</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">ListNode</span><span class="p">{</span><span class="nx">Val</span><span class="p">:</span> <span class="p">(</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">carry</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span><span class="p">,</span> <span class="nx">Next</span><span class="p">:</span> <span class="kc">nil</span><span class="p">}</span>
-		<span class="nx">current</span> <span class="p">=</span> <span class="nx">current</span><span class="p">.</span><span class="nx">Next</span>
-		<span class="nx">carry</span> <span class="p">=</span> <span class="p">(</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span> <span class="o">+</span> <span class="nx">carry</span><span class="p">)</span> <span class="o">/</span> <span class="mi">10</span>
-		<span class="k">if</span> <span class="nx">l1</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-			<span class="nx">l1</span> <span class="p">=</span> <span class="nx">l1</span><span class="p">.</span><span class="nx">Next</span>
-		<span class="p">}</span>
-		<span class="k">if</span> <span class="nx">l2</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-			<span class="nx">l2</span> <span class="p">=</span> <span class="nx">l2</span><span class="p">.</span><span class="nx">Next</span>
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">characterReplacement</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">k</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">left</span><span class="p">,</span><span class="nx">maxCnt</span> <span class="kt">int</span>	<span class="c1">// maxCnt保存整个循环中，cnt出现的最大值
+</span><span class="c1"></span>    <span class="kd">var</span> <span class="nx">cnt</span> <span class="p">[</span><span class="mi">26</span><span class="p">]</span><span class="kt">int</span> <span class="c1">// cnt记录了s[left:right+1]中每个字母出现的次数
+</span><span class="c1"></span>    <span class="c1">// 在循环中，s[left:right+1]
+</span><span class="c1"></span>    <span class="c1">// 要么，maxCnt变大，向右移动一格
+</span><span class="c1"></span>    <span class="c1">// 要么，maxCnt不变，向右移动一格。
+</span><span class="c1"></span>	<span class="k">for</span> <span class="nx">right</span><span class="p">,</span> <span class="nx">str</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">s</span> <span class="p">{</span>
+		<span class="nx">cnt</span><span class="p">[</span><span class="nx">str</span><span class="o">-</span><span class="sc">&#39;A&#39;</span><span class="p">]</span><span class="o">++</span>
+		<span class="nx">maxCnt</span> <span class="p">=</span> <span class="nf">max</span><span class="p">(</span><span class="nx">maxCnt</span><span class="p">,</span><span class="nx">cnt</span><span class="p">[</span><span class="nx">str</span><span class="o">-</span><span class="sc">&#39;A&#39;</span><span class="p">])</span>
+        <span class="c1">// right-left+1-maxCnt==k的含义是在s[left:right+1]中有maxCnt个相同的字母和k个不相同的字母
+</span><span class="c1"></span>		<span class="k">if</span> <span class="nx">right</span> <span class="o">-</span> <span class="nx">left</span><span class="o">+</span><span class="mi">1</span><span class="o">-</span><span class="nx">maxCnt</span> <span class="p">&gt;</span> <span class="nx">k</span> <span class="p">{</span>
+			<span class="nx">cnt</span><span class="p">[</span><span class="nx">s</span><span class="p">[</span><span class="nx">left</span><span class="p">]</span><span class="o">-</span><span class="sc">&#39;A&#39;</span><span class="p">]</span><span class="o">--</span>
+			<span class="nx">left</span><span class="o">++</span>
 		<span class="p">}</span>
 	<span class="p">}</span>
-	<span class="k">if</span> <span class="nx">carry</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
-		<span class="nx">current</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">ListNode</span><span class="p">{</span><span class="nx">Val</span><span class="p">:</span> <span class="nx">carry</span> <span class="o">%</span> <span class="mi">10</span><span class="p">}</span>
+	<span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span><span class="o">-</span><span class="nx">left</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">max</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nx">a</span> <span class="p">&gt;</span> <span class="nx">b</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">a</span>
 	<span class="p">}</span>
-	<span class="k">return</span> <span class="nx">head</span><span class="p">.</span><span class="nx">Next</span>
+	<span class="k">return</span> <span class="nx">b</span>
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
-</div><p>可能有同学要问了，为什么不用current而用head呢？</p>
-<p>这是因为current跟随链表一直向后移动，已经到达最后了，而head是真的head，通过这种指针结构保存了首位地址。</p>
-<p><img src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/01/28/002-01.png" alt="002-01"></p>
+</div><a class="post-dummy-target" id="复杂度分析"></a><h2>复杂度分析</h2>
+<p>时间复杂度O(n)，n为字符串大小，我们最多遍历字符串一次</p>
+<p>空间复杂度O(∣Σ∣)，其中∣Σ∣是字符集大小，我们需要存储每个大写字母出现的次数</p>
+<p><img src="https://i.loli.net/2021/02/02/l2V3Eb1UxMuIHzK.jpg" alt="执行结果"></p>
 
         </div>
 
@@ -303,7 +313,7 @@
             <div class="post-info-md">
                 
                     
-                        <span><a class="link-to-markdown" href="https://betterfor.github.io/2021/01/002/index.md" target="_blank">阅读原始文档</a></span>
+                        <span><a class="link-to-markdown" href="https://betterfor.github.io/2021/02/424/index.md" target="_blank">阅读原始文档</a></span>
                     
                 
             </div>
@@ -335,7 +345,7 @@
                     </span>
                 
                     <span class="tag">
-                        <a href="https://betterfor.github.io/tags/%E9%93%BE%E8%A1%A8/"><i class="fas fa-tag fa-fw"></i>链表</a>
+                        <a href="https://betterfor.github.io/tags/%E5%8F%8C%E6%8C%87%E9%92%88/"><i class="fas fa-tag fa-fw"></i>双指针</a>
                     </span>
                 
             
@@ -347,10 +357,8 @@
 
     <div class="post-nav">
         
-            <a href="https://betterfor.github.io/2021/01/001/" class="prev" rel="prev" title="LEETCODE 001. 两数之和"><i class="fas fa-angle-left fa-fw"></i>LEETCODE 001. 两数之和</a>
+            <a href="https://betterfor.github.io/2021/02/888/" class="prev" rel="prev" title="LEETCODE 888. 公平的糖果交换"><i class="fas fa-angle-left fa-fw"></i>LEETCODE 888. 公平的糖果交换</a>
         
-        
-            <a href="https://betterfor.github.io/2021/02/888/" class="next" rel="next" title="LEETCODE 888. 公平的糖果交换">LEETCODE 888. 公平的糖果交换<i class="fas fa-angle-right fa-fw"></i></a>
         
     </div>
 </div>
