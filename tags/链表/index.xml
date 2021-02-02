@@ -16,7 +16,7 @@
       <guid>https://betterfor.github.io/2021/01/002/</guid>
       <description>众所周知啊，链表题是题库一个比较大的分类。那么今天我们开始解决第一道链表题。
 那么什么是链表呢？
-1 2 3 4  type ListNode struct { Val int Next *ListNode }   我们通常把这种结构成为链表。
+1 2 3 4  type ListNode struct { Val int Next *ListNode }   我们通常把这种结构称为链表。
 那么链表有什么样的特点呢？
  顺序存储结构 插入和删除只能修改指针，不能随机存取   那么来看看今天的题~
 给出两个 非空 的链表用来表示两个非负的整数。 其中，它们各自的位数是按照 逆序 的方式存储的，并且它们的每个节点只能存储 一位 数字。
