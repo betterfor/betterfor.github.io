@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>LEETCODE 004. 寻找两个正序数组的中位数 | 风落云起</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noodp" />
+<meta name="Description" content="算法题解">
+<link rel="prev" href="https://betterfor.github.io/2021/02/1208/" />
+<link rel="next" href="https://betterfor.github.io/2021/02/1423/" />
+<link rel="canonical" href="https://betterfor.github.io/2021/02/004/" />
+<link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="LEETCODE 004. 寻找两个正序数组的中位数"/>
+<meta name="twitter:description" content="算法题解"/>
+<script type="application/ld+json">
+    {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "LEETCODE 004. 寻找两个正序数组的中位数",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https:\/\/betterfor.github.io\/2021\/02\/004\/"
+    },
+    
+        "image": {
+            "@type": "ImageObject",
+            "url": "https:\/\/betterfor.github.io\/cover.png",
+            "width":  800 ,
+            "height":  600 
+        },
+    
+    "genre": "posts",
+    
+        "keywords": "困难, 数组",
+    
+    "wordcount":  760 ,
+    "url": "https:\/\/betterfor.github.io\/2021\/02\/004\/",
+    
+        "datePublished": "2021-02-05T20:05:03\u002b08:00",
+    
+    
+        "dateModified": "2021-02-06T22:53:28\u002b08:00",
+    
+    
+        "license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.",
+    
+    
+        "publisher": {
+            "@type": "Organization",
+            "name": "XXXX",
+            "logo": {
+            "@type": "ImageObject",
+            "url": "https:\/\/betterfor.github.io\/logo.png",
+            "width":  127 ,
+            "height":  40 
+            }
+        },
+    
+    
+    "description": "算法题解"
+    }
+    </script>
+<link rel="stylesheet" href="/css/style.min.css">
+<link rel="stylesheet" href="/css/lib/fontawesome-free/all.min.min.css">
+
+<link rel="stylesheet" href="/css/lib/animate/animate.min.min.css">
+
+    </head>
+    <body>
+        <script>
+            window.isDark = (window.localStorage && window.localStorage.getItem('theme')) === 'dark';
+            window.isDark && document.body.classList.add('dark-theme');
+        </script>
+        <div class="wrapper">
+            <nav class="navbar">
+    <div class="navbar-container">
+        <div class="navbar-header">
+            <a href="https://betterfor.github.io/">风落云起</a>
+        </div>
+        <div class="navbar-menu">
+            
+            
+                <a class="menu-item" href="https://betterfor.github.io/posts/" title="">文章</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/tags/" title="">标签</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/categories/" title="">种类</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/about/" title="">关于</a>
+            
+            <a href="javascript:void(0);" class="theme-switch"><i class="fas fa-adjust fa-rotate-180 fa-fw"></i></a>
+        </div>
+    </div>
+</nav>
+<nav class="navbar-mobile">
+     <div class="navbar-container">
+        <div class="navbar-header">
+            <div><a href="javascript:void(0);" class="theme-switch"><i class="fas fa-adjust fa-rotate-180 fa-fw"></i></a><a href="https://betterfor.github.io/">风落云起</a></div>
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="navbar-menu" id="mobile-menu">
+            
+            
+                <a class="menu-item" href="https://betterfor.github.io/posts/" title="">文章</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/tags/" title="">标签</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/categories/" title="">种类</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/about/" title="">关于</a>
+            
+        </div>
+    </div>
+</nav><main class="main">
+                <div class="container">
+                    
+    
+    
+    
+
+    <article class="post-warp">
+        <h1 class="post-title animated flipInX">LEETCODE 004. 寻找两个正序数组的中位数</h1>
+
+        <div class="post-meta">
+            <div class="post-meta-main">
+                <a class="author" href="https://betterfor.github.io/" rel="author"><i class="fas fa-user-circle fa-fw"></i>betterfor&nbsp;</a>
+                <span class="post-category">
+                        收录于
+                        <i class="far fa-folder fa-fw"></i><a href="https://betterfor.github.io/categories/leetcode/">leetcode</a>
+                            
+                    </span>
+            </div>
+            <div class="post-meta-other">
+                <i class="far fa-calendar-alt fa-fw"></i><time datetime=2021-02-05>2021-02-05</time>&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>约 760 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>预计阅读 4 分钟&nbsp;</div>
+        </div>
+
+        
+
+        <div class="post-toc" id="post-toc">
+                <h2 class="post-toc-title">目录</h2>
+                <div class="post-toc-content always-active">
+                    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#题目">题目</a></li>
+    <li><a href="#暴力法">暴力法</a></li>
+    <li><a href="#优化暴力法">优化暴力法</a></li>
+    <li><a href="#二分法">二分法</a></li>
+    <li><a href="#优化二分法">优化二分法</a></li>
+  </ul>
+</nav>
+                </div>
+            </div>
+            <div class="post-toc-mobile" id="post-toc-mobile">
+                <details>
+                    <summary><div class="post-toc-title"><span>目录</span><span><i class="details icon fas fa-angle-down"></i></span></div></summary>
+                    <div class="post-toc-content">
+                        
+                        
+                        <nav id="TableOfContentsMobile">
+  <ul>
+    <li><a href="#题目">题目</a></li>
+    <li><a href="#暴力法">暴力法</a></li>
+    <li><a href="#优化暴力法">优化暴力法</a></li>
+    <li><a href="#二分法">二分法</a></li>
+    <li><a href="#优化二分法">优化二分法</a></li>
+  </ul>
+</nav>
+                    </div>
+                </details>
+            </div>
+
+        <div class="post-content">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <blockquote>
+<p>力扣百题系列</p>
+</blockquote>
+<p>今天给大家带来一道关于数组的难题。</p>
+<a class="post-dummy-target" id="题目"></a><h2>题目</h2>
+<p>给定两个大小为<code>m</code>和<code>n</code>的正序（从小到大）数组<code>nums1</code>和<code>nums2</code>。返回这两个正序数组合并后的中位数。</p>
+<a class="post-dummy-target" id="暴力法"></a><h2>暴力法</h2>
+<p>将两个正序数组合并成一个正序数组，然后再求中位数，似乎是一个方法。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">findMedianSortedArrays</span><span class="p">(</span><span class="nx">nums1</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">nums2</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="kt">float64</span> <span class="p">{</span>
+	<span class="nx">n1</span><span class="p">,</span><span class="nx">n2</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums1</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="nx">nums2</span><span class="p">)</span>
+	<span class="nx">nums</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span><span class="nx">n1</span><span class="o">+</span><span class="nx">n2</span><span class="p">)</span>
+	<span class="c1">// 将两个数组合并
+</span><span class="c1"></span>	<span class="kd">var</span> <span class="nx">idx</span><span class="p">,</span><span class="nx">i</span><span class="p">,</span><span class="nx">j</span> <span class="kt">int</span>
+	<span class="k">for</span> <span class="nx">idx</span> <span class="p">&lt;</span> <span class="nx">n1</span><span class="o">+</span><span class="nx">n2</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="nx">i</span> <span class="o">==</span> <span class="nx">n1</span> <span class="p">{</span>
+			<span class="k">for</span> <span class="nx">j</span> <span class="p">&lt;</span> <span class="nx">n2</span> <span class="p">{</span>
+				<span class="nx">nums</span><span class="p">[</span><span class="nx">idx</span><span class="p">]</span> <span class="p">=</span> <span class="nx">nums2</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span>
+				<span class="nx">j</span><span class="o">++</span>
+				<span class="nx">idx</span><span class="o">++</span>
+			<span class="p">}</span>
+			<span class="k">break</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="nx">j</span> <span class="o">==</span> <span class="nx">n2</span> <span class="p">{</span>
+			<span class="k">for</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">n1</span> <span class="p">{</span>
+				<span class="nx">nums</span><span class="p">[</span><span class="nx">idx</span><span class="p">]</span> <span class="p">=</span><span class="nx">nums1</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+				<span class="nx">i</span><span class="o">++</span>
+				<span class="nx">idx</span><span class="o">++</span>
+			<span class="p">}</span>
+			<span class="k">break</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="nx">nums1</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">&lt;</span> <span class="nx">nums2</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="p">{</span>
+			<span class="nx">nums</span><span class="p">[</span><span class="nx">idx</span><span class="p">]</span> <span class="p">=</span> <span class="nx">nums1</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+			<span class="nx">i</span><span class="o">++</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			<span class="nx">nums</span><span class="p">[</span><span class="nx">idx</span><span class="p">]</span> <span class="p">=</span> <span class="nx">nums2</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span>
+			<span class="nx">j</span><span class="o">++</span>
+		<span class="p">}</span>
+		<span class="nx">idx</span><span class="o">++</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">cnt</span> <span class="o">:=</span> <span class="nx">n1</span> <span class="o">+</span> <span class="nx">n2</span><span class="p">;</span> <span class="nx">cnt</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nb">float64</span><span class="p">(</span><span class="nx">nums</span><span class="p">[</span><span class="nx">cnt</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="nx">nums</span><span class="p">[</span><span class="nx">cnt</span><span class="o">/</span><span class="mi">2</span><span class="p">])</span><span class="o">/</span><span class="mf">2.0</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nb">float64</span><span class="p">(</span><span class="nx">nums</span><span class="p">[</span><span class="nx">cnt</span><span class="o">/</span><span class="mi">2</span><span class="p">])</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>时间复杂度O(m+n)，空间复杂度O(m+n)</p>
+<a class="post-dummy-target" id="优化暴力法"></a><h2>优化暴力法</h2>
+<p>我们会发现，其实不需要后半段，只需要找到（m+n）/2+1个元素。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">findMedianSortedArrays</span><span class="p">(</span><span class="nx">nums1</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">nums2</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="kt">float64</span> <span class="p">{</span>
+	<span class="nx">n1</span><span class="p">,</span><span class="nx">n2</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums1</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="nx">nums2</span><span class="p">)</span>
+	<span class="c1">// 将两个数组合并
+</span><span class="c1"></span>	<span class="kd">var</span> <span class="nx">i</span><span class="p">,</span><span class="nx">j</span><span class="p">,</span><span class="nx">left</span><span class="p">,</span><span class="nx">right</span> <span class="kt">int</span>
+	<span class="k">for</span> <span class="nx">idx</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">idx</span> <span class="p">&lt;</span> <span class="p">(</span><span class="nx">n1</span><span class="o">+</span><span class="nx">n2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span> <span class="nx">idx</span><span class="o">++</span> <span class="p">{</span>
+		<span class="nx">left</span> <span class="p">=</span> <span class="nx">right</span>
+		<span class="k">if</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">n1</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">j</span> <span class="o">&gt;=</span> <span class="nx">n2</span> <span class="o">||</span> <span class="nx">nums1</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">&lt;</span> <span class="nx">nums2</span><span class="p">[</span><span class="nx">j</span><span class="p">])</span> <span class="p">{</span>
+			<span class="nx">right</span> <span class="p">=</span> <span class="nx">nums1</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+			<span class="nx">i</span><span class="o">++</span>
+			<span class="k">continue</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			<span class="nx">right</span> <span class="p">=</span> <span class="nx">nums2</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span>
+			<span class="nx">j</span><span class="o">++</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">n1</span><span class="o">+</span><span class="nx">n2</span><span class="p">)</span><span class="o">&amp;</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nb">float64</span><span class="p">(</span><span class="nx">left</span><span class="o">+</span><span class="nx">right</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nb">float64</span><span class="p">(</span><span class="nx">right</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>时间复杂度O(m+n)，空间复杂度O(1)</p>
+<a class="post-dummy-target" id="二分法"></a><h2>二分法</h2>
+<p>这道题之所以是难题，在于要求使用O(log(m+n))的方法处理。</p>
+<p>而log(n)的时间复杂度的方法通常只有二分法了。</p>
+<p>因此这道题可以转化为寻找两个有序数组中的第k小的数，其中k为<code>(m+n)/2</code>或<code>(m+n)/2+1</code>。</p>
+<p>假设两个有序数组为A和B。要找到第k个元素，我们可以比较<code>A[k/2-1]</code>和<code>B[k/2-1]</code>。</p>
+<p>由于<code>A[k/2-1]</code>和<code>B[k/2-1]</code>中的较小值，最多只会有<code>(k/2-1)+(k/2-1)&lt;=k-2</code>个比它小，所以它不能是第k小个元素。</p>
+<ul>
+<li><code>A[k/2-1]</code>&lt;<code>B[k/2-1]</code>，则比<code>A[k/2-1]</code>小的数最多只有A的前<code>k/2-1</code>和B的前<code>k/2-1</code>个数，因此可以排除。</li>
+<li><code>A[k/2-1]</code>&gt;<code>B[k/2-1]</code>，则比BA[k/2-1]<code>小的数最多只有A的前</code>k/2-1<code>和B的前</code>k/2-1`个数，因此可以排除。</li>
+<li><code>A[k/2-1]</code>=<code>B[k/2-1]</code>，归入第一种情况。</li>
+</ul>
+<p>例子：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">A: 1 3 4 9
+
+B: 1 2 3 4 5 6 7 8 9
+</code></pre></td></tr></table>
+</div>
+</div><p>两个有序数组长度为4和9，长度之和为13，中位数是第7个元素。</p>
+<p>1、先比较两个有序数组下标为<code>k/2-1=2</code>的数，即<code>A[2]</code>和<code>B[2]</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">A: 1 3 / 4 9
+
+B: 1 2 / 3 4 5 6 7 8 9
+</code></pre></td></tr></table>
+</div>
+</div><p>由于<code>A[2]&gt;B[2]</code>，排除<code>B[0]</code>和<code>B[1]</code>。更新k值： <code>k=k-k/2=4</code></p>
+<p>2、比较下标为<code>k/2-1=1</code>的数，即<code>A[1]</code>和<code>B[1]</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">A: 1 3 / 4 9
+
+B: [1 2 3] 4 5 / 6 7 8 9
+</code></pre></td></tr></table>
+</div>
+</div><p>由于<code>A[1]&lt;B[1]</code>，排除<code>A[0]</code>和<code>A[1]</code>。更新k值： <code>k=k-k/2=2</code></p>
+<p>3、比较下标为<code>k/2-1=0</code>的数，即<code>A[0]</code>和<code>B[0]</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">A: [1 3] 4 / 9
+
+B: [1 2 3] 4 / 5 6 7 8 9
+</code></pre></td></tr></table>
+</div>
+</div><p>由于<code>A[0]=B[0]</code>，排除<code>A[0]</code>。更新k值： <code>k=k-k/2=1</code></p>
+<p>4、比较下标为<code>k/2-1=0</code>的数，即<code>A[0]</code>和<code>B[0]</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">A: [1 3 4] 9
+
+B: [1 2 3] 4 / 5 6 7 8 9
+</code></pre></td></tr></table>
+</div>
+</div><p>由于<code>A[0]&gt;B[0]</code>，排除B[0]`。此时已经排除了7个数了，所以值为4.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">findMedianSortedArrays</span><span class="p">(</span><span class="nx">nums1</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">nums2</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="kt">float64</span> <span class="p">{</span>
+	<span class="nx">n1</span><span class="p">,</span><span class="nx">n2</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums1</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="nx">nums2</span><span class="p">)</span>
+	<span class="nx">totalLen</span> <span class="o">:=</span> <span class="nx">n1</span><span class="o">+</span><span class="nx">n2</span>
+	<span class="k">if</span> <span class="nx">totalLen</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nb">float64</span><span class="p">(</span><span class="nf">getKthElement</span><span class="p">(</span><span class="nx">nums1</span><span class="p">,</span><span class="nx">nums2</span><span class="p">,</span><span class="nx">totalLen</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nb">float64</span><span class="p">(</span><span class="nf">getKthElement</span><span class="p">(</span><span class="nx">nums1</span><span class="p">,</span><span class="nx">nums2</span><span class="p">,</span><span class="nx">totalLen</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span>
+                       <span class="nf">getKthElement</span><span class="p">(</span><span class="nx">nums1</span><span class="p">,</span><span class="nx">nums2</span><span class="p">,</span><span class="nx">totalLen</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">getKthElement</span><span class="p">(</span><span class="nx">nums1</span><span class="p">,</span> <span class="nx">nums2</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">k</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">idx1</span><span class="p">,</span><span class="nx">idx2</span> <span class="kt">int</span>
+	<span class="k">for</span>  <span class="p">{</span>
+		<span class="k">if</span> <span class="nx">idx1</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums1</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nx">nums2</span><span class="p">[</span><span class="nx">idx2</span><span class="o">+</span><span class="nx">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="nx">idx2</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums2</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nx">nums1</span><span class="p">[</span><span class="nx">idx1</span><span class="o">+</span><span class="nx">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="nx">k</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nf">min</span><span class="p">(</span><span class="nx">nums1</span><span class="p">[</span><span class="nx">idx1</span><span class="p">],</span><span class="nx">nums2</span><span class="p">[</span><span class="nx">idx2</span><span class="p">])</span>
+		<span class="p">}</span>
+		<span class="nx">mid</span> <span class="o">:=</span> <span class="nx">k</span><span class="o">/</span><span class="mi">2</span>
+		<span class="nx">newIdx1</span> <span class="o">:=</span> <span class="nf">min</span><span class="p">(</span><span class="nx">idx1</span><span class="o">+</span><span class="nx">mid</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="nx">nums1</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span>
+        <span class="nx">newIdx2</span> <span class="o">:=</span> <span class="nf">min</span><span class="p">(</span><span class="nx">idx2</span><span class="o">+</span><span class="nx">mid</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="nx">nums2</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span>
+		<span class="nx">p1</span><span class="p">,</span><span class="nx">p2</span> <span class="o">:=</span> <span class="nx">nums1</span><span class="p">[</span><span class="nx">newIdx1</span><span class="p">],</span><span class="nx">nums2</span><span class="p">[</span><span class="nx">newIdx2</span><span class="p">]</span>
+		<span class="k">if</span> <span class="nx">p1</span> <span class="o">&lt;=</span> <span class="nx">p2</span> <span class="p">{</span>
+			<span class="nx">k</span> <span class="o">-=</span> <span class="nx">newIdx1</span><span class="o">-</span><span class="nx">idx1</span><span class="o">+</span><span class="mi">1</span>
+			<span class="nx">idx1</span> <span class="p">=</span> <span class="nx">newIdx1</span><span class="o">+</span><span class="mi">1</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			<span class="nx">k</span> <span class="o">-=</span> <span class="nx">newIdx2</span><span class="o">-</span><span class="nx">idx2</span><span class="o">+</span><span class="mi">1</span>
+			<span class="nx">idx2</span> <span class="p">=</span> <span class="nx">newIdx2</span><span class="o">+</span><span class="mi">1</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">min</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nx">a</span> <span class="p">&lt;</span> <span class="nx">b</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">a</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">b</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>时间复杂度O(log(m+n))，空间复杂度O(1)</p>
+<a class="post-dummy-target" id="优化二分法"></a><h2>优化二分法</h2>
+<p>中位数的定义</p>
+<blockquote>
+<p>将一个集合划分成两个长度相等的子集，其中一个子集中的元素总是小于另一个子集中的元素。</p>
+</blockquote>
+<p>那么将A划分成两个子集[<code>leftA</code>,<code>rightA</code>]，将B划分成两个子集[<code>leftB</code>,<code>rightB</code>]。</p>
+<p>将<code>leftA</code>和<code>leftB</code>放在一起，将<code>rightA</code>和<code>rightB</code>放在一起。那么如果总长度是偶数：</p>
+<ul>
+<li><code>len(left)</code>=<code>len(right)</code></li>
+<li><code>max(left)</code>&lt;<code>min(right)</code></li>
+</ul>
+<p>那么如果总长度是奇数：</p>
+<ul>
+<li><code>len(left)</code>=<code>len(right)+1</code></li>
+<li><code>max(left)</code>&lt;<code>min(right)</code></li>
+</ul>
+<p>那么只要保证<code>i+j=m-i+n-j</code>（偶数）或<code>i+j=m-i+n-j+1</code>（奇数）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">findMedianSortedArrays</span><span class="p">(</span><span class="nx">nums1</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">nums2</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="kt">float64</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums1</span><span class="p">)</span> <span class="p">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nf">findMedianSortedArrays</span><span class="p">(</span><span class="nx">nums2</span><span class="p">,</span> <span class="nx">nums1</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="nx">m</span><span class="p">,</span> <span class="nx">n</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums2</span><span class="p">)</span>
+    <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">m</span>
+    <span class="nx">median1</span><span class="p">,</span> <span class="nx">median2</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="nx">left</span> <span class="o">&lt;=</span> <span class="nx">right</span> <span class="p">{</span>
+        <span class="nx">i</span> <span class="o">:=</span> <span class="p">(</span><span class="nx">left</span> <span class="o">+</span> <span class="nx">right</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="nx">j</span> <span class="o">:=</span> <span class="p">(</span><span class="nx">m</span> <span class="o">+</span> <span class="nx">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="nx">i</span>
+        <span class="nx">nums_im1</span> <span class="o">:=</span> <span class="nx">math</span><span class="p">.</span><span class="nx">MinInt32</span>
+        <span class="k">if</span> <span class="nx">i</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+            <span class="nx">nums_im1</span> <span class="p">=</span> <span class="nx">nums1</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="nx">nums_i</span> <span class="o">:=</span> <span class="nx">math</span><span class="p">.</span><span class="nx">MaxInt32</span>
+        <span class="k">if</span> <span class="nx">i</span> <span class="o">!=</span> <span class="nx">m</span> <span class="p">{</span>
+            <span class="nx">nums_i</span> <span class="p">=</span> <span class="nx">nums1</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="nx">nums_jm1</span> <span class="o">:=</span> <span class="nx">math</span><span class="p">.</span><span class="nx">MinInt32</span>
+        <span class="k">if</span> <span class="nx">j</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+            <span class="nx">nums_jm1</span> <span class="p">=</span> <span class="nx">nums2</span><span class="p">[</span><span class="nx">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="nx">nums_j</span> <span class="o">:=</span> <span class="nx">math</span><span class="p">.</span><span class="nx">MaxInt32</span>
+        <span class="k">if</span> <span class="nx">j</span> <span class="o">!=</span> <span class="nx">n</span> <span class="p">{</span>
+            <span class="nx">nums_j</span> <span class="p">=</span> <span class="nx">nums2</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="nx">nums_im1</span> <span class="o">&lt;=</span> <span class="nx">nums_j</span> <span class="p">{</span>
+            <span class="nx">median1</span> <span class="p">=</span> <span class="nf">max</span><span class="p">(</span><span class="nx">nums_im1</span><span class="p">,</span> <span class="nx">nums_jm1</span><span class="p">)</span>
+            <span class="nx">median2</span> <span class="p">=</span> <span class="nf">min</span><span class="p">(</span><span class="nx">nums_i</span><span class="p">,</span> <span class="nx">nums_j</span><span class="p">)</span>
+            <span class="nx">left</span> <span class="p">=</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">right</span> <span class="p">=</span> <span class="nx">i</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">m</span> <span class="o">+</span> <span class="nx">n</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">float64</span><span class="p">(</span><span class="nx">median1</span> <span class="o">+</span> <span class="nx">median2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="p">}</span>
+    <span class="k">return</span>  <span class="nb">float64</span><span class="p">(</span><span class="nx">median1</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">max</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nx">x</span> <span class="p">&gt;</span> <span class="nx">y</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">x</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">y</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">min</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nx">x</span> <span class="p">&lt;</span> <span class="nx">y</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">x</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">y</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>时间复杂度O(log(m+n))，空间复杂度O(1)</p>
+
+        </div>
+
+        <div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>本文于 2021-02-06 更新</span>
+            </div>
+            <div class="post-info-license">
+                
+            </div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md">
+                
+                    
+                        <span><a class="link-to-markdown" href="https://betterfor.github.io/2021/02/004/index.md" target="_blank">阅读原始文档</a></span>
+                    
+                
+            </div>
+            <div class="post-info-share">
+                
+                    <span>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</span>
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section>
+            
+                
+                    <span class="tag">
+                        <a href="https://betterfor.github.io/tags/%E5%9B%B0%E9%9A%BE/"><i class="fas fa-tag fa-fw"></i>困难</a>
+                    </span>
+                
+                    <span class="tag">
+                        <a href="https://betterfor.github.io/tags/%E6%95%B0%E7%BB%84/"><i class="fas fa-tag fa-fw"></i>数组</a>
+                    </span>
+                
+            
+        </section>
+        <section>
+            <span><a href="javascript:window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="https://betterfor.github.io/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav">
+        
+            <a href="https://betterfor.github.io/2021/02/1208/" class="prev" rel="prev" title="LEETCODE 1208. 尽可能使字符串相等"><i class="fas fa-angle-left fa-fw"></i>LEETCODE 1208. 尽可能使字符串相等</a>
+        
+        
+            <a href="https://betterfor.github.io/2021/02/1423/" class="next" rel="next" title="LEETCODE 1423. 可获得的最大点数">LEETCODE 1423. 可获得的最大点数<i class="fas fa-angle-right fa-fw"></i></a>
+        
+    </div>
+</div>
+
+        <div class="post-comment">
+            
+            
+
+            
+        </div>
+    </article></div>
+            </main>
+            <footer class="footer">
+    <div class="copyright">
+        <div class="copyright-line">
+            由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreffer">Hugo</a> 强力驱动&nbsp;|&nbsp;主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="external nofollow noopener noreffer">LoveIt<i class="far fa-heart fa-fw"></i></a>
+        </div>
+        <div class="copyright-line">
+            <i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://betterfor.github.io/">betterfor</a></span><span class="license">&nbsp;|&nbsp;<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+    </div>
+</footer>
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+<script src="/js/lib/jquery/jquery.slim.min.min.js"></script>
+<script src="/js/lib/lazysizes/lazysizes.min.min.js"></script>
+<script src="/js/lib/smooth-scroll/smooth-scroll.polyfills.min.min.js"></script><script>window.scroll = new SmoothScroll('[data-scroll]', {speed: 300, speedAsDuration: true});</script>
+
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+
+
+<script src="/js/blog.min.js"></script>
+
+
+    
+</div>
+        <a href="#" class="dynamic-to-top" id="dynamic-to-top" data-scroll><span>&nbsp;</span></a>
+    </body>
+</html>

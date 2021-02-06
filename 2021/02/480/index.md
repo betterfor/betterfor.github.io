@@ -1,0 +1,191 @@
+# LEETCODE 480. 滑动窗口中位数
+
+
+大家好，我是沉迷于刷题的小耗。
+
+今天给大家带来的是力扣480题：**滑动窗口中位数**
+
+## 题目
+
+中位数是有序序列最中间的那个数。如果序列的长度是偶数，则没有最中间的数，此时中位数是最中间的两个数的平均数。
+
+给你一个数组`nums`，有一个长度为k的窗口从最左端滑动到最右端。窗口中有`k`个数，每次窗口向右移动1位。你的任务是找出每次窗口移动后得到的新元素的中位数，并输出它们组成的数组。
+
+## 示例
+
+给出`nums` = `[1,3,-1,-3,5,3,6,7]`，以及`k` = 3。
+
+窗口位置                      中位数
+---------------               -----
+[1  3  -1] -3  5  3  6  7       1
+ 1 [3  -1  -3] 5  3  6  7      -1
+ 1  3 [-1  -3  5] 3  6  7      -1
+ 1  3  -1 [-3  5  3] 6  7       3
+ 1  3  -1  -3 [5  3  6] 7       5
+ 1  3  -1  -3  5 [3  6  7]      6
+
+
+<p>&nbsp;因此，返回该滑动窗口的中位数数组&nbsp;<code>[1,-1,-1,3,5,6]</code>。</p>
+
+## 题解
+
+看到这里，停顿一下，思考一下。
+
+滑动窗口的中位数。我们可以每次查找滑动窗口的中位数
+
+```go
+func medianSlidingWindow(nums []int, k int) (ans []float64) {
+    // 获取数组的中位数
+	getMidian := func(a []int) float64 {
+		slice := make([]int,len(a))
+		copy(slice,a)
+		sort.Ints(slice)
+		if len(slice)%2 == 0 {
+			return float64(slice[len(slice)/2-1]+slice[len(slice)/2])/2
+		} else {
+			return float64(slice[len(slice)/2])
+		}
+	}
+    // 遍历数组
+	for i := 0; i < len(nums)-k+1; i++ {
+		ans = append(ans, getMidian(nums[i:i+k]))
+	}
+	return
+}
+```
+
+时间复杂度O(nklogk),空间复杂度O(nlogk)，排序法的时间复杂度是O(klogk)。
+
+但是这种方法得到的结果是*超出时间限制*。
+
+那么降低时间复杂度绝招就是增加空间复杂度，利用数据结构。
+
+### 双队列
+
+我们用两个队列(堆)维护所有的元素，第一个堆`small`是大根堆，负责维护所有元素较小的一半；第二个`large`是小根堆，负责维护所有元素较大的一半。如果说当前维护的元素为`k`个，`small`维护了`k/2`个元素，`large`维护了`k/2`个元素，大小都是向下取整的。
+
+> 换言之，k为偶数时，small和large大小相等，k为奇数时，small=large+1
+
+这样设计的好处是通过取中位数时，可以根据两个堆的大小进行取值。
+
+我们在插入元素时，如果两个堆都为空时，优先插入`small`，如果`small`不为空时，将`num`与`small`堆顶元素进行比较，如果较大，则加入`large`中，如果较小，加入`small`中。
+
+如果成功加入了元素，可能会出现两个堆元素个数不符合要求的情况，这时我们需要调整堆。如果`small`的元素比`large`的元素多2个，则将`small`堆顶元素移入`large`；如果`large`的元素比`small`的元素少1个，则将`large`堆顶元素移入`small`。
+
+这里将插入操作完成了，还有移除操作，当窗口向右移动时，我们不能直接移除堆顶元素，因为不一定是目标元素，所以我们需要用到延迟删除这一技巧。
+
+> 当我们需要移除堆中某个元素时，先将移除这个操作记录下来，而不去真删除这个元素。当这个元素出现在堆顶时，再将其移除堆。
+
+这样，我们就将整个逻辑已经理清楚了。
+
+```go
+var small,large *tp
+var delayed map[int]int
+
+type tp struct {
+	sort.IntSlice
+	size int
+}
+
+func (t *tp) Push(x interface{}) {
+	t.IntSlice = append(t.IntSlice, x.(int))
+}
+func (t *tp) Pop() interface{} {
+	a := (t.IntSlice)[len(t.IntSlice)-1]
+	t.IntSlice = t.IntSlice[:len(t.IntSlice)-1]
+	return a
+}
+func (t *tp) push(x int) {
+	t.size++
+	heap.Push(t,x)
+}
+func (t *tp) pop() int {
+	t.size--
+	return heap.Pop(t).(int)
+}
+// 延迟堆操作
+func (t *tp) prune() {
+	for t.Len() > 0 {
+		top := t.IntSlice[0]
+		if t == small {
+			top = -top
+		}
+		if d, has := delayed[top]; has {
+			if d > 1 {
+				delayed[top]--
+			} else {
+				delete(delayed,top)
+			}
+			heap.Pop(t)
+		} else {
+			break
+		}
+	}
+}
+
+func medianSlidingWindow(nums []int, k int) (ans []float64) {
+	small,large = &tp{},&tp{}
+	delayed = map[int]int{}
+
+	makeBalance := func() {
+		// 调整small和large中的元素个数
+		if small.size > large.size+1 {
+			large.push(-small.pop())
+			small.prune()
+		} else if small.size < large.size {
+			small.push(-large.pop())
+			large.prune()
+		}
+	}
+
+	insert := func(x int) {
+		if small.Len() == 0 || x <= -small.IntSlice[0] {
+			small.push(-x)
+		} else {
+			large.push(x)
+		}
+		makeBalance()
+	}
+	erase := func(x int) {
+		delayed[x]++
+		if x <= -small.IntSlice[0] {
+			small.size--
+			if x == -small.IntSlice[0] {
+				small.prune()
+			}
+		} else {
+			large.size--
+			if x == large.IntSlice[0] {
+				large.prune()
+			}
+		}
+		makeBalance()
+	}
+
+	// 获取中位数
+	getMedian := func() float64 {
+		if k&1 > 0 {
+			return float64(-small.IntSlice[0])
+		} else {
+			return float64(-small.IntSlice[0]+large.IntSlice[0])/2
+		}
+	}
+	for _, num := range nums[:k] {
+		insert(num)
+	}
+	ans = make([]float64,1,len(nums)-k+1)
+	ans[0] = getMedian()
+	for i := k; i < len(nums); i++ {
+		insert(nums[i])
+		erase(nums[i-k])
+		ans = append(ans, getMedian())
+	}
+	return
+}
+```
+
+## 复杂度分析
+
+时间复杂度O(nlogn),插入和删除操作的单次时间都是O(logn)，所以总时间复杂度O(nlogn)
+
+空间复杂度O(n)

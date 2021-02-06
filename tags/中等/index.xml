@@ -7,7 +7,61 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Tue, 02 Feb 2021 21:31:07 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/%E4%B8%AD%E7%AD%89/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 06 Feb 2021 21:20:19 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/%E4%B8%AD%E7%AD%89/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>LEETCODE 005. 最长回文串</title>
+      <link>https://betterfor.github.io/2021/02/005/</link>
+      <pubDate>Sat, 06 Feb 2021 21:20:19 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/2021/02/005/</guid>
+      <description>力扣百题系列
+ 大家好，我是小耗。
+今天给大家带来的是经典题之回文串。
+什么是回文串？正着读和反着读都是一样的字符串就是回文串，例如level。
+题目 给一个字符串s，找出s中最长的回文子串。
+题解 1、暴力法
+判断一个字符串是否是回文串，然后再找出所有的回文子串。
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25  func longestPalindrome(s string) string { var maxLen int var maxStr string for i := 0; i &amp;lt; len(s); i++ { for j := i + 1; j &amp;lt; len(s)+1; j++ { len := isPalindrome(s[i:j]) if len &amp;gt; maxLen { maxStr = s[i:j] maxLen = len } } } return maxStr } func isPalindrome(s string) int { var newStr string for i := len(s)-1; i &amp;gt;= 0; i--{ newStr += s[i:i+1] } if s == newStr { return len(s) } return 0 }   时间复杂度O(n^3^)，空间复杂度O(1)。</description>
+    </item>
+    
+    <item>
+      <title>LEETCODE 1423. 可获得的最大点数</title>
+      <link>https://betterfor.github.io/2021/02/1423/</link>
+      <pubDate>Sat, 06 Feb 2021 20:52:42 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/2021/02/1423/</guid>
+      <description>大家好，我是沉迷于刷题的小耗。
+今天给大家带来的是力扣1423题：可获得的最大点数
+题目 几张卡牌排成一行，每张卡牌都有一个点数。点数由整数数组cardPoints给出。
+每次行动，你可以从行的开头或结尾拿一张卡牌，最终你必须正好拿k张卡牌。
+你的点数就是你拿到手中所有卡牌点数之和。
+给你一个整数数组cardPoints和整数k，请你返回可以获得的最大点数。
+示例 **输入：**cardPoints = [1,2,3,4,5,6,1], k = 3 **输出：**12 **解释：**第一次行动，不管拿哪张牌，你的点数总是 1 。但是，先拿最右边的卡牌将会最大化你的可获得点数。最优策略是拿右边的三张牌，最终点数为 1 + 6 + 5 = 12 。
+题解 滑动窗口 如果从左边拿走i个，那么从右边会拿走k-i个，这样i从0到k的最大值就是所求的最大点数。
+i=0时，左0，右k。
+i=1时，左1，右k-1。
+你会发现，有部分值会重复累加，那么我们先把这部分重复累加的值先求出来。
+left是从左向右的累加序列，right是从右向左的累加序列。
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21  func maxScore(cardPoints []int, k int) (ans int) { n := len(cardPoints) var left, right = make([]int, k), make([]int, k) left[0], right[0] = cardPoints[0], cardPoints[n-1] for i := 1; i &amp;lt; k; i++ { left[i] = left[i-1] + cardPoints[i] right[i] = right[i-1] + cardPoints[n-i-1] } left, right = append([]int{0}, left.</description>
+    </item>
+    
+    <item>
+      <title>LEETCODE 1208. 尽可能使字符串相等</title>
+      <link>https://betterfor.github.io/2021/02/1208/</link>
+      <pubDate>Fri, 05 Feb 2021 20:04:57 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/2021/02/1208/</guid>
+      <description>大家好，我是沉迷于刷题的小耗。
+今天给大家带来的是力扣1208题：尽可能使字符串相等
+题目 给你两个长度相同的字符串，s和t。
+将s中的第i个字符变到t中的第i个字符需要|s[i]-t[i]|的开销(开销可能为0)，也就是两个字符的ASCII码值的差的绝对值。
+用于变更字符串的最大预算是maxCount。在转化字符串时，总开销应当小于等于该预算，这也意味着字符串转化可能是不完全的。
+如果你可以将s的子字符串转化为它在t中对应的子字符串，则返回可以转化的最大长度。
+示例 输入：s = &amp;ldquo;abcd&amp;rdquo;, t = &amp;ldquo;bcdf&amp;rdquo;, cost = 3 输出：3 解释：s 中的 &amp;ldquo;abc&amp;rdquo; 可以变为 &amp;ldquo;bcd&amp;rdquo;。开销为 3，所以最大长度为 3。
+题解 先理解一下题意，s和t是在相同位置上的字符进行比较，|s[i]-t[i]|为一位上的开销，那么我们可以得到每一位的开销。而要从s和t找到一个子串，使得子串的开销之和小于最大开销，并使得子串的长度最长。
+二分法 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26  func equalSubstring(s string, t string, maxCost int) (ans int) { n := len(s) diff := make([]int,n+1) // 递增序列 	for i, ch := range s { diff[i+1] = diff[i]+abs(int(ch)-int(t[i])) } for i := 1; i &amp;lt;= n; i++ { start := sort.</description>
+    </item>
+    
     <item>
       <title>LEETCODE 424. 替换后的最长重复字符</title>
       <link>https://betterfor.github.io/2021/02/424/</link>

@@ -1,0 +1,278 @@
+# LEETCODE 004. 寻找两个正序数组的中位数
+
+
+> 力扣百题系列
+
+今天给大家带来一道关于数组的难题。
+
+## 题目
+
+给定两个大小为`m`和`n`的正序（从小到大）数组`nums1`和`nums2`。返回这两个正序数组合并后的中位数。
+
+## 暴力法
+
+将两个正序数组合并成一个正序数组，然后再求中位数，似乎是一个方法。
+
+```go
+func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
+	n1,n2 := len(nums1),len(nums2)
+	nums := make([]int,n1+n2)
+	// 将两个数组合并
+	var idx,i,j int
+	for idx < n1+n2 {
+		if i == n1 {
+			for j < n2 {
+				nums[idx] = nums2[j]
+				j++
+				idx++
+			}
+			break
+		}
+		if j == n2 {
+			for i < n1 {
+				nums[idx] =nums1[i]
+				i++
+				idx++
+			}
+			break
+		}
+		if nums1[i] < nums2[j] {
+			nums[idx] = nums1[i]
+			i++
+		} else {
+			nums[idx] = nums2[j]
+			j++
+		}
+		idx++
+	}
+	if cnt := n1 + n2; cnt%2 == 0 {
+		return float64(nums[cnt/2-1]+nums[cnt/2])/2.0
+	} else {
+		return float64(nums[cnt/2])
+	}
+}
+```
+
+时间复杂度O(m+n)，空间复杂度O(m+n)
+
+## 优化暴力法
+
+我们会发现，其实不需要后半段，只需要找到（m+n）/2+1个元素。
+
+```go
+func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
+	n1,n2 := len(nums1),len(nums2)
+	// 将两个数组合并
+	var i,j,left,right int
+	for idx := 0; idx < (n1+n2)/2+1; idx++ {
+		left = right
+		if i < n1 && (j >= n2 || nums1[i] < nums2[j]) {
+			right = nums1[i]
+			i++
+			continue
+		} else {
+			right = nums2[j]
+			j++
+		}
+	}
+	if (n1+n2)&1 == 0 {
+		return float64(left+right)/2.0
+	} else {
+		return float64(right)
+	}
+}
+```
+
+时间复杂度O(m+n)，空间复杂度O(1)
+
+## 二分法
+
+这道题之所以是难题，在于要求使用O(log(m+n))的方法处理。
+
+而log(n)的时间复杂度的方法通常只有二分法了。
+
+因此这道题可以转化为寻找两个有序数组中的第k小的数，其中k为`(m+n)/2`或`(m+n)/2+1`。
+
+假设两个有序数组为A和B。要找到第k个元素，我们可以比较`A[k/2-1]`和`B[k/2-1]`。
+
+由于`A[k/2-1]`和`B[k/2-1]`中的较小值，最多只会有`(k/2-1)+(k/2-1)<=k-2`个比它小，所以它不能是第k小个元素。
+
+- `A[k/2-1]`<`B[k/2-1]`，则比`A[k/2-1]`小的数最多只有A的前`k/2-1`和B的前`k/2-1`个数，因此可以排除。
+- `A[k/2-1]`>`B[k/2-1]`，则比BA[k/2-1]`小的数最多只有A的前`k/2-1`和B的前`k/2-1`个数，因此可以排除。
+- `A[k/2-1]`=`B[k/2-1]`，归入第一种情况。
+
+例子：
+
+```
+A: 1 3 4 9
+
+B: 1 2 3 4 5 6 7 8 9
+```
+
+两个有序数组长度为4和9，长度之和为13，中位数是第7个元素。
+
+1、先比较两个有序数组下标为`k/2-1=2`的数，即`A[2]`和`B[2]`。
+
+```
+A: 1 3 / 4 9
+
+B: 1 2 / 3 4 5 6 7 8 9
+```
+
+由于`A[2]>B[2]`，排除`B[0]`和`B[1]`。更新k值： `k=k-k/2=4`
+
+2、比较下标为`k/2-1=1`的数，即`A[1]`和`B[1]`。
+
+```
+A: 1 3 / 4 9
+
+B: [1 2 3] 4 5 / 6 7 8 9
+```
+
+由于`A[1]<B[1]`，排除`A[0]`和`A[1]`。更新k值： `k=k-k/2=2`
+
+3、比较下标为`k/2-1=0`的数，即`A[0]`和`B[0]`。
+
+```
+A: [1 3] 4 / 9
+
+B: [1 2 3] 4 / 5 6 7 8 9
+```
+
+由于`A[0]=B[0]`，排除`A[0]`。更新k值： `k=k-k/2=1`
+
+4、比较下标为`k/2-1=0`的数，即`A[0]`和`B[0]`。
+
+```
+A: [1 3 4] 9
+
+B: [1 2 3] 4 / 5 6 7 8 9
+```
+
+由于`A[0]>B[0]`，排除B[0]`。此时已经排除了7个数了，所以值为4.
+
+```go
+func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
+	n1,n2 := len(nums1),len(nums2)
+	totalLen := n1+n2
+	if totalLen%2 == 1 {
+		return float64(getKthElement(nums1,nums2,totalLen/2+1))
+	} else {
+		return float64(getKthElement(nums1,nums2,totalLen/2)+
+                       getKthElement(nums1,nums2,totalLen/2+1))/2
+	}
+}
+
+func getKthElement(nums1, nums2 []int, k int) int {
+	var idx1,idx2 int
+	for  {
+		if idx1 == len(nums1) {
+			return nums2[idx2+k-1]
+		}
+		if idx2 == len(nums2) {
+			return nums1[idx1+k-1]
+		}
+		if k == 1 {
+			return min(nums1[idx1],nums2[idx2])
+		}
+		mid := k/2
+		newIdx1 := min(idx1+mid,len(nums1))-1
+        newIdx2 := min(idx2+mid,len(nums2))-1
+		p1,p2 := nums1[newIdx1],nums2[newIdx2]
+		if p1 <= p2 {
+			k -= newIdx1-idx1+1
+			idx1 = newIdx1+1
+		} else {
+			k -= newIdx2-idx2+1
+			idx2 = newIdx2+1
+		}
+	}
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+```
+
+时间复杂度O(log(m+n))，空间复杂度O(1)
+
+## 优化二分法
+
+中位数的定义
+
+> 将一个集合划分成两个长度相等的子集，其中一个子集中的元素总是小于另一个子集中的元素。
+
+那么将A划分成两个子集[`leftA`,`rightA`]，将B划分成两个子集[`leftB`,`rightB`]。
+
+将`leftA`和`leftB`放在一起，将`rightA`和`rightB`放在一起。那么如果总长度是偶数：
+
+- `len(left)`=`len(right)`
+- `max(left)`<`min(right)`
+
+那么如果总长度是奇数：
+
+- `len(left)`=`len(right)+1`
+- `max(left)`<`min(right)`
+
+那么只要保证`i+j=m-i+n-j`（偶数）或`i+j=m-i+n-j+1`（奇数）
+
+```go
+func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
+    if len(nums1) > len(nums2) {
+        return findMedianSortedArrays(nums2, nums1)
+    }
+    m, n := len(nums1), len(nums2)
+    left, right := 0, m
+    median1, median2 := 0, 0
+    for left <= right {
+        i := (left + right) / 2
+        j := (m + n + 1) / 2 - i
+        nums_im1 := math.MinInt32
+        if i != 0 {
+            nums_im1 = nums1[i-1]
+        }
+        nums_i := math.MaxInt32
+        if i != m {
+            nums_i = nums1[i]
+        }
+        nums_jm1 := math.MinInt32
+        if j != 0 {
+            nums_jm1 = nums2[j-1]
+        }
+        nums_j := math.MaxInt32
+        if j != n {
+            nums_j = nums2[j]
+        }
+        if nums_im1 <= nums_j {
+            median1 = max(nums_im1, nums_jm1)
+            median2 = min(nums_i, nums_j)
+            left = i + 1
+        } else {
+            right = i - 1
+        }
+    }
+    if (m + n) % 2 == 0 {
+        return float64(median1 + median2) / 2.0
+    }
+    return  float64(median1)
+}
+
+func max(x, y int) int {
+    if x > y {
+        return x
+    }
+    return y
+}
+
+func min(x, y int) int {
+    if x < y {
+        return x
+    }
+    return y
+}
+```
+
+时间复杂度O(log(m+n))，空间复杂度O(1)

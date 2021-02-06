@@ -7,7 +7,37 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Mon, 01 Feb 2021 14:00:00 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/%E6%95%B0%E7%BB%84/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 05 Feb 2021 20:05:03 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/%E6%95%B0%E7%BB%84/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>LEETCODE 004. 寻找两个正序数组的中位数</title>
+      <link>https://betterfor.github.io/2021/02/004/</link>
+      <pubDate>Fri, 05 Feb 2021 20:05:03 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/2021/02/004/</guid>
+      <description>力扣百题系列
+ 今天给大家带来一道关于数组的难题。
+题目 给定两个大小为m和n的正序（从小到大）数组nums1和nums2。返回这两个正序数组合并后的中位数。
+暴力法 将两个正序数组合并成一个正序数组，然后再求中位数，似乎是一个方法。
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37  func findMedianSortedArrays(nums1 []int, nums2 []int) float64 { n1,n2 := len(nums1),len(nums2) nums := make([]int,n1+n2) // 将两个数组合并 	var idx,i,j int for idx &amp;lt; n1+n2 { if i == n1 { for j &amp;lt; n2 { nums[idx] = nums2[j] j++ idx++ } break } if j == n2 { for i &amp;lt; n1 { nums[idx] =nums1[i] i++ idx++ } break } if nums1[i] &amp;lt; nums2[j] { nums[idx] = nums1[i] i++ } else { nums[idx] = nums2[j] j++ } idx++ } if cnt := n1 + n2; cnt%2 == 0 { return float64(nums[cnt/2-1]+nums[cnt/2])/2.</description>
+    </item>
+    
+    <item>
+      <title>LEETCODE 643. 子数组最大平均数I</title>
+      <link>https://betterfor.github.io/2021/02/643/</link>
+      <pubDate>Thu, 04 Feb 2021 20:47:52 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/2021/02/643/</guid>
+      <description>大家好，我是沉迷于刷题的小耗。
+今天给大家带来的是力扣643题：子数组最大平均数I
+题目 给出n个整数，找出平均数最大且长度为k的连续子数组，并输出该最大平均数。
+示例 输入：[1,12,-5,-6,50,3], k = 4 **输出：**12.75 **解释：**最大平均数 (12-5-6+50)/4 = 51/4 = 12.75
+题解 先停顿个10秒，考虑一下这道题要考我们什么？
+是连续数组的最值，也就是滑动窗口的和。
+而遇到滑动窗口的题，我们通常用双指针来表示滑动窗口的左右。
+这道题比较简单，只是来求和。
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20  func findMaxAverage(nums []int, k int) float64 { var sum int for _,num := range nums[:k] { sum += num } ans := sum for i := k; i &amp;lt; len(nums); i++ { sum += nums[i] sum -= nums[i-k] ans = max(ans,sum) } return float64(ans)/float64(k) } func max(a,b int) int { if a &amp;gt; b { return a } return b }   复杂度分析 时间复杂度O(n),其中n是数组nums的长度。遍历数组一次。</description>
+    </item>
+    
     <item>
       <title>LEETCODE 888. 公平的糖果交换</title>
       <link>https://betterfor.github.io/2021/02/888/</link>
