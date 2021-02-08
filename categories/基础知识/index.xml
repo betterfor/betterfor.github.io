@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>基础知识 on 风落云起</title>
+    <link>https://betterfor.github.io/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
+    <description>Recent content in 基础知识 on 风落云起</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Sun, 07 Feb 2021 13:43:54 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>基础排序算法</title>
+      <link>https://betterfor.github.io/2021/02/%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/</link>
+      <pubDate>Sun, 07 Feb 2021 13:43:54 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/2021/02/%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/</guid>
+      <description>排序算法 所谓的排序算法就是将一串记录，按照递增或递减的顺序排列起来。
+ 通常提到的一共有十种排序：冒泡、选择、插入、快速、归并、堆、希尔、计数、桶、基数
+   比较类排序：通过比较来决定元素间的相对次序，通常其时间复杂度不能突破O(nlogn)，因此又称为非线性时间比较类排序。
+  非比较类排序：不通过比较元素间的相对次序，可以突破基于比较排序的时间下限，以线性时间运行，因此又称为线性时间非比较类排序。
+  时间复杂度：
+   排序方法 时间复杂度(平均) 时间复杂度(最坏) 时间复杂度(最好) 空间复杂度 稳定性     冒泡排序 O(n^2^) O(n^2^) O(n) O(1) 稳定   选择排序 O(n^2^) O(n^2^) O(n^2^) O(1) 不稳定   插入排序 O(n^2^) O(n^2^) O(n) O(1) 稳定   快速排序 O(nlogn) O(n^2^) O(nlogn) O(nlogn) 不稳定   归并排序 O(nlogn) O(nlogn) O(nlogn) O(n) 稳定   堆排序 O(nlogn) O(nlogn) O(nlogn) O(1) 不稳定   希尔排序 O(n^1.</description>
+    </item>
+    
+  </channel>
+</rss>
