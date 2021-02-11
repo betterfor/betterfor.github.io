@@ -7,7 +7,36 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Mon, 08 Feb 2021 10:14:18 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 08 Feb 2021 14:16:15 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Uuid</title>
+      <link>https://betterfor.github.io/2021/02/uuid/</link>
+      <pubDate>Mon, 08 Feb 2021 14:16:15 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/2021/02/uuid/</guid>
+      <description>背景 在复杂的分布式系统中，往往需要对大量的数据和消息进行唯一标识。数据日益增长，对数据库需要进行切分，而水平切分数据库需要一个唯一ID来标识一条数据或消息，数据库的自增ID显然不能满足需求。那么对于分布式全局ID有什么要求呢？
+ 全局唯一性：不能出现重复的ID号。 趋势递增：在MySQL InnoDB引擎中使用的是聚集索引，由于多数RDBMS使用B-tree的数据结构来存储索引数据，在主键的选择上面我们应该尽量使用有序的主键保证写入性能。 单调递增：保证下一个ID一定大于上一个ID，例如事务版本号、IM增量消息、排序等特殊需求。 信息安全：如果ID是连续的，会出现安全问题，在一些场景中，会需要ID无规则，不规则。  UUID UUID(Universally Unique Identifier)是一个128位标识符，在其规范的文本表示中，UUID 的 16 个 8 位字节表示为 32 个十六进制（基数16）数字，显示在由连字符分隔 &amp;lsquo;-&amp;rsquo; 的五个组中，&amp;ldquo;8-4-4-4-12&amp;rdquo; 总共 36 个字符（32 个字母数字字符和 4 个连字符）。例如：123e4567-e89b-12d3-a456-426655440000。
+  优点：性能高，本地生成，没有网络消耗
+  缺点：
+1、不易存储：UUID太长，很多场景不适用。
+2、信息不安全：基于MAC地址生成的UUID算法可能造成MAC地址泄露。
+3、没有排序，无法保证递增趋势。
+4、不易读，存储空间大。
+go两种生成UUID的第三方包：
+github.com/google/uuid
+github.com/satori/go.uuid
+  Snowflake snowflake是Twitter开源的分布式ID生成算法，结果是一个long型的ID。其核心思想是：使用41bit作为毫秒数，10bit作为机器的ID（5个bit是数据中心，5个bit的机器ID），12bit作为毫秒内的流水号（意味着每个节点在每毫秒可以产生 4096 个 ID），最后还有一个符号位，永远是0。
+1、实现原理：
+1位最高位：符号位不使用，0表示正数，1表示负数。
+41位时间戳：1&amp;lt;&amp;lt;41 = 1000*3600*24*365 = 69 年。
+10位工作机器id：如果我们对IDC划分有需求可以用5位给IDC，5位给工作机器，这样就可以表示32个IDC，每个IDC下有32台机器。
+12位自增ID：可以表示2^12^个ID。
+理论上snowflake方案的QPS约为409.3w/s，这种分配方式可以保证在任何一个IDC的任何一台机器在任意毫秒内生成的ID都是不同的。
+优点：
+ 毫秒数在高位，自增序列在低位，整个ID都是趋势递增的。 不依赖数据库等第三方系统，以服务的方式部署，稳定性更高，生成ID的性能也是非常高的。 可以根据自身业务特性分配bit位，非常灵活。  缺点：
+ 强依赖机器时钟，如果机器上时钟回拨，会导致发号重复或者服务会处于不可用状态。  代码实现：</description>
+    </item>
+    
     <item>
       <title>二维数组按行和按列遍历的效率</title>
       <link>https://betterfor.github.io/2021/02/%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E9%81%8D%E5%8E%86%E6%95%88%E7%8E%87/</link>

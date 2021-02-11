@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Uuid | 风落云起</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noodp" />
+<meta name="Description" content="LoveIt Theme Demo">
+<link rel="prev" href="https://betterfor.github.io/2021/02/%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E9%81%8D%E5%8E%86%E6%95%88%E7%8E%87/" />
+<link rel="canonical" href="https://betterfor.github.io/2021/02/uuid/" />
+<link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Uuid"/>
+<meta name="twitter:description" content="背景 在复杂的分布式系统中，往往需要对大量的数据和消息进行唯一标识。数据日益增长，对数据库需要进行切分，而水平切分数据库需要一个唯一ID来标识一条数据或消息，数据库的自增ID显然不能满足需求。那么对于分布式全局ID有什么要求呢？
+ 全局唯一性：不能出现重复的ID号。 趋势递增：在MySQL InnoDB引擎中使用的是聚集索引，由于多数RDBMS使用B-tree的数据结构来存储索引数据，在主键的选择上面我们应该尽量使用有序的主键保证写入性能。 单调递增：保证下一个ID一定大于上一个ID，例如事务版本号、IM增量消息、排序等特殊需求。 信息安全：如果ID是连续的，会出现安全问题，在一些场景中，会需要ID无规则，不规则。  UUID UUID(Universally Unique Identifier)是一个128位标识符，在其规范的文本表示中，UUID 的 16 个 8 位字节表示为 32 个十六进制（基数16）数字，显示在由连字符分隔 &lsquo;-&rsquo; 的五个组中，&ldquo;8-4-4-4-12&rdquo; 总共 36 个字符（32 个字母数字字符和 4 个连字符）。例如：123e4567-e89b-12d3-a456-426655440000。
+  优点：性能高，本地生成，没有网络消耗
+  缺点：
+1、不易存储：UUID太长，很多场景不适用。
+2、信息不安全：基于MAC地址生成的UUID算法可能造成MAC地址泄露。
+3、没有排序，无法保证递增趋势。
+4、不易读，存储空间大。
+go两种生成UUID的第三方包：
+github.com/google/uuid
+github.com/satori/go.uuid
+  Snowflake snowflake是Twitter开源的分布式ID生成算法，结果是一个long型的ID。其核心思想是：使用41bit作为毫秒数，10bit作为机器的ID（5个bit是数据中心，5个bit的机器ID），12bit作为毫秒内的流水号（意味着每个节点在每毫秒可以产生 4096 个 ID），最后还有一个符号位，永远是0。
+1、实现原理：
+1位最高位：符号位不使用，0表示正数，1表示负数。
+41位时间戳：1&lt;&lt;41 = 1000*3600*24*365 = 69 年。
+10位工作机器id：如果我们对IDC划分有需求可以用5位给IDC，5位给工作机器，这样就可以表示32个IDC，每个IDC下有32台机器。
+12位自增ID：可以表示2^12^个ID。
+理论上snowflake方案的QPS约为409.3w/s，这种分配方式可以保证在任何一个IDC的任何一台机器在任意毫秒内生成的ID都是不同的。
+优点：
+ 毫秒数在高位，自增序列在低位，整个ID都是趋势递增的。 不依赖数据库等第三方系统，以服务的方式部署，稳定性更高，生成ID的性能也是非常高的。 可以根据自身业务特性分配bit位，非常灵活。  缺点：
+ 强依赖机器时钟，如果机器上时钟回拨，会导致发号重复或者服务会处于不可用状态。  代码实现："/>
+<script type="application/ld+json">
+    {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Uuid",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https:\/\/betterfor.github.io\/2021\/02\/uuid\/"
+    },
+    
+        "image": {
+            "@type": "ImageObject",
+            "url": "https:\/\/betterfor.github.io\/cover.png",
+            "width":  800 ,
+            "height":  600 
+        },
+    
+    "genre": "posts",
+    
+        "keywords": "uuid, snowflake",
+    
+    "wordcount":  568 ,
+    "url": "https:\/\/betterfor.github.io\/2021\/02\/uuid\/",
+    
+        "datePublished": "2021-02-08T14:16:15\u002b08:00",
+    
+    
+        "dateModified": "2021-02-11T12:24:49\u002b08:00",
+    
+    
+        "license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.",
+    
+    
+        "publisher": {
+            "@type": "Organization",
+            "name": "XXXX",
+            "logo": {
+            "@type": "ImageObject",
+            "url": "https:\/\/betterfor.github.io\/logo.png",
+            "width":  127 ,
+            "height":  40 
+            }
+        },
+    
+    
+    "description": ""
+    }
+    </script>
+<link rel="stylesheet" href="/css/style.min.css">
+<link rel="stylesheet" href="/css/lib/fontawesome-free/all.min.min.css">
+
+<link rel="stylesheet" href="/css/lib/animate/animate.min.min.css">
+
+    </head>
+    <body>
+        <script>
+            window.isDark = (window.localStorage && window.localStorage.getItem('theme')) === 'dark';
+            window.isDark && document.body.classList.add('dark-theme');
+        </script>
+        <div class="wrapper">
+            <nav class="navbar">
+    <div class="navbar-container">
+        <div class="navbar-header">
+            <a href="https://betterfor.github.io/">风落云起</a>
+        </div>
+        <div class="navbar-menu">
+            
+            
+                <a class="menu-item" href="https://betterfor.github.io/posts/" title="">文章</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/tags/" title="">标签</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/categories/" title="">种类</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/about/" title="">关于</a>
+            
+            <a href="javascript:void(0);" class="theme-switch"><i class="fas fa-adjust fa-rotate-180 fa-fw"></i></a>
+        </div>
+    </div>
+</nav>
+<nav class="navbar-mobile">
+     <div class="navbar-container">
+        <div class="navbar-header">
+            <div><a href="javascript:void(0);" class="theme-switch"><i class="fas fa-adjust fa-rotate-180 fa-fw"></i></a><a href="https://betterfor.github.io/">风落云起</a></div>
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="navbar-menu" id="mobile-menu">
+            
+            
+                <a class="menu-item" href="https://betterfor.github.io/posts/" title="">文章</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/tags/" title="">标签</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/categories/" title="">种类</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/about/" title="">关于</a>
+            
+        </div>
+    </div>
+</nav><main class="main">
+                <div class="container">
+                    
+    
+    
+    
+
+    <article class="post-warp">
+        <h1 class="post-title animated flipInX">Uuid</h1>
+
+        <div class="post-meta">
+            <div class="post-meta-main">
+                <a class="author" href="https://betterfor.github.io/" rel="author"><i class="fas fa-user-circle fa-fw"></i>betterfor&nbsp;</a>
+                <span class="post-category">
+                        收录于
+                        <i class="far fa-folder fa-fw"></i><a href="https://betterfor.github.io/categories/golang/">golang</a>
+                            
+                    </span>
+            </div>
+            <div class="post-meta-other">
+                <i class="far fa-calendar-alt fa-fw"></i><time datetime=2021-02-08>2021-02-08</time>&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>约 568 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>预计阅读 3 分钟&nbsp;</div>
+        </div>
+
+        
+
+        <div class="post-toc" id="post-toc">
+                <h2 class="post-toc-title">目录</h2>
+                <div class="post-toc-content always-active">
+                    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#uuid">UUID</a></li>
+    <li><a href="#snowflake">Snowflake</a></li>
+    <li><a href="#数据库id">数据库ID</a></li>
+    <li><a href="#mongodb-id">MongoDB ID</a></li>
+    <li><a href="#zookeeper-id">Zookeeper ID</a></li>
+  </ul>
+</nav>
+                </div>
+            </div>
+            <div class="post-toc-mobile" id="post-toc-mobile">
+                <details>
+                    <summary><div class="post-toc-title"><span>目录</span><span><i class="details icon fas fa-angle-down"></i></span></div></summary>
+                    <div class="post-toc-content">
+                        
+                        
+                        <nav id="TableOfContentsMobile">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#uuid">UUID</a></li>
+    <li><a href="#snowflake">Snowflake</a></li>
+    <li><a href="#数据库id">数据库ID</a></li>
+    <li><a href="#mongodb-id">MongoDB ID</a></li>
+    <li><a href="#zookeeper-id">Zookeeper ID</a></li>
+  </ul>
+</nav>
+                    </div>
+                </details>
+            </div>
+
+        <div class="post-content">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <a class="post-dummy-target" id="背景"></a><h2>背景</h2>
+<p>在复杂的分布式系统中，往往需要对大量的数据和消息进行唯一标识。数据日益增长，对数据库需要进行切分，而水平切分数据库需要一个唯一ID来标识一条数据或消息，数据库的自增ID显然不能满足需求。那么对于<a href="https://tech.meituan.com/2017/04/21/mt-leaf.html">分布式全局ID</a>有什么要求呢？</p>
+<ul>
+<li>全局唯一性：不能出现重复的ID号。</li>
+<li>趋势递增：在MySQL InnoDB引擎中使用的是聚集索引，由于多数RDBMS使用B-tree的数据结构来存储索引数据，在主键的选择上面我们应该尽量使用有序的主键保证写入性能。</li>
+<li>单调递增：保证下一个ID一定大于上一个ID，例如事务版本号、IM增量消息、排序等特殊需求。</li>
+<li>信息安全：如果ID是连续的，会出现安全问题，在一些场景中，会需要ID无规则，不规则。</li>
+</ul>
+<a class="post-dummy-target" id="uuid"></a><h2>UUID</h2>
+<p>UUID(Universally Unique Identifier)是一个128位标识符，在其规范的文本表示中，UUID 的 16 个 8 位字节表示为 32 个十六进制（基数16）数字，显示在由连字符分隔 &lsquo;-&rsquo; 的五个组中，&ldquo;8-4-4-4-12&rdquo; 总共 36 个字符（32 个字母数字字符和 4 个连字符）。例如：<code>123e4567-e89b-12d3-a456-426655440000</code>。</p>
+<ul>
+<li>
+<p>优点：性能高，本地生成，没有网络消耗</p>
+</li>
+<li>
+<p>缺点：</p>
+<p>1、不易存储：UUID太长，很多场景不适用。</p>
+<p>2、信息不安全：基于MAC地址生成的UUID算法可能造成MAC地址泄露。</p>
+<p>3、没有排序，无法保证递增趋势。</p>
+<p>4、不易读，存储空间大。</p>
+<p>go两种生成UUID的第三方包：</p>
+<p><a href="https://github.com/google/uuid">github.com/google/uuid</a></p>
+<p><a href="https://github.com/satori/go.uuid">github.com/satori/go.uuid</a></p>
+</li>
+</ul>
+<a class="post-dummy-target" id="snowflake"></a><h2>Snowflake</h2>
+<p><a href="https://github.com/twitter-archive/snowflake/blob/snowflake-2010/src/main/scala/com/twitter/service/snowflake/IdWorker.scala">snowflake</a>是Twitter开源的分布式ID生成算法，结果是一个long型的ID。其核心思想是：使用41bit作为毫秒数，10bit作为机器的ID（5个bit是数据中心，5个bit的机器ID），12bit作为毫秒内的流水号（意味着每个节点在每毫秒可以产生 4096 个 ID），最后还有一个符号位，永远是0。</p>
+<p>1、实现原理：</p>
+<p><img src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/02/08/snowflake.png" alt="snowflake"></p>
+<p>1位最高位：符号位不使用，0表示正数，1表示负数。</p>
+<p>41位时间戳：<code>1&lt;&lt;41</code> = <code>1000*3600*24*365</code> = 69 年。</p>
+<p>10位工作机器id：如果我们对IDC划分有需求可以用5位给IDC，5位给工作机器，这样就可以表示32个IDC，每个IDC下有32台机器。</p>
+<p>12位自增ID：可以表示2^12^个ID。</p>
+<p>理论上snowflake方案的QPS约为409.3w/s，这种分配方式可以保证在任何一个IDC的任何一台机器在任意毫秒内生成的ID都是不同的。</p>
+<p><strong>优点：</strong></p>
+<ul>
+<li>毫秒数在高位，自增序列在低位，整个ID都是趋势递增的。</li>
+<li>不依赖数据库等第三方系统，以服务的方式部署，稳定性更高，生成ID的性能也是非常高的。</li>
+<li>可以根据自身业务特性分配bit位，非常灵活。</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li>强依赖机器时钟，如果机器上时钟回拨，会导致发号重复或者服务会处于不可用状态。</li>
+</ul>
+<p>代码实现：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;errors&#34;</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;runtime&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="c1">//global var
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">sequence</span> <span class="kt">int</span> <span class="p">=</span> <span class="mi">0</span>
+<span class="kd">var</span> <span class="nx">lastTime</span> <span class="kt">int</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="c1">//every segment bit
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">workerIdBits</span> <span class="p">=</span> <span class="mi">5</span>
+<span class="kd">var</span> <span class="nx">datacenterIdBits</span> <span class="p">=</span> <span class="mi">5</span>
+<span class="kd">var</span> <span class="nx">sequenceBits</span> <span class="p">=</span> <span class="mi">12</span>
+<span class="c1">//every segment max number
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">maxWorkerId</span> <span class="kt">int</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="p">^</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="nx">workerIdBits</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">maxDatacenterId</span> <span class="kt">int</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="p">^</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="nx">datacenterIdBits</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">maxSequence</span> <span class="kt">int</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="p">^</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="nx">sequenceBits</span><span class="p">)</span>
+<span class="c1">//bit operation shift
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">workerIdShift</span> <span class="p">=</span> <span class="nx">sequenceBits</span>
+<span class="kd">var</span> <span class="nx">datacenterShift</span> <span class="p">=</span> <span class="nx">workerIdBits</span> <span class="o">+</span> <span class="nx">sequenceBits</span>
+<span class="kd">var</span> <span class="nx">timestampShift</span> <span class="p">=</span> <span class="nx">datacenterIdBits</span> <span class="o">+</span> <span class="nx">workerIdBits</span> <span class="o">+</span> <span class="nx">sequenceBits</span>
+
+<span class="kd">type</span> <span class="nx">Snowflake</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">datacenterId</span> <span class="kt">int</span>
+	<span class="nx">workerId</span>     <span class="kt">int</span>
+	<span class="nx">epoch</span>        <span class="kt">int</span>
+	<span class="nx">mt</span>           <span class="o">*</span><span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">NewSnowflake</span><span class="p">(</span><span class="nx">datacenterId</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">workerId</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">epoch</span> <span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">Snowflake</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nx">datacenterId</span> <span class="p">&gt;</span> <span class="nx">maxDatacenterId</span> <span class="o">||</span> <span class="nx">datacenterId</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;datacenterId cant be greater than %d or less than 0&#34;</span><span class="p">,</span> <span class="nx">maxDatacenterId</span><span class="p">))</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">workerId</span> <span class="p">&gt;</span> <span class="nx">maxWorkerId</span> <span class="o">||</span> <span class="nx">workerId</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;workerId cant be greater than %d or less than 0&#34;</span><span class="p">,</span> <span class="nx">maxWorkerId</span><span class="p">))</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">epoch</span> <span class="p">&gt;</span> <span class="nf">getCurrentTime</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;epoch time cant be after now&#34;</span><span class="p">))</span>
+	<span class="p">}</span>
+	<span class="nx">sf</span> <span class="o">:=</span> <span class="nx">Snowflake</span><span class="p">{</span><span class="nx">datacenterId</span><span class="p">,</span> <span class="nx">workerId</span><span class="p">,</span> <span class="nx">epoch</span><span class="p">,</span> <span class="nb">new</span><span class="p">(</span><span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span><span class="p">)}</span>
+	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">sf</span><span class="p">,</span> <span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">sf</span> <span class="o">*</span><span class="nx">Snowflake</span><span class="p">)</span> <span class="nf">getUniqueId</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="nx">sf</span><span class="p">.</span><span class="nx">mt</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">sf</span><span class="p">.</span><span class="nx">mt</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+	<span class="c1">//get current time
+</span><span class="c1"></span>	<span class="nx">currentTime</span> <span class="o">:=</span> <span class="nf">getCurrentTime</span><span class="p">()</span>
+	<span class="c1">//compute sequence
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">currentTime</span> <span class="p">&lt;</span> <span class="nx">lastTime</span> <span class="p">{</span> <span class="c1">//occur clock back
+</span><span class="c1"></span>		<span class="c1">//panic or wait,wait is not the best way.can be optimized.
+</span><span class="c1"></span>		<span class="nx">currentTime</span> <span class="p">=</span> <span class="nf">waitUntilNextTime</span><span class="p">(</span><span class="nx">lastTime</span><span class="p">)</span>
+		<span class="nx">sequence</span> <span class="p">=</span> <span class="mi">0</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">currentTime</span> <span class="o">==</span> <span class="nx">lastTime</span> <span class="p">{</span> <span class="c1">//at the same time(micro-second)
+</span><span class="c1"></span>		<span class="nx">sequence</span> <span class="p">=</span> <span class="p">(</span><span class="nx">sequence</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">maxSequence</span>
+		<span class="k">if</span> <span class="nx">sequence</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span> <span class="c1">//overflow max num,wait next time
+</span><span class="c1"></span>			<span class="nx">currentTime</span> <span class="p">=</span> <span class="nf">waitUntilNextTime</span><span class="p">(</span><span class="nx">lastTime</span><span class="p">)</span>
+		<span class="p">}</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">currentTime</span> <span class="p">&gt;</span> <span class="nx">lastTime</span> <span class="p">{</span> <span class="c1">//next time
+</span><span class="c1"></span>		<span class="nx">sequence</span> <span class="p">=</span> <span class="mi">0</span>
+		<span class="nx">lastTime</span> <span class="p">=</span> <span class="nx">currentTime</span>
+	<span class="p">}</span>
+	<span class="c1">//generate id
+</span><span class="c1"></span>	<span class="k">return</span> <span class="p">(</span><span class="nx">currentTime</span><span class="o">-</span><span class="nx">sf</span><span class="p">.</span><span class="nx">epoch</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="nx">timestampShift</span> <span class="p">|</span> <span class="nx">sf</span><span class="p">.</span><span class="nx">datacenterId</span><span class="o">&lt;&lt;</span><span class="nx">datacenterShift</span> <span class="p">|</span>
+		<span class="nx">sf</span><span class="p">.</span><span class="nx">workerId</span><span class="o">&lt;&lt;</span><span class="nx">workerIdShift</span> <span class="p">|</span> <span class="nx">sequence</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">waitUntilNextTime</span><span class="p">(</span><span class="nx">lasttime</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="nx">currentTime</span> <span class="o">:=</span> <span class="nf">getCurrentTime</span><span class="p">()</span>
+	<span class="k">for</span> <span class="nx">currentTime</span> <span class="o">&lt;=</span> <span class="nx">lasttime</span> <span class="p">{</span>
+		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span> <span class="c1">//sleep micro second
+</span><span class="c1"></span>		<span class="nx">currentTime</span> <span class="p">=</span> <span class="nf">getCurrentTime</span><span class="p">()</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">currentTime</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">getCurrentTime</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">().</span><span class="nf">UnixNano</span><span class="p">()</span> <span class="o">/</span> <span class="mf">1e6</span><span class="p">)</span> <span class="c1">//micro second
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">runtime</span><span class="p">.</span><span class="nf">GOMAXPROCS</span><span class="p">(</span><span class="nx">runtime</span><span class="p">.</span><span class="nf">NumCPU</span><span class="p">())</span>
+	<span class="nx">datacenterId</span> <span class="o">:=</span> <span class="mi">0</span>
+	<span class="nx">workerId</span> <span class="o">:=</span> <span class="mi">0</span>
+	<span class="nx">epoch</span> <span class="o">:=</span> <span class="mi">1596850974657</span>
+	<span class="nx">s</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">NewSnowflake</span><span class="p">(</span><span class="nx">datacenterId</span><span class="p">,</span> <span class="nx">workerId</span><span class="p">,</span> <span class="nx">epoch</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">1000000</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nf">getUniqueId</span><span class="p">())</span>
+			<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+		<span class="p">}()</span>
+	<span class="p">}</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><a class="post-dummy-target" id="数据库id"></a><h2>数据库ID</h2>
+<p>利用数据库字段设置auto_increment_increment和auto_increment_offset来保证ID自增，每次业务使用一下SQL读写MySQL得到ID。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-mysql" data-lang="mysql"><span class="n">begin</span><span class="p">;</span>
+<span class="k">REPLACE</span> <span class="k">into</span> <span class="nf">Tickets</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="k">values</span> <span class="p">(</span><span class="no">null</span><span class="p">);</span>
+<span class="k">select</span> <span class="nf">LAST_INSERT_ID</span><span class="p">();</span>
+<span class="n">commit</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/02/08/mysql_id.png" alt="mysql_id"></p>
+<ul>
+<li>优点：简单，利用数据库的功能实现，成本小；id单调递增。</li>
+<li>缺点：强依赖数据库，当数据库不可用时，是致命问题；ID发号性能瓶颈限制在单台MySQL的读写性能上。</li>
+</ul>
+<p>对于MySQL性能问题，可用如下方法解决：</p>
+<p>在分布式系统中部署多台机器，每台机器设置不同的初始值，且步长相等。例如设置步长为2，<code>TicketServer1</code>的初始值为1<code> (1,3,5,7...)</code>, <code>TicketServer1</code>的初始值为2<code>(2,4,6,8...)</code>。</p>
+<p><a href="https://code.flickr.net/2010/02/08/ticket-servers-distributed-unique-primary-keys-on-the-cheap/">主键生成策略</a></p>
+<p>缺点：</p>
+<ul>
+<li>水平扩展比较困难，事先定好步长和机器后，如果后续新增机器，不容易扩容。</li>
+<li>数据库压力还是大，只能靠堆机器来提高性能。</li>
+</ul>
+<a class="post-dummy-target" id="mongodb-id"></a><h2>MongoDB ID</h2>
+<p><a href="https://docs.mongodb.com/manual/reference/method/ObjectId/#description">MongoDB官方文档 ObjectID</a>和snowflake算法类似，它设计成轻量型的，不同的机器都能用全局唯一的同种方法便利生成。通过 <code>时间戳+机器+pid+自增id</code> 共12个字节，通过 <code>4+3+2+3</code> 的方式生成24位的十六进制字符。</p>
+<a class="post-dummy-target" id="zookeeper-id"></a><h2>Zookeeper ID</h2>
+<p>zookeeper主要通过其znode数据版本来生成序列号，可以生成32位和64位的数据版本号，客户端可以使用这个版本号来作为唯一的序列号。</p>
+<p>很少会使用zookeeper来生成唯一ID。主要是由于需要依赖zookeeper，并且是多步调用API，如果在竞争较大的情况下，需要考虑使用分布式锁。因此，性能在高并发的分布式环境下，也不甚理想。</p>
+
+        </div>
+
+        <div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>本文于 2021-02-11 更新</span>
+            </div>
+            <div class="post-info-license">
+                
+            </div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md">
+                
+                    
+                        <span><a class="link-to-markdown" href="https://betterfor.github.io/2021/02/uuid/index.md" target="_blank">阅读原始文档</a></span>
+                    
+                
+            </div>
+            <div class="post-info-share">
+                
+                    <span>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</span>
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section>
+            
+                
+                    <span class="tag">
+                        <a href="https://betterfor.github.io/tags/uuid/"><i class="fas fa-tag fa-fw"></i>uuid</a>
+                    </span>
+                
+                    <span class="tag">
+                        <a href="https://betterfor.github.io/tags/snowflake/"><i class="fas fa-tag fa-fw"></i>snowflake</a>
+                    </span>
+                
+            
+        </section>
+        <section>
+            <span><a href="javascript:window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="https://betterfor.github.io/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav">
+        
+            <a href="https://betterfor.github.io/2021/02/%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E9%81%8D%E5%8E%86%E6%95%88%E7%8E%87/" class="prev" rel="prev" title="二维数组按行和按列遍历的效率"><i class="fas fa-angle-left fa-fw"></i>二维数组按行和按列遍历的效率</a>
+        
+        
+    </div>
+</div>
+
+        <div class="post-comment">
+            
+            
+
+            
+        </div>
+    </article></div>
+            </main>
+            <footer class="footer">
+    <div class="copyright">
+        <div class="copyright-line">
+            由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreffer">Hugo</a> 强力驱动&nbsp;|&nbsp;主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="external nofollow noopener noreffer">LoveIt<i class="far fa-heart fa-fw"></i></a>
+        </div>
+        <div class="copyright-line">
+            <i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://betterfor.github.io/">betterfor</a></span><span class="license">&nbsp;|&nbsp;<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+    </div>
+</footer>
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+<script src="/js/lib/jquery/jquery.slim.min.min.js"></script>
+<script src="/js/lib/lazysizes/lazysizes.min.min.js"></script>
+<script src="/js/lib/smooth-scroll/smooth-scroll.polyfills.min.min.js"></script><script>window.scroll = new SmoothScroll('[data-scroll]', {speed: 300, speedAsDuration: true});</script>
+
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+
+
+<script src="/js/blog.min.js"></script>
+
+
+    
+</div>
+        <a href="#" class="dynamic-to-top" id="dynamic-to-top" data-scroll><span>&nbsp;</span></a>
+    </body>
+</html>
