@@ -7,7 +7,23 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Mon, 18 Jan 2021 14:04:32 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/develop/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 25 Feb 2021 15:15:36 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/develop/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang 1.16版本新特性 =&gt; 撤回版本(retract)</title>
+      <link>https://betterfor.github.io/2021/02/golang_retract/</link>
+      <pubDate>Thu, 25 Feb 2021 15:15:36 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/2021/02/golang_retract/</guid>
+      <description>一般来说，模块作者需要使用一种方法来只是不应该使用某个已发布的模块。
+ 出现一个严重的安全漏洞 不闲不兼容或bug 版本发布错误   出现过模块最新版本为1.0.0，错误发布1.1.0，然后在github上把版本删除，使用1.0.1版本，但是有人使用代理模块并且下载了1.1.0版本，所以其他人再下载指定latest会下载1.1.0版本的代码。
+ 准备工作  retract模块，github的完整路径是https://github.com/betterfor/retract，你可以使用自己的模块实验。 awesomeProjcet，本地模块，使用了test包的依赖的简单main函数。   请确保golang版本是1.16+
+ 创建test模块 1、先在github上创建好仓库
+2、拉取代码仓库
+1 2 3 4  $ git clone https://github.com/betterfor/retract.git $ cd retract/ $ go mod init go: creating new go.mod: module github.com/betterfor/retract   3、在模块中新建foo.go文件
+1 2 3 4 5  package retract func Foo() string { return &amp;#34;v0.0.1&amp;#34; }   4、将retract模块的改动提交git并push
+1 2 3  $ git add .</description>
+    </item>
+    
     <item>
       <title>使用Navicate连接Oracle失败 ORA-25847:connection to server failed,probable Orable Net admin error</title>
       <link>https://betterfor.github.io/2021/01/oracle_connect/</link>

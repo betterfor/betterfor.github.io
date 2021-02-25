@@ -7,7 +7,37 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Mon, 08 Feb 2021 14:16:15 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 25 Feb 2021 15:15:36 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang 1.16版本新特性 =&gt; 撤回版本(retract)</title>
+      <link>https://betterfor.github.io/2021/02/golang_retract/</link>
+      <pubDate>Thu, 25 Feb 2021 15:15:36 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/2021/02/golang_retract/</guid>
+      <description>一般来说，模块作者需要使用一种方法来只是不应该使用某个已发布的模块。
+ 出现一个严重的安全漏洞 不闲不兼容或bug 版本发布错误   出现过模块最新版本为1.0.0，错误发布1.1.0，然后在github上把版本删除，使用1.0.1版本，但是有人使用代理模块并且下载了1.1.0版本，所以其他人再下载指定latest会下载1.1.0版本的代码。
+ 准备工作  retract模块，github的完整路径是https://github.com/betterfor/retract，你可以使用自己的模块实验。 awesomeProjcet，本地模块，使用了test包的依赖的简单main函数。   请确保golang版本是1.16+
+ 创建test模块 1、先在github上创建好仓库
+2、拉取代码仓库
+1 2 3 4  $ git clone https://github.com/betterfor/retract.git $ cd retract/ $ go mod init go: creating new go.mod: module github.com/betterfor/retract   3、在模块中新建foo.go文件
+1 2 3 4 5  package retract func Foo() string { return &amp;#34;v0.0.1&amp;#34; }   4、将retract模块的改动提交git并push
+1 2 3  $ git add .</description>
+    </item>
+    
+    <item>
+      <title>Docker命令大全</title>
+      <link>https://betterfor.github.io/2021/02/docker_command/</link>
+      <pubDate>Fri, 12 Feb 2021 19:26:01 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/2021/02/docker_command/</guid>
+      <description>Docker是一个虚拟环境容器，可以将你的开发环境、代码、配置文件等一并打包到这个容器中，并发布和应用到任意平台中。所以你需要知道一点docker的命令。
+ 这里是关于docker的基础命令（第一节）
+ 版本信息：查看docker的各项基础信息 仓库管理：管理镜像存储的仓库  版本信息 info docker info：显示Docker系统信息，包括镜像、容器数量和镜像仓库。
+语法
+1 2 3 4  docker info [OPTIONS] Options: -f, --format string 显示返回值的模板文件   实例
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51  Client: Context: default Debug Mode: false Plugins: app: Docker App (Docker Inc.</description>
+    </item>
+    
     <item>
       <title>Uuid</title>
       <link>https://betterfor.github.io/2021/02/uuid/</link>

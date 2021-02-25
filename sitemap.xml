@@ -3,7 +3,21 @@
         <url>
             <loc>https://betterfor.github.io/categories/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/tags/develop/</loc>
+            
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -17,7 +31,35 @@
         <url>
             <loc>https://betterfor.github.io/categories/golang/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/2021/02/golang_retract/</loc>
+            
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/tags/linux/</loc>
+            
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -31,21 +73,7 @@
         <url>
             <loc>https://betterfor.github.io/posts/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
-            
-            
-                <changefreq>weekly</changefreq>
-            
-            
-                <priority>0.5</priority>
-            
-            
-        </url>
-    
-        <url>
-            <loc>https://betterfor.github.io/tags/snowflake/</loc>
-            
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -59,35 +87,7 @@
         <url>
             <loc>https://betterfor.github.io/tags/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
-            
-            
-                <changefreq>weekly</changefreq>
-            
-            
-                <priority>0.5</priority>
-            
-            
-        </url>
-    
-        <url>
-            <loc>https://betterfor.github.io/2021/02/uuid/</loc>
-            
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
-            
-            
-                <changefreq>weekly</changefreq>
-            
-            
-                <priority>0.5</priority>
-            
-            
-        </url>
-    
-        <url>
-            <loc>https://betterfor.github.io/tags/uuid/</loc>
-            
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -101,7 +101,105 @@
         <url>
             <loc>https://betterfor.github.io/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/categories/apps/</loc>
+            
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/tags/command/</loc>
+            
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/tags/docker/</loc>
+            
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/2021/02/docker_command/</loc>
+            
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/tags/snowflake/</loc>
+            
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/2021/02/uuid/</loc>
+            
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
+            
+            
+                <changefreq>weekly</changefreq>
+            
+            
+                <priority>0.5</priority>
+            
+            
+        </url>
+    
+        <url>
+            <loc>https://betterfor.github.io/tags/uuid/</loc>
+            
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -183,37 +281,9 @@
         </url>
     
         <url>
-            <loc>https://betterfor.github.io/tags/develop/</loc>
-            
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
-            
-            
-                <changefreq>weekly</changefreq>
-            
-            
-                <priority>0.5</priority>
-            
-            
-        </url>
-    
-        <url>
-            <loc>https://betterfor.github.io/tags/linux/</loc>
-            
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
-            
-            
-                <changefreq>weekly</changefreq>
-            
-            
-                <priority>0.5</priority>
-            
-            
-        </url>
-    
-        <url>
             <loc>https://betterfor.github.io/2021/01/oracle_connect/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -241,7 +311,7 @@
         <url>
             <loc>https://betterfor.github.io/2021/01/rocketmq/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -255,7 +325,7 @@
         <url>
             <loc>https://betterfor.github.io/tags/tool/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -311,7 +381,7 @@
         <url>
             <loc>https://betterfor.github.io/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -325,7 +395,7 @@
         <url>
             <loc>https://betterfor.github.io/2020/12/chan/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -339,7 +409,7 @@
         <url>
             <loc>https://betterfor.github.io/2020/12/map/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -353,7 +423,7 @@
         <url>
             <loc>https://betterfor.github.io/2020/12/slice/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -367,7 +437,7 @@
         <url>
             <loc>https://betterfor.github.io/2020/12/list/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -381,7 +451,7 @@
         <url>
             <loc>https://betterfor.github.io/2020/11/prestudy/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -395,7 +465,7 @@
         <url>
             <loc>https://betterfor.github.io/2020/11/catelog/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -409,7 +479,7 @@
         <url>
             <loc>https://betterfor.github.io/tags/%E7%9B%AE%E5%BD%95/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -423,7 +493,7 @@
         <url>
             <loc>https://betterfor.github.io/tags/json/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -437,7 +507,7 @@
         <url>
             <loc>https://betterfor.github.io/2020/11/json_example/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -451,7 +521,7 @@
         <url>
             <loc>https://betterfor.github.io/2020/11/exporter/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -465,7 +535,7 @@
         <url>
             <loc>https://betterfor.github.io/tags/prometheus/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -479,7 +549,7 @@
         <url>
             <loc>https://betterfor.github.io/2020/11/prometheus/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
@@ -493,7 +563,7 @@
         <url>
             <loc>https://betterfor.github.io/about/</loc>
             
-                <lastmod>2021-02-11T12:24:49+08:00</lastmod>
+                <lastmod>2021-02-25T15:17:23+08:00</lastmod>
             
             
                 <changefreq>weekly</changefreq>
