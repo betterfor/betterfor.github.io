@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Pod的基础 | 风落云起</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noodp" />
+<meta name="Description" content="LoveIt Theme Demo">
+<link rel="prev" href="https://betterfor.github.io/2021/02/golang_retract/" />
+<link rel="canonical" href="https://betterfor.github.io/2021/03/pod%E5%9F%BA%E7%A1%80/" />
+<link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Pod的基础"/>
+<meta name="twitter:description" content="一、简介 pod在整个生命周期中被系统定义为各种状态，熟悉pod的各种状态对于理解如何设置pod的调度策略、重启策略都是很有必要的。
+二、pod状态  Pending：API Server已经创建该Pod，但在Pod内还有一个或多个容器的镜像没有创建，包括正在下载镜像的过程 Running：Pod内所有容器均已创建，且至少有一个容器处于运行状态。正在启动状态或重启状态 Succeeded：Pod内所有容器均成功执行后退出，且不会再重启 Failed：Pod内所有容器均已退出，但至少有一个容器退出为失败状态，退出码不为0 Unknown：由于某种原因无法获取该Pod的状态，可能由于网络通信不畅导致（无法连接API Server）  三、Pod重启策略 pod的重启策略（RestartPolicy）应用于Pod内的所有容器，并且仅在Pod所处的Node上由kubelet进行判断和重启操作。当某个容器异常退出或健康检查失败时，kubelet会根据重启策略来进行相应的操作。
+ Always：默认策略，当容器失效时，由kubelet自动重启容器 OnFailure：当容器终止运行且退出码不为0时，由kubelet自动重启该容器 Never：不论容器的运行状态都不重启  kubelet重启容器的时间间隔以sync-frequency乘以2来计算，例如1、2、4、8倍等，最长5min，并且在成功重启后10min后重置该时间。
+每种控制器对pod的重启策略要求：
+ RC和DaemonSet：必须为Always，需要保证容器持续运行 Job：OnFailure或Never，确保容器执行完成后不再重启 kubelet：在pod失效后重启，不论将RestartPolicy设置为什么值，也不会对pod进行健康检查  常见的状态转换场景（最终状态）
+   pod包含的容器数 pod当前的状态 发生事件 always OnFailure Never     1 running 成功退出 running succeed succeed   1 running 失败退出 running running failed   2 running 1个失败退出 running running running   2 running oom running running failed    四、健康检查  LivenessProbe存活探针：判断容器是否存活（running状态）。如果探针探测到容器不健康，kubelet会杀掉容器，并根据容器的重启策略处理。如果容器不包含存活探针，那么会认为容器一直健康。 ReadinessProbe就绪探针：判断容器服务是否可用（ready状态），达到ready状态的pod才能接受请求。如果在运行过程中ready状态变为false，则系统自动将其从service的后端endpoint列表中隔离出去，后续再把恢复到ready状态的pod加回到endpoint列表。这样就能保证客户端再访问service时不会被转发到服务不可用的pod实例上。  三种实现方式："/>
+<script type="application/ld+json">
+    {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Pod的基础",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https:\/\/betterfor.github.io\/2021\/03\/pod%E5%9F%BA%E7%A1%80\/"
+    },
+    
+        "image": {
+            "@type": "ImageObject",
+            "url": "https:\/\/betterfor.github.io\/cover.png",
+            "width":  800 ,
+            "height":  600 
+        },
+    
+    "genre": "posts",
+    
+        "keywords": "pod",
+    
+    "wordcount":  79 ,
+    "url": "https:\/\/betterfor.github.io\/2021\/03\/pod%E5%9F%BA%E7%A1%80\/",
+    
+        "datePublished": "2021-03-22T21:55:59\u002b08:00",
+    
+    
+        "dateModified": "2021-03-22T21:55:59\u002b08:00",
+    
+    
+        "license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.",
+    
+    
+        "publisher": {
+            "@type": "Organization",
+            "name": "XXXX",
+            "logo": {
+            "@type": "ImageObject",
+            "url": "https:\/\/betterfor.github.io\/logo.png",
+            "width":  127 ,
+            "height":  40 
+            }
+        },
+    
+    
+    "description": ""
+    }
+    </script>
+<link rel="stylesheet" href="/css/style.min.css">
+<link rel="stylesheet" href="/css/lib/fontawesome-free/all.min.min.css">
+
+<link rel="stylesheet" href="/css/lib/animate/animate.min.min.css">
+
+    </head>
+    <body>
+        <script>
+            window.isDark = (window.localStorage && window.localStorage.getItem('theme')) === 'dark';
+            window.isDark && document.body.classList.add('dark-theme');
+        </script>
+        <div class="wrapper">
+            <nav class="navbar">
+    <div class="navbar-container">
+        <div class="navbar-header">
+            <a href="https://betterfor.github.io/">风落云起</a>
+        </div>
+        <div class="navbar-menu">
+            
+            
+                <a class="menu-item" href="https://betterfor.github.io/posts/" title="">文章</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/tags/" title="">标签</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/categories/" title="">种类</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/about/" title="">关于</a>
+            
+            <a href="javascript:void(0);" class="theme-switch"><i class="fas fa-adjust fa-rotate-180 fa-fw"></i></a>
+        </div>
+    </div>
+</nav>
+<nav class="navbar-mobile">
+     <div class="navbar-container">
+        <div class="navbar-header">
+            <div><a href="javascript:void(0);" class="theme-switch"><i class="fas fa-adjust fa-rotate-180 fa-fw"></i></a><a href="https://betterfor.github.io/">风落云起</a></div>
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="navbar-menu" id="mobile-menu">
+            
+            
+                <a class="menu-item" href="https://betterfor.github.io/posts/" title="">文章</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/tags/" title="">标签</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/categories/" title="">种类</a>
+            
+                <a class="menu-item" href="https://betterfor.github.io/about/" title="">关于</a>
+            
+        </div>
+    </div>
+</nav><main class="main">
+                <div class="container">
+                    
+    
+    
+    
+
+    <article class="post-warp">
+        <h1 class="post-title animated flipInX">Pod的基础</h1>
+
+        <div class="post-meta">
+            <div class="post-meta-main">
+                <a class="author" href="https://betterfor.github.io/" rel="author"><i class="fas fa-user-circle fa-fw"></i>betterfor&nbsp;</a>
+                <span class="post-category">
+                        收录于
+                        <i class="far fa-folder fa-fw"></i><a href="https://betterfor.github.io/categories/kubernetes/">kubernetes</a>
+                            
+                    </span>
+            </div>
+            <div class="post-meta-other">
+                <i class="far fa-calendar-alt fa-fw"></i><time datetime=2021-03-22>2021-03-22</time>&nbsp;
+                <i class="fas fa-pencil-alt fa-fw"></i>约 79 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>预计阅读 1 分钟&nbsp;</div>
+        </div>
+
+        
+
+        <div class="post-toc" id="post-toc">
+                <h2 class="post-toc-title">目录</h2>
+                <div class="post-toc-content always-active">
+                    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一简介">一、简介</a></li>
+    <li><a href="#二pod状态">二、pod状态</a></li>
+    <li><a href="#三pod重启策略">三、Pod重启策略</a></li>
+    <li><a href="#四健康检查">四、健康检查</a></li>
+  </ul>
+</nav>
+                </div>
+            </div>
+            <div class="post-toc-mobile" id="post-toc-mobile">
+                <details>
+                    <summary><div class="post-toc-title"><span>目录</span><span><i class="details icon fas fa-angle-down"></i></span></div></summary>
+                    <div class="post-toc-content">
+                        
+                        
+                        <nav id="TableOfContentsMobile">
+  <ul>
+    <li><a href="#一简介">一、简介</a></li>
+    <li><a href="#二pod状态">二、pod状态</a></li>
+    <li><a href="#三pod重启策略">三、Pod重启策略</a></li>
+    <li><a href="#四健康检查">四、健康检查</a></li>
+  </ul>
+</nav>
+                    </div>
+                </details>
+            </div>
+
+        <div class="post-content">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <a class="post-dummy-target" id="一简介"></a><h2>一、简介</h2>
+<p>pod在整个生命周期中被系统定义为各种状态，熟悉pod的各种状态对于理解如何设置pod的调度策略、重启策略都是很有必要的。</p>
+<a class="post-dummy-target" id="二pod状态"></a><h2>二、pod状态</h2>
+<ul>
+<li>Pending：API Server已经创建该Pod，但在Pod内还有一个或多个容器的镜像没有创建，包括正在下载镜像的过程</li>
+<li>Running：Pod内所有容器均已创建，且至少有一个容器处于运行状态。正在启动状态或重启状态</li>
+<li>Succeeded：Pod内所有容器均成功执行后退出，且不会再重启</li>
+<li>Failed：Pod内所有容器均已退出，但至少有一个容器退出为失败状态，退出码不为0</li>
+<li>Unknown：由于某种原因无法获取该Pod的状态，可能由于网络通信不畅导致（无法连接API Server）</li>
+</ul>
+<a class="post-dummy-target" id="三pod重启策略"></a><h2>三、Pod重启策略</h2>
+<p>pod的重启策略（RestartPolicy）应用于Pod内的所有容器，并且仅在Pod所处的Node上由kubelet进行判断和重启操作。当某个容器异常退出或健康检查失败时，kubelet会根据重启策略来进行相应的操作。</p>
+<ul>
+<li>Always：默认策略，当容器失效时，由kubelet自动重启容器</li>
+<li>OnFailure：当容器终止运行且退出码不为0时，由kubelet自动重启该容器</li>
+<li>Never：不论容器的运行状态都不重启</li>
+</ul>
+<p>kubelet重启容器的时间间隔以<em>sync-frequency</em>乘以2来计算，例如1、2、4、8倍等，最长5min，并且在成功重启后10min后重置该时间。</p>
+<p>每种控制器对pod的重启策略要求：</p>
+<ul>
+<li>RC和DaemonSet：必须为Always，需要保证容器持续运行</li>
+<li>Job：OnFailure或Never，确保容器执行完成后不再重启</li>
+<li>kubelet：在pod失效后重启，不论将RestartPolicy设置为什么值，也不会对pod进行健康检查</li>
+</ul>
+<p><em>常见的状态转换场景（最终状态）</em></p>
+<table>
+<thead>
+<tr>
+<th>pod包含的容器数</th>
+<th>pod当前的状态</th>
+<th>发生事件</th>
+<th>always</th>
+<th>OnFailure</th>
+<th>Never</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>running</td>
+<td>成功退出</td>
+<td>running</td>
+<td>succeed</td>
+<td>succeed</td>
+</tr>
+<tr>
+<td>1</td>
+<td>running</td>
+<td>失败退出</td>
+<td>running</td>
+<td>running</td>
+<td>failed</td>
+</tr>
+<tr>
+<td>2</td>
+<td>running</td>
+<td>1个失败退出</td>
+<td>running</td>
+<td>running</td>
+<td>running</td>
+</tr>
+<tr>
+<td>2</td>
+<td>running</td>
+<td>oom</td>
+<td>running</td>
+<td>running</td>
+<td>failed</td>
+</tr>
+</tbody>
+</table>
+<a class="post-dummy-target" id="四健康检查"></a><h2>四、健康检查</h2>
+<ul>
+<li><strong>LivenessProbe存活探针</strong>：判断容器是否存活（running状态）。如果探针探测到容器不健康，kubelet会杀掉容器，并根据容器的重启策略处理。如果容器不包含存活探针，那么会认为容器一直健康。</li>
+<li><strong>ReadinessProbe就绪探针</strong>：判断容器服务是否可用（ready状态），达到ready状态的pod才能接受请求。如果在运行过程中ready状态变为<code>false</code>，则系统自动将其从service的后端endpoint列表中隔离出去，后续再把恢复到ready状态的pod加回到endpoint列表。这样就能保证客户端再访问service时不会被转发到服务不可用的pod实例上。</li>
+</ul>
+<p>三种实现方式：</p>
+<ul>
+<li>
+<p>ExecAction：在容器内部执行命令，如果命令的状态码返回0，则表明容器健康。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">livenessProbe</span><span class="p">:</span><span class="w">
+</span><span class="w">	</span><span class="nt">exec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">command</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="l">cat</span><span class="w">
+</span><span class="w">      </span>- <span class="l">/tmp/health</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>TCPSocketAction：通过容器的<code>IP</code>地址和端口号<code>Port</code>执行TCP检查，如果能够建立TCP连接，则表明容器健康</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">livenessProbe</span><span class="p">:</span><span class="w">
+</span><span class="w">	</span><span class="nt">tcpSocket</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>HTTPGetAction：通过容器的IP地址、端口号及路径调用HTTP Get方法，如果响应的状态码大于等于200且小于400，则认为容器健康</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">livenessProbe</span><span class="p">:</span><span class="w">
+</span><span class="w">	</span><span class="nt">httpGet</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/_status/healthz</span><span class="w">
+</span><span class="w">      </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<p>对于每种探测方式，都需要设置参数</p>
+<ul>
+<li><code>initialDelaySeconds</code>：启动容器后进行首次健康检查的等待时间</li>
+<li><code>timeoutSeconds</code>：健康检查发送请求后等待响应的超时时间</li>
+</ul>
+
+        </div>
+
+        <div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>本文于 2021-03-22 更新</span>
+            </div>
+            <div class="post-info-license">
+                
+            </div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md">
+                
+                    
+                        <span><a class="link-to-markdown" href="https://betterfor.github.io/2021/03/pod%E5%9F%BA%E7%A1%80/index.md" target="_blank">阅读原始文档</a></span>
+                    
+                
+            </div>
+            <div class="post-info-share">
+                
+                    <span>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</span>
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section>
+            
+                
+                    <span class="tag">
+                        <a href="https://betterfor.github.io/tags/pod/"><i class="fas fa-tag fa-fw"></i>pod</a>
+                    </span>
+                
+            
+        </section>
+        <section>
+            <span><a href="javascript:window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="https://betterfor.github.io/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav">
+        
+            <a href="https://betterfor.github.io/2021/02/golang_retract/" class="prev" rel="prev" title="Golang 1.16版本新特性 =&gt; 撤回版本(retract)"><i class="fas fa-angle-left fa-fw"></i>Golang 1.16版本新特性 =&gt; 撤回版本(retract)</a>
+        
+        
+    </div>
+</div>
+
+        <div class="post-comment">
+            
+            
+
+            
+        </div>
+    </article></div>
+            </main>
+            <footer class="footer">
+    <div class="copyright">
+        <div class="copyright-line">
+            由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreffer">Hugo</a> 强力驱动&nbsp;|&nbsp;主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="external nofollow noopener noreffer">LoveIt<i class="far fa-heart fa-fw"></i></a>
+        </div>
+        <div class="copyright-line">
+            <i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://betterfor.github.io/">betterfor</a></span><span class="license">&nbsp;|&nbsp;<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+    </div>
+</footer>
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+
+    
+    
+
+
+
+    
+    
+
+
+
+
+
+    
+    
+
+
+<script src="/js/lib/jquery/jquery.slim.min.min.js"></script>
+<script src="/js/lib/lazysizes/lazysizes.min.min.js"></script>
+<script src="/js/lib/smooth-scroll/smooth-scroll.polyfills.min.min.js"></script><script>window.scroll = new SmoothScroll('[data-scroll]', {speed: 300, speedAsDuration: true});</script>
+
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+
+
+<script src="/js/blog.min.js"></script>
+
+
+    
+</div>
+        <a href="#" class="dynamic-to-top" id="dynamic-to-top" data-scroll><span>&nbsp;</span></a>
+    </body>
+</html>
