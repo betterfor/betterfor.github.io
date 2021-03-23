@@ -7,7 +7,23 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Mon, 22 Mar 2021 21:55:59 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/pod/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 23 Mar 2021 22:32:36 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/pod/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Pod调度</title>
+      <link>https://betterfor.github.io/2021/03/pod%E8%B0%83%E5%BA%A6/</link>
+      <pubDate>Tue, 23 Mar 2021 22:32:36 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/2021/03/pod%E8%B0%83%E5%BA%A6/</guid>
+      <description>一、简介 在大多数情况下，我们不关心pod会被调度到哪个节点，只关心pod是否被成功调度到集群的一个可用节点。但是，在真实生产环境中存在一种需求：希望某种pod全部运行在一个或一些节点上。比如需要ssd的pod都运行在具有ssd磁盘的目标节点上。
+二、全自动调度 deployment或rc的主要功能之一就是自动部署一个容器应用的多份副本，以及持续监控副本的数量，在集群中始终维持用户指定的副本数量。
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20  nginx-deployment.yamlapiVersion:apps/v1kind:Deploymentmetadata:name:nginx-deploymentspec:selector:matchLabels:app:nginxreplicas:3template:metadata:labels:app:nginxspec:containers:- name:nginximage:nginx:1.7.9ports:- containerPort:80  使用kubectl create命令创建这个deployment：
+1 2  # kubectl create -f nginx-deployment.yaml deployment &amp;#34;nginx-deployment&amp;#34; created   可以看到Deployment已经创建好3个副本，并且所有副本都是最新可用的。从调度策略上来说，这3个pod由系统全自动完成调度，用户无法干预调度过程和结果。
+三、NodeSelector：定向调度 通过Node的标签（Label）和Pod的nodeSelector属性相匹配来讲Pod调度到指定的一些Node上。
+1、通过kubectl label命令给目标Node打上一些标签：
+1  kubectl label nodes &amp;lt;node-name&amp;gt; &amp;lt;label-key&amp;gt;=&amp;lt;label-value&amp;gt;   2、在Pod的定义中加上nodeSelector的设置
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22  apiVersion:v1kind:ReplicationControllermetadata:name:redis-masterlabels:name:redis-masterspec:replicas:3selector:name:redis-mastertemplate:metadata:labels:name:redis-masterspec:containers:- name:masterimage:reids-masterports:- containerPort:6379nodeSelector:	# 节点标签选择器zone:north  如果给多个Node都定义了相同的标签，则scheduler会根据调度算法从Node组中挑选一个可用的Node进行调度。</description>
+    </item>
+    
     <item>
       <title>Pod的基础</title>
       <link>https://betterfor.github.io/2021/03/pod%E5%9F%BA%E7%A1%80/</link>
