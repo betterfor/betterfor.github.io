@@ -7,7 +7,26 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Tue, 23 Mar 2021 22:32:36 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 24 Mar 2021 22:51:40 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Pod升级与回滚</title>
+      <link>https://betterfor.github.io/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</link>
+      <pubDate>Wed, 24 Mar 2021 22:51:40 +0800</pubDate>
+      
+      <guid>https://betterfor.github.io/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</guid>
+      <description>一、简介 当集群中的某个服务需要升级时，我们需要停止目前与该服务的相关的所有pod，然后下载新版本镜像并创建新的pod。如果集群规模比较大，则这个工作就会很麻烦。kubernetes提供了滚动升级功能来解决这个问题。
+二、Deployment的升级 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20  nginx-deployment.yamlapiVersion:apps/v1kind:Deploymentmetadata:name:nginx-deploymentspec:selector:matchLabels:app:nginxreplicas:3template:metadata:labels:app:nginxspec:containers:- name:nginximage:nginx:1.7.9ports:- containerPort:80  当pod的镜像需要被升级为nginx:1.9.1时，可以通过kubectl set image命令
+1  kubectl set image deployment/nginx-deploymnet nginx=nginx:1.9.1   或通过kubectl edit修改Deployment配置。
+在Deployment的定义中，可以通过spec.strategy指定Pod更新的策略，目前支持Recreate（重建）和RollingUpdate（滚动更新），默认值为滚动更新。
+ Recreate：表示Deployment在更新pod时，会先杀掉所有正在运行的Pod，然后创建新的Pod RollingUpdate：会以滚动更新的方式逐个更新Pod。  spec.strategy.rollingUpdate.maxUnavailable：用于指定Deployment在更新过程中不可用状态的Pod数量上限。 spec.strategy.rollingUpdate.maxSurge：用于指定Deployment更新Pod的过程中Pod总数超过Pod期望副本数部分的最大值。    多重更新（Rollover）
+如果Deployment的上一次更新正在进行，此时用户再次发起Deployment的更新操作，那么Deployment会为每一次更新都创建一个ReplicaSet，而每次在新的ReplicaSet创建成功后，会逐个增加Pod副本数，同时将之前正在扩容的ReplicaSet停止扩容，并将其加入旧版本ReplicaSet列表中，然后开始缩容至0的操作。
+三、Deployment的回滚 可以使用kubectl rollout history命令检查Deployment部署的历史记录。
+1  kubectl rollout history deployment/nginx-deployment   注意：这里需要在新建Deployment时使用--record参数。
+如果需要查看特定版本的详细信息，则可以加上--revision=&amp;lt;N&amp;gt;参数。
+撤销本次发布并回滚到上一个部署版本
+1  kubectl rollout undo deployment/nginx-deployment   当然，也可以使用--to-revision参数指定回滚到的部署版本号。</description>
+    </item>
+    
     <item>
       <title>Pod调度</title>
       <link>https://betterfor.github.io/2021/03/pod%E8%B0%83%E5%BA%A6/</link>
