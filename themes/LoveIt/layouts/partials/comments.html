@@ -1,5 +1,5 @@
 <h2>这个评论 {{ .IsPage}} {{ getenv "HUGO_ENV" | print}} {{ .Params.comment}} </h2>
-{{ if eq (getenv "HUGO_ENV") "development" | and .IsPage | and (ne .Params.comment false) -}}
+{{ if eq (getenv "HUGO_ENV") "production" | and .IsPage | and (ne .Params.comment false) -}}
 	<h2>这是评论系统</h2>
     <!-- Disqus Comment System-->
     {{- if .Site.DisqusShortname -}}
@@ -24,13 +24,13 @@
     <!-- gitalk Comment System-->
     {{- if .Site.Params.gitalk.owner -}}
         <div id="gitalk-container"></div>
-        {{ if eq (getenv "HUGO_ENV") "development" | and .Site.Params.cdn.gitalk_css }}
+        {{ if eq (getenv "HUGO_ENV") "production" | and .Site.Params.cdn.gitalk_css }}
             {{ .Site.Params.cdn.gitalk_css | safeHTML }}
         {{ else }}
             {{- $res := resources.Get "css/lib/gitalk/gitalk.css" | resources.Minify -}}
             <link rel="stylesheet" href="{{ $res.RelPermalink }}">
         {{ end }}
-        {{ if eq (getenv "HUGO_ENV") "development" | and .Site.Params.cdn.gitalk_js }}
+        {{ if eq (getenv "HUGO_ENV") "production" | and .Site.Params.cdn.gitalk_js }}
             {{ .Site.Params.cdn.gitalk_js | safeHTML }}
         {{ else }}
             {{- $res := resources.Get "js/lib/gitalk/gitalk.min.js" | resources.Minify -}}
