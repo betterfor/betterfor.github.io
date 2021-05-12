@@ -196,3 +196,4 @@ receivers:
 exporter收集数据，prometheus server 拉取exporter数据，然后根据告警规则，将告警推送到Alertmanager处理。
 中间还衍生了许多其他组件，例如pushgateway(客户端将数据push到pushgateway，由prometheus定期拉取)，grafana图标页面等。
 
+

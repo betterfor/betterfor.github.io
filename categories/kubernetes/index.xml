@@ -1,61 +1,28 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>kubernetes on 月霜天</title>
-    <link>https://betterfor.github.io/categories/kubernetes/</link>
-    <description>Recent content in kubernetes on 月霜天</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>zh</language>
-    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Wed, 24 Mar 2021 22:51:40 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/categories/kubernetes/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Pod升级与回滚</title>
-      <link>https://betterfor.github.io/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</link>
-      <pubDate>Wed, 24 Mar 2021 22:51:40 +0800</pubDate>
-      
-      <guid>https://betterfor.github.io/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</guid>
-      <description>一、简介 当集群中的某个服务需要升级时，我们需要停止目前与该服务的相关的所有pod，然后下载新版本镜像并创建新的pod。如果集群规模比较大，则这个工作就会很麻烦。kubernetes提供了滚动升级功能来解决这个问题。
-二、Deployment的升级 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20  nginx-deployment.yamlapiVersion:apps/v1kind:Deploymentmetadata:name:nginx-deploymentspec:selector:matchLabels:app:nginxreplicas:3template:metadata:labels:app:nginxspec:containers:- name:nginximage:nginx:1.7.9ports:- containerPort:80  当pod的镜像需要被升级为nginx:1.9.1时，可以通过kubectl set image命令
-1  kubectl set image deployment/nginx-deploymnet nginx=nginx:1.9.1   或通过kubectl edit修改Deployment配置。
-在Deployment的定义中，可以通过spec.strategy指定Pod更新的策略，目前支持Recreate（重建）和RollingUpdate（滚动更新），默认值为滚动更新。
- Recreate：表示Deployment在更新pod时，会先杀掉所有正在运行的Pod，然后创建新的Pod RollingUpdate：会以滚动更新的方式逐个更新Pod。  spec.strategy.rollingUpdate.maxUnavailable：用于指定Deployment在更新过程中不可用状态的Pod数量上限。 spec.strategy.rollingUpdate.maxSurge：用于指定Deployment更新Pod的过程中Pod总数超过Pod期望副本数部分的最大值。    多重更新（Rollover）
-如果Deployment的上一次更新正在进行，此时用户再次发起Deployment的更新操作，那么Deployment会为每一次更新都创建一个ReplicaSet，而每次在新的ReplicaSet创建成功后，会逐个增加Pod副本数，同时将之前正在扩容的ReplicaSet停止扩容，并将其加入旧版本ReplicaSet列表中，然后开始缩容至0的操作。
-三、Deployment的回滚 可以使用kubectl rollout history命令检查Deployment部署的历史记录。
-1  kubectl rollout history deployment/nginx-deployment   注意：这里需要在新建Deployment时使用--record参数。
-如果需要查看特定版本的详细信息，则可以加上--revision=&amp;lt;N&amp;gt;参数。
-撤销本次发布并回滚到上一个部署版本
-1  kubectl rollout undo deployment/nginx-deployment   当然，也可以使用--to-revision参数指定回滚到的部署版本号。</description>
-    </item>
-    
-    <item>
-      <title>Pod调度</title>
-      <link>https://betterfor.github.io/2021/03/pod%E8%B0%83%E5%BA%A6/</link>
-      <pubDate>Tue, 23 Mar 2021 22:32:36 +0800</pubDate>
-      
-      <guid>https://betterfor.github.io/2021/03/pod%E8%B0%83%E5%BA%A6/</guid>
-      <description>一、简介 在大多数情况下，我们不关心pod会被调度到哪个节点，只关心pod是否被成功调度到集群的一个可用节点。但是，在真实生产环境中存在一种需求：希望某种pod全部运行在一个或一些节点上。比如需要ssd的pod都运行在具有ssd磁盘的目标节点上。
-二、全自动调度 deployment或rc的主要功能之一就是自动部署一个容器应用的多份副本，以及持续监控副本的数量，在集群中始终维持用户指定的副本数量。
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20  nginx-deployment.yamlapiVersion:apps/v1kind:Deploymentmetadata:name:nginx-deploymentspec:selector:matchLabels:app:nginxreplicas:3template:metadata:labels:app:nginxspec:containers:- name:nginximage:nginx:1.7.9ports:- containerPort:80  使用kubectl create命令创建这个deployment：
-1 2  # kubectl create -f nginx-deployment.yaml deployment &amp;#34;nginx-deployment&amp;#34; created   可以看到Deployment已经创建好3个副本，并且所有副本都是最新可用的。从调度策略上来说，这3个pod由系统全自动完成调度，用户无法干预调度过程和结果。
-三、NodeSelector：定向调度 通过Node的标签（Label）和Pod的nodeSelector属性相匹配来讲Pod调度到指定的一些Node上。
-1、通过kubectl label命令给目标Node打上一些标签：
-1  kubectl label nodes &amp;lt;node-name&amp;gt; &amp;lt;label-key&amp;gt;=&amp;lt;label-value&amp;gt;   2、在Pod的定义中加上nodeSelector的设置
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22  apiVersion:v1kind:ReplicationControllermetadata:name:redis-masterlabels:name:redis-masterspec:replicas:3selector:name:redis-mastertemplate:metadata:labels:name:redis-masterspec:containers:- name:masterimage:reids-masterports:- containerPort:6379nodeSelector:	# 节点标签选择器zone:north  如果给多个Node都定义了相同的标签，则scheduler会根据调度算法从Node组中挑选一个可用的Node进行调度。</description>
-    </item>
-    
-    <item>
-      <title>Pod的基础</title>
-      <link>https://betterfor.github.io/2021/03/pod%E5%9F%BA%E7%A1%80/</link>
-      <pubDate>Mon, 22 Mar 2021 21:55:59 +0800</pubDate>
-      
-      <guid>https://betterfor.github.io/2021/03/pod%E5%9F%BA%E7%A1%80/</guid>
-      <description>一、简介 pod在整个生命周期中被系统定义为各种状态，熟悉pod的各种状态对于理解如何设置pod的调度策略、重启策略都是很有必要的。
-二、pod状态  Pending：API Server已经创建该Pod，但在Pod内还有一个或多个容器的镜像没有创建，包括正在下载镜像的过程 Running：Pod内所有容器均已创建，且至少有一个容器处于运行状态。正在启动状态或重启状态 Succeeded：Pod内所有容器均成功执行后退出，且不会再重启 Failed：Pod内所有容器均已退出，但至少有一个容器退出为失败状态，退出码不为0 Unknown：由于某种原因无法获取该Pod的状态，可能由于网络通信不畅导致（无法连接API Server）  三、Pod重启策略 pod的重启策略（RestartPolicy）应用于Pod内的所有容器，并且仅在Pod所处的Node上由kubelet进行判断和重启操作。当某个容器异常退出或健康检查失败时，kubelet会根据重启策略来进行相应的操作。
- Always：默认策略，当容器失效时，由kubelet自动重启容器 OnFailure：当容器终止运行且退出码不为0时，由kubelet自动重启该容器 Never：不论容器的运行状态都不重启  kubelet重启容器的时间间隔以sync-frequency乘以2来计算，例如1、2、4、8倍等，最长5min，并且在成功重启后10min后重置该时间。
-每种控制器对pod的重启策略要求：
- RC和DaemonSet：必须为Always，需要保证容器持续运行 Job：OnFailure或Never，确保容器执行完成后不再重启 kubelet：在pod失效后重启，不论将RestartPolicy设置为什么值，也不会对pod进行健康检查  常见的状态转换场景（最终状态）
-   pod包含的容器数 pod当前的状态 发生事件 always OnFailure Never     1 running 成功退出 running succeed succeed   1 running 失败退出 running running failed   2 running 1个失败退出 running running running   2 running oom running running failed    四、健康检查  LivenessProbe存活探针：判断容器是否存活（running状态）。如果探针探测到容器不健康，kubelet会杀掉容器，并根据容器的重启策略处理。如果容器不包含存活探针，那么会认为容器一直健康。 ReadinessProbe就绪探针：判断容器服务是否可用（ready状态），达到ready状态的pod才能接受请求。如果在运行过程中ready状态变为false，则系统自动将其从service的后端endpoint列表中隔离出去，后续再把恢复到ready状态的pod加回到endpoint列表。这样就能保证客户端再访问service时不会被转发到服务不可用的pod实例上。  三种实现方式：</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>kubernetes - 分类 - 月霜天的小站</title>
+        <link>https://betterfor.github.io/categories/kubernetes/</link>
+        <description>kubernetes - 分类 - 月霜天的小站</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 24 Mar 2021 22:51:40 &#43;0800</lastBuildDate><atom:link href="https://betterfor.github.io/categories/kubernetes/" rel="self" type="application/rss+xml" /><item>
+    <title>Pod升级与回滚</title>
+    <link>https://betterfor.github.io/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</link>
+    <pubDate>Wed, 24 Mar 2021 22:51:40 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</guid>
+    <description><![CDATA[一、简介 当集群中的某个服务需要升级时，我们需要停止目前与该服务的相关的所有pod，然后下载新版本镜像并创建新的pod。如果集群规模比较大，则]]></description>
+</item><item>
+    <title>Pod调度</title>
+    <link>https://betterfor.github.io/2021/03/pod%E8%B0%83%E5%BA%A6/</link>
+    <pubDate>Tue, 23 Mar 2021 22:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2021/03/pod%E8%B0%83%E5%BA%A6/</guid>
+    <description><![CDATA[一、简介 在大多数情况下，我们不关心pod会被调度到哪个节点，只关心pod是否被成功调度到集群的一个可用节点。但是，在真实生产环境中存在一种需]]></description>
+</item><item>
+    <title>Pod的基础</title>
+    <link>https://betterfor.github.io/2021/03/pod%E5%9F%BA%E7%A1%80/</link>
+    <pubDate>Mon, 22 Mar 2021 21:55:59 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2021/03/pod%E5%9F%BA%E7%A1%80/</guid>
+    <description><![CDATA[一、简介 pod在整个生命周期中被系统定义为各种状态，熟悉pod的各种状态对于理解如何设置pod的调度策略、重启策略都是很有必要的。 二、pod]]></description>
+</item></channel>
 </rss>

@@ -1,195 +1,92 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Uuid | 月霜天</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noodp" />
-<meta name="Description" content="LoveIt Theme Demo">
-<link rel="prev" href="https://betterfor.github.io/2021/02/%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E9%81%8D%E5%8E%86%E6%95%88%E7%8E%87/" />
-<link rel="next" href="https://betterfor.github.io/2021/02/docker_command/" />
-<link rel="canonical" href="https://betterfor.github.io/2021/02/uuid/" />
-<link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-<meta name="msapplication-TileColor" content="#da532c">
-<meta name="theme-color" content="#ffffff">
-<meta name="twitter:card" content="summary"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Uuid - 月霜天的小站</title><meta name="Description" content="月霜天的小站"><meta property="og:title" content="Uuid" />
+<meta property="og:description" content="背景 在复杂的分布式系统中，往往需要对大量的数据和消息进行唯一标识。数据日益增长，对数据库需要进行切分，而水平切分数据库需要一个唯一ID来标识" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://betterfor.github.io/2021/02/uuid/" /><meta property="og:image" content="https://betterfor.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-02-08T14:16:15&#43;08:00" />
+<meta property="article:modified_time" content="2021-05-12T16:33:44&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://betterfor.github.io/logo.png"/>
+
 <meta name="twitter:title" content="Uuid"/>
-<meta name="twitter:description" content="背景 在复杂的分布式系统中，往往需要对大量的数据和消息进行唯一标识。数据日益增长，对数据库需要进行切分，而水平切分数据库需要一个唯一ID来标识一条数据或消息，数据库的自增ID显然不能满足需求。那么对于分布式全局ID有什么要求呢？
- 全局唯一性：不能出现重复的ID号。 趋势递增：在MySQL InnoDB引擎中使用的是聚集索引，由于多数RDBMS使用B-tree的数据结构来存储索引数据，在主键的选择上面我们应该尽量使用有序的主键保证写入性能。 单调递增：保证下一个ID一定大于上一个ID，例如事务版本号、IM增量消息、排序等特殊需求。 信息安全：如果ID是连续的，会出现安全问题，在一些场景中，会需要ID无规则，不规则。  UUID UUID(Universally Unique Identifier)是一个128位标识符，在其规范的文本表示中，UUID 的 16 个 8 位字节表示为 32 个十六进制（基数16）数字，显示在由连字符分隔 &lsquo;-&rsquo; 的五个组中，&ldquo;8-4-4-4-12&rdquo; 总共 36 个字符（32 个字母数字字符和 4 个连字符）。例如：123e4567-e89b-12d3-a456-426655440000。
-  优点：性能高，本地生成，没有网络消耗
-  缺点：
-1、不易存储：UUID太长，很多场景不适用。
-2、信息不安全：基于MAC地址生成的UUID算法可能造成MAC地址泄露。
-3、没有排序，无法保证递增趋势。
-4、不易读，存储空间大。
-go两种生成UUID的第三方包：
-github.com/google/uuid
-github.com/satori/go.uuid
-  Snowflake snowflake是Twitter开源的分布式ID生成算法，结果是一个long型的ID。其核心思想是：使用41bit作为毫秒数，10bit作为机器的ID（5个bit是数据中心，5个bit的机器ID），12bit作为毫秒内的流水号（意味着每个节点在每毫秒可以产生 4096 个 ID），最后还有一个符号位，永远是0。
-1、实现原理：
-1位最高位：符号位不使用，0表示正数，1表示负数。
-41位时间戳：1&lt;&lt;41 = 1000*3600*24*365 = 69 年。
-10位工作机器id：如果我们对IDC划分有需求可以用5位给IDC，5位给工作机器，这样就可以表示32个IDC，每个IDC下有32台机器。
-12位自增ID：可以表示2^12^个ID。
-理论上snowflake方案的QPS约为409.3w/s，这种分配方式可以保证在任何一个IDC的任何一台机器在任意毫秒内生成的ID都是不同的。
-优点：
- 毫秒数在高位，自增序列在低位，整个ID都是趋势递增的。 不依赖数据库等第三方系统，以服务的方式部署，稳定性更高，生成ID的性能也是非常高的。 可以根据自身业务特性分配bit位，非常灵活。  缺点：
- 强依赖机器时钟，如果机器上时钟回拨，会导致发号重复或者服务会处于不可用状态。  代码实现："/>
-<script type="application/ld+json">
+<meta name="twitter:description" content="背景 在复杂的分布式系统中，往往需要对大量的数据和消息进行唯一标识。数据日益增长，对数据库需要进行切分，而水平切分数据库需要一个唯一ID来标识"/>
+<meta name="application-name" content="月霜天">
+<meta name="apple-mobile-web-app-title" content="月霜天"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://betterfor.github.io/2021/02/uuid/" /><link rel="prev" href="https://betterfor.github.io/2021/02/%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E9%81%8D%E5%8E%86%E6%95%88%E7%8E%87/" /><link rel="next" href="https://betterfor.github.io/2021/02/docker_command/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
     {
-    "@context": "http://schema.org",
-    "@type": "BlogPosting",
-    "headline": "Uuid",
-    "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "https:\/\/betterfor.github.io\/2021\/02\/uuid\/"
-    },
-    
-        "image": {
-            "@type": "ImageObject",
-            "url": "https:\/\/betterfor.github.io\/cover.png",
-            "width":  800 ,
-            "height":  600 
-        },
-    
-    "genre": "posts",
-    
-        "keywords": "uuid, snowflake",
-    
-    "wordcount":  559 ,
-    "url": "https:\/\/betterfor.github.io\/2021\/02\/uuid\/",
-    
-        "datePublished": "2021-02-08T14:16:15\u002b08:00",
-    
-    
-        "dateModified": "2021-05-12T14:39:44\u002b08:00",
-    
-    
-        "license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.",
-    
-    
-        "publisher": {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Uuid",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/betterfor.github.io\/2021\/02\/uuid\/"
+        },"genre": "posts","keywords": "uuid, snowflake","wordcount":  2212 ,
+        "url": "https:\/\/betterfor.github.io\/2021\/02\/uuid\/","datePublished": "2021-02-08T14:16:15+08:00","dateModified": "2021-05-12T16:33:44+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
-            "name": "XXXX",
-            "logo": {
-            "@type": "ImageObject",
-            "url": "https:\/\/betterfor.github.io\/logo.png",
-            "width":  127 ,
-            "height":  40 
-            }
-        },
-    
-    
-    "description": ""
+            "name": "月霜天"},"author": {
+                "@type": "Person",
+                "name": "月霜天"
+            },"description": ""
     }
-    </script>
-<link rel="stylesheet" href="/css/style.min.css">
-<link rel="stylesheet" href="/css/lib/fontawesome-free/all.min.min.css">
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
-<link rel="stylesheet" href="/css/lib/animate/animate.min.min.css">
-
-    </head>
-    <body>
-        <script>
-            window.isDark = (window.localStorage && window.localStorage.getItem('theme')) === 'dark';
-            window.isDark && document.body.classList.add('dark-theme');
-        </script>
-        <div class="wrapper">
-            <nav class="navbar">
-    <div class="navbar-container">
-        <div class="navbar-header">
-            <a href="https://betterfor.github.io/">月霜天</a>
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="月霜天的小站"></a>
         </div>
-        <div class="navbar-menu">
-            
-            
-                <a class="menu-item" href="https://betterfor.github.io/posts/" title="">文章</a>
-            
-                <a class="menu-item" href="https://betterfor.github.io/tags/" title="">标签</a>
-            
-                <a class="menu-item" href="https://betterfor.github.io/categories/" title="">种类</a>
-            
-                <a class="menu-item" href="https://betterfor.github.io/about/" title="">关于</a>
-            
-            <a href="javascript:void(0);" class="theme-switch"><i class="fas fa-adjust fa-rotate-180 fa-fw"></i></a>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
         </div>
     </div>
-</nav>
-<nav class="navbar-mobile">
-     <div class="navbar-container">
-        <div class="navbar-header">
-            <div><a href="javascript:void(0);" class="theme-switch"><i class="fas fa-adjust fa-rotate-180 fa-fw"></i></a><a href="https://betterfor.github.io/">月霜天</a></div>
-            <div class="menu-toggle" id="menu-toggle">
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="月霜天的小站"></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
                 <span></span><span></span><span></span>
             </div>
         </div>
-        <div class="navbar-menu" id="mobile-menu">
-            
-            
-                <a class="menu-item" href="https://betterfor.github.io/posts/" title="">文章</a>
-            
-                <a class="menu-item" href="https://betterfor.github.io/tags/" title="">标签</a>
-            
-                <a class="menu-item" href="https://betterfor.github.io/categories/" title="">种类</a>
-            
-                <a class="menu-item" href="https://betterfor.github.io/about/" title="">关于</a>
-            
-        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
     </div>
-</nav><main class="main">
-                <div class="container">
-                    
-    
-    
-    
-
-    <article class="post-warp">
-        <h1 class="post-title animated flipInX">Uuid</h1>
-
-        <div class="post-meta">
-            <div class="post-meta-main">
-                <a class="author" href="https://betterfor.github.io/" rel="author"><i class="fas fa-user-circle fa-fw"></i>betterfor&nbsp;</a>
-                <span class="post-category">
-                        收录于
-                        <i class="far fa-folder fa-fw"></i><a href="https://betterfor.github.io/categories/golang/">golang</a>
-                            
-                    </span>
-            </div>
-            <div class="post-meta-other">
-                <i class="far fa-calendar-alt fa-fw"></i><time datetime=2021-02-08>2021-02-08</time>&nbsp;
-                <i class="fas fa-pencil-alt fa-fw"></i>约 559 字&nbsp;
-                <i class="far fa-clock fa-fw"></i>预计阅读 3 分钟&nbsp;</div>
-        </div>
-
-        
-
-        <div class="post-toc" id="post-toc">
-                <h2 class="post-toc-title">目录</h2>
-                <div class="post-toc-content always-active">
-                    <nav id="TableOfContents">
-  <ul>
-    <li><a href="#背景">背景</a></li>
-    <li><a href="#uuid">UUID</a></li>
-    <li><a href="#snowflake">Snowflake</a></li>
-    <li><a href="#数据库id">数据库ID</a></li>
-    <li><a href="#mongodb-id">MongoDB ID</a></li>
-    <li><a href="#zookeeper-id">Zookeeper ID</a></li>
-  </ul>
-</nav>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Uuid</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/golang/"><i class="far fa-folder fa-fw"></i>golang</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-02-08">2021-02-08</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2212 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="true">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
                 </div>
-            </div>
-            <div class="post-toc-mobile" id="post-toc-mobile">
-                <details>
-                    <summary><div class="post-toc-title"><span>目录</span><span><i class="details icon fas fa-angle-down"></i></span></div></summary>
-                    <div class="post-toc-content">
-                        
-                        
-                        <nav id="TableOfContentsMobile">
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#背景">背景</a></li>
     <li><a href="#uuid">UUID</a></li>
@@ -198,46 +95,16 @@ github.com/satori/go.uuid
     <li><a href="#mongodb-id">MongoDB ID</a></li>
     <li><a href="#zookeeper-id">Zookeeper ID</a></li>
   </ul>
-</nav>
-                    </div>
-                </details>
-            </div>
-
-        <div class="post-content">
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            <a class="post-dummy-target" id="背景"></a><h2>背景</h2>
-<p>在复杂的分布式系统中，往往需要对大量的数据和消息进行唯一标识。数据日益增长，对数据库需要进行切分，而水平切分数据库需要一个唯一ID来标识一条数据或消息，数据库的自增ID显然不能满足需求。那么对于<a href="https://tech.meituan.com/2017/04/21/mt-leaf.html">分布式全局ID</a>有什么要求呢？</p>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="背景">背景</h2>
+<p>在复杂的分布式系统中，往往需要对大量的数据和消息进行唯一标识。数据日益增长，对数据库需要进行切分，而水平切分数据库需要一个唯一ID来标识一条数据或消息，数据库的自增ID显然不能满足需求。那么对于<a href="https://tech.meituan.com/2017/04/21/mt-leaf.html" target="_blank" rel="noopener noreffer">分布式全局ID</a>有什么要求呢？</p>
 <ul>
 <li>全局唯一性：不能出现重复的ID号。</li>
 <li>趋势递增：在MySQL InnoDB引擎中使用的是聚集索引，由于多数RDBMS使用B-tree的数据结构来存储索引数据，在主键的选择上面我们应该尽量使用有序的主键保证写入性能。</li>
 <li>单调递增：保证下一个ID一定大于上一个ID，例如事务版本号、IM增量消息、排序等特殊需求。</li>
 <li>信息安全：如果ID是连续的，会出现安全问题，在一些场景中，会需要ID无规则，不规则。</li>
 </ul>
-<a class="post-dummy-target" id="uuid"></a><h2>UUID</h2>
+<h2 id="uuid">UUID</h2>
 <p>UUID(Universally Unique Identifier)是一个128位标识符，在其规范的文本表示中，UUID 的 16 个 8 位字节表示为 32 个十六进制（基数16）数字，显示在由连字符分隔 &lsquo;-&rsquo; 的五个组中，&ldquo;8-4-4-4-12&rdquo; 总共 36 个字符（32 个字母数字字符和 4 个连字符）。例如：<code>123e4567-e89b-12d3-a456-426655440000</code>。</p>
 <ul>
 <li>
@@ -250,14 +117,21 @@ github.com/satori/go.uuid
 <p>3、没有排序，无法保证递增趋势。</p>
 <p>4、不易读，存储空间大。</p>
 <p>go两种生成UUID的第三方包：</p>
-<p><a href="https://github.com/google/uuid">github.com/google/uuid</a></p>
-<p><a href="https://github.com/satori/go.uuid">github.com/satori/go.uuid</a></p>
+<p><a href="https://github.com/google/uuid" target="_blank" rel="noopener noreffer">github.com/google/uuid</a></p>
+<p><a href="https://github.com/satori/go.uuid" target="_blank" rel="noopener noreffer">github.com/satori/go.uuid</a></p>
 </li>
 </ul>
-<a class="post-dummy-target" id="snowflake"></a><h2>Snowflake</h2>
-<p><a href="https://github.com/twitter-archive/snowflake/blob/snowflake-2010/src/main/scala/com/twitter/service/snowflake/IdWorker.scala">snowflake</a>是Twitter开源的分布式ID生成算法，结果是一个long型的ID。其核心思想是：使用41bit作为毫秒数，10bit作为机器的ID（5个bit是数据中心，5个bit的机器ID），12bit作为毫秒内的流水号（意味着每个节点在每毫秒可以产生 4096 个 ID），最后还有一个符号位，永远是0。</p>
+<h2 id="snowflake">Snowflake</h2>
+<p><a href="https://github.com/twitter-archive/snowflake/blob/snowflake-2010/src/main/scala/com/twitter/service/snowflake/IdWorker.scala" target="_blank" rel="noopener noreffer">snowflake</a>是Twitter开源的分布式ID生成算法，结果是一个long型的ID。其核心思想是：使用41bit作为毫秒数，10bit作为机器的ID（5个bit是数据中心，5个bit的机器ID），12bit作为毫秒内的流水号（意味着每个节点在每毫秒可以产生 4096 个 ID），最后还有一个符号位，永远是0。</p>
 <p>1、实现原理：</p>
-<p><img src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/02/08/snowflake.png" alt="snowflake"></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/02/08/snowflake.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/02/08/snowflake.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/02/08/snowflake.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/02/08/snowflake.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/02/08/snowflake.png"
+        title="snowflake" /></p>
 <p>1位最高位：符号位不使用，0表示正数，1表示负数。</p>
 <p>41位时间戳：<code>1&lt;&lt;41</code> = <code>1000*3600*24*365</code> = 69 年。</p>
 <p>10位工作机器id：如果我们对IDC划分有需求可以用5位给IDC，5位给工作机器，这样就可以表示32个IDC，每个IDC下有32台机器。</p>
@@ -486,7 +360,7 @@ github.com/satori/go.uuid
 <span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
-</div><a class="post-dummy-target" id="数据库id"></a><h2>数据库ID</h2>
+</div><h2 id="数据库id">数据库ID</h2>
 <p>利用数据库字段设置auto_increment_increment和auto_increment_offset来保证ID自增，每次业务使用一下SQL读写MySQL得到ID。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -502,222 +376,73 @@ github.com/satori/go.uuid
 </span><span class="w"></span><span class="n">commit</span><span class="p">;</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
-</div><p><img src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/02/08/mysql_id.png" alt="mysql_id"></p>
+</div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/02/08/mysql_id.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/02/08/mysql_id.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/02/08/mysql_id.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/02/08/mysql_id.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/02/08/mysql_id.png"
+        title="mysql_id" /></p>
 <ul>
 <li>优点：简单，利用数据库的功能实现，成本小；id单调递增。</li>
 <li>缺点：强依赖数据库，当数据库不可用时，是致命问题；ID发号性能瓶颈限制在单台MySQL的读写性能上。</li>
 </ul>
 <p>对于MySQL性能问题，可用如下方法解决：</p>
 <p>在分布式系统中部署多台机器，每台机器设置不同的初始值，且步长相等。例如设置步长为2，<code>TicketServer1</code>的初始值为1<code> (1,3,5,7...)</code>, <code>TicketServer1</code>的初始值为2<code>(2,4,6,8...)</code>。</p>
-<p><a href="https://code.flickr.net/2010/02/08/ticket-servers-distributed-unique-primary-keys-on-the-cheap/">主键生成策略</a></p>
+<p><a href="https://code.flickr.net/2010/02/08/ticket-servers-distributed-unique-primary-keys-on-the-cheap/" target="_blank" rel="noopener noreffer">主键生成策略</a></p>
 <p>缺点：</p>
 <ul>
 <li>水平扩展比较困难，事先定好步长和机器后，如果后续新增机器，不容易扩容。</li>
 <li>数据库压力还是大，只能靠堆机器来提高性能。</li>
 </ul>
-<a class="post-dummy-target" id="mongodb-id"></a><h2>MongoDB ID</h2>
-<p><a href="https://docs.mongodb.com/manual/reference/method/ObjectId/#description">MongoDB官方文档 ObjectID</a>和snowflake算法类似，它设计成轻量型的，不同的机器都能用全局唯一的同种方法便利生成。通过 <code>时间戳+机器+pid+自增id</code> 共12个字节，通过 <code>4+3+2+3</code> 的方式生成24位的十六进制字符。</p>
-<a class="post-dummy-target" id="zookeeper-id"></a><h2>Zookeeper ID</h2>
+<h2 id="mongodb-id">MongoDB ID</h2>
+<p><a href="https://docs.mongodb.com/manual/reference/method/ObjectId/#description" target="_blank" rel="noopener noreffer">MongoDB官方文档 ObjectID</a>和snowflake算法类似，它设计成轻量型的，不同的机器都能用全局唯一的同种方法便利生成。通过 <code>时间戳+机器+pid+自增id</code> 共12个字节，通过 <code>4+3+2+3</code> 的方式生成24位的十六进制字符。</p>
+<h2 id="zookeeper-id">Zookeeper ID</h2>
 <p>zookeeper主要通过其znode数据版本来生成序列号，可以生成32位和64位的数据版本号，客户端可以使用这个版本号来作为唯一的序列号。</p>
 <p>很少会使用zookeeper来生成唯一ID。主要是由于需要依赖zookeeper，并且是多步调用API，如果在竞争较大的情况下，需要考虑使用分布式锁。因此，性能在高并发的分布式环境下，也不甚理想。</p>
-
-        </div>
-
-        <div class="post-footer" id="post-footer">
+</div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>本文于 2021-05-12 更新</span>
+                <span>更新于 2021-05-12&nbsp;<a class="git-hash" href="https://betterfor.github.io/commit/8462c49e60448735bd494f55c3f7e7b1f9d7b941" target="_blank" title="commit by betterfor(xiejian) 8462c49e60448735bd494f55c3f7e7b1f9d7b941: hugo主题配置修改">
+                                    <i class="fas fa-hashtag fa-fw"></i>8462c49</a></span>
             </div>
-            <div class="post-info-license">
-                
-            </div>
+            <div class="post-info-license"></div>
         </div>
         <div class="post-info-line">
-            <div class="post-info-md">
-                
-                    
-                        <span><a class="link-to-markdown" href="https://betterfor.github.io/2021/02/uuid/index.md" target="_blank">阅读原始文档</a></span>
-                    
-                
-            </div>
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2021/02/uuid/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
             <div class="post-info-share">
-                
-                    <span>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</span>
-                
+                <span></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/uuid/">uuid</a>,&nbsp;<a href="/tags/snowflake/">snowflake</a></section>
         <section>
-            
-                
-                    <span class="tag">
-                        <a href="https://betterfor.github.io/tags/uuid/"><i class="fas fa-tag fa-fw"></i>uuid</a>
-                    </span>
-                
-                    <span class="tag">
-                        <a href="https://betterfor.github.io/tags/snowflake/"><i class="fas fa-tag fa-fw"></i>snowflake</a>
-                    </span>
-                
-            
-        </section>
-        <section>
-            <span><a href="javascript:window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="https://betterfor.github.io/">主页</a></span>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
         </section>
     </div>
 
-    <div class="post-nav">
-        
-            <a href="https://betterfor.github.io/2021/02/%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E9%81%8D%E5%8E%86%E6%95%88%E7%8E%87/" class="prev" rel="prev" title="二维数组按行和按列遍历的效率"><i class="fas fa-angle-left fa-fw"></i>二维数组按行和按列遍历的效率</a>
-        
-        
-            <a href="https://betterfor.github.io/2021/02/docker_command/" class="next" rel="next" title="Docker命令大全">Docker命令大全<i class="fas fa-angle-right fa-fw"></i></a>
-        
-    </div>
+    <div class="post-nav"><a href="/2021/02/%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E9%81%8D%E5%8E%86%E6%95%88%E7%8E%87/" class="prev" rel="prev" title="二维数组按行和按列遍历的效率"><i class="fas fa-angle-left fa-fw"></i>二维数组按行和按列遍历的效率</a>
+            <a href="/2021/02/docker_command/" class="next" rel="next" title="Docker命令大全">Docker命令大全<i class="fas fa-angle-right fa-fw"></i></a></div>
 </div>
-
-        <div class="post-comment">
-            
-            <h2>这个评论 true  true </h2>
-
-
-            
+<div id="comments"><div id="gitalk" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://github.com/gitalk/gitalk"></a>Gitalk</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.83.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
-    </article></div>
-            </main>
-            <footer class="footer">
-    <div class="copyright">
-        <div class="copyright-line">
-            由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreffer">Hugo</a> 强力驱动&nbsp;|&nbsp;主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="external nofollow noopener noreffer">LoveIt<i class="far fa-heart fa-fw"></i></a>
-        </div>
-        <div class="copyright-line">
-            <i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://betterfor.github.io/">betterfor</a></span><span class="license">&nbsp;|&nbsp;<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
-    </div>
-</footer>
-
-
-    
-    
-
-
-
-
-    
-    
-
-
-
-
-    
-    
-
-
-
-
-
-    
-    
-
-
-
-    
-    
-
-
-
-    
-    
-
-
-
-
-
-    
-    
-
-
-
-
-
-    
-    
-
-
-
-    
-    
-
-
-
-
-
-    
-    
-
-
-
-
-    
-    
-
-
-
-
-    
-    
-
-
-
-    
-    
-
-
-
-
-
-    
-    
-
-
-<script src="/js/lib/jquery/jquery.slim.min.min.js"></script>
-<script src="/js/lib/lazysizes/lazysizes.min.min.js"></script>
-<script src="/js/lib/smooth-scroll/smooth-scroll.polyfills.min.min.js"></script><script>window.scroll = new SmoothScroll('[data-scroll]', {speed: 300, speedAsDuration: true});</script>
-
-
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-
-
-<script src="/js/blog.min.js"></script>
-
-
-    
-</div>
-        <a href="#" class="dynamic-to-top" id="dynamic-to-top" data-scroll><span>&nbsp;</span></a>
-    </body>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"gitalk":{"admin":["betterfor"],"clientID":"fba15d94f073857ee898","clientSecret":"90083900b5dd077594528a709f18fe4b16b2a1a2","id":"2021-02-08T14:16:15+08:00","owner":"betterfor","repo":"betterfor.github.io","title":"Uuid"}},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
 </html>

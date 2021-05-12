@@ -1,216 +1,99 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Golang 1.16版本新特性 =&gt; 撤回版本(retract) | 月霜天</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noodp" />
-<meta name="Description" content="LoveIt Theme Demo">
-<link rel="prev" href="https://betterfor.github.io/2021/02/docker_command/" />
-<link rel="next" href="https://betterfor.github.io/2021/03/pod%E5%9F%BA%E7%A1%80/" />
-<link rel="canonical" href="https://betterfor.github.io/2021/02/golang_retract/" />
-<link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-<meta name="msapplication-TileColor" content="#da532c">
-<meta name="theme-color" content="#ffffff">
-<meta name="twitter:card" content="summary"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Golang 1.16版本新特性 =&gt; 撤回版本(retract) - 月霜天的小站</title><meta name="Description" content="月霜天的小站"><meta property="og:title" content="Golang 1.16版本新特性 =&gt; 撤回版本(retract)" />
+<meta property="og:description" content="一般来说，模块作者需要使用一种方法来只是不应该使用某个已发布的模块。 出现一个严重的安全漏洞 不闲不兼容或bug 版本发布错误 出现过模块最新版本为" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://betterfor.github.io/2021/02/golang_retract/" /><meta property="og:image" content="https://betterfor.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-02-25T15:15:36&#43;08:00" />
+<meta property="article:modified_time" content="2021-05-12T16:33:44&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://betterfor.github.io/logo.png"/>
+
 <meta name="twitter:title" content="Golang 1.16版本新特性 =&gt; 撤回版本(retract)"/>
-<meta name="twitter:description" content="一般来说，模块作者需要使用一种方法来只是不应该使用某个已发布的模块。
- 出现一个严重的安全漏洞 不闲不兼容或bug 版本发布错误   出现过模块最新版本为1.0.0，错误发布1.1.0，然后在github上把版本删除，使用1.0.1版本，但是有人使用代理模块并且下载了1.1.0版本，所以其他人再下载指定latest会下载1.1.0版本的代码。
- 准备工作  retract模块，github的完整路径是https://github.com/betterfor/retract，你可以使用自己的模块实验。 awesomeProjcet，本地模块，使用了test包的依赖的简单main函数。   请确保golang版本是1.16&#43;
- 创建test模块 1、先在github上创建好仓库
-2、拉取代码仓库
-1 2 3 4  $ git clone https://github.com/betterfor/retract.git $ cd retract/ $ go mod init go: creating new go.mod: module github.com/betterfor/retract   3、在模块中新建foo.go文件
-1 2 3 4 5  package retract func Foo() string { return &#34;v0.0.1&#34; }   4、将retract模块的改动提交git并push
-1 2 3  $ git add ."/>
-<script type="application/ld+json">
+<meta name="twitter:description" content="一般来说，模块作者需要使用一种方法来只是不应该使用某个已发布的模块。 出现一个严重的安全漏洞 不闲不兼容或bug 版本发布错误 出现过模块最新版本为"/>
+<meta name="application-name" content="月霜天">
+<meta name="apple-mobile-web-app-title" content="月霜天"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://betterfor.github.io/2021/02/golang_retract/" /><link rel="prev" href="https://betterfor.github.io/2021/02/docker_command/" /><link rel="next" href="https://betterfor.github.io/2021/03/pod%E5%9F%BA%E7%A1%80/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
     {
-    "@context": "http://schema.org",
-    "@type": "BlogPosting",
-    "headline": "Golang 1.16版本新特性 =\u003e 撤回版本(retract)",
-    "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "https:\/\/betterfor.github.io\/2021\/02\/golang_retract\/"
-    },
-    
-        "image": {
-            "@type": "ImageObject",
-            "url": "https:\/\/betterfor.github.io\/cover.png",
-            "width":  800 ,
-            "height":  600 
-        },
-    
-    "genre": "posts",
-    
-        "keywords": "linux, develop",
-    
-    "wordcount":  391 ,
-    "url": "https:\/\/betterfor.github.io\/2021\/02\/golang_retract\/",
-    
-        "datePublished": "2021-02-25T15:15:36\u002b08:00",
-    
-    
-        "dateModified": "2021-05-12T14:39:44\u002b08:00",
-    
-    
-        "license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.",
-    
-    
-        "publisher": {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Golang 1.16版本新特性 =\u003e 撤回版本(retract)",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/betterfor.github.io\/2021\/02\/golang_retract\/"
+        },"genre": "posts","keywords": "linux, develop","wordcount":  1530 ,
+        "url": "https:\/\/betterfor.github.io\/2021\/02\/golang_retract\/","datePublished": "2021-02-25T15:15:36+08:00","dateModified": "2021-05-12T16:33:44+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
-            "name": "XXXX",
-            "logo": {
-            "@type": "ImageObject",
-            "url": "https:\/\/betterfor.github.io\/logo.png",
-            "width":  127 ,
-            "height":  40 
-            }
-        },
-    
-    
-    "description": ""
+            "name": "月霜天"},"author": {
+                "@type": "Person",
+                "name": "月霜天"
+            },"description": ""
     }
-    </script>
-<link rel="stylesheet" href="/css/style.min.css">
-<link rel="stylesheet" href="/css/lib/fontawesome-free/all.min.min.css">
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
-<link rel="stylesheet" href="/css/lib/animate/animate.min.min.css">
-
-    </head>
-    <body>
-        <script>
-            window.isDark = (window.localStorage && window.localStorage.getItem('theme')) === 'dark';
-            window.isDark && document.body.classList.add('dark-theme');
-        </script>
-        <div class="wrapper">
-            <nav class="navbar">
-    <div class="navbar-container">
-        <div class="navbar-header">
-            <a href="https://betterfor.github.io/">月霜天</a>
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="月霜天的小站"></a>
         </div>
-        <div class="navbar-menu">
-            
-            
-                <a class="menu-item" href="https://betterfor.github.io/posts/" title="">文章</a>
-            
-                <a class="menu-item" href="https://betterfor.github.io/tags/" title="">标签</a>
-            
-                <a class="menu-item" href="https://betterfor.github.io/categories/" title="">种类</a>
-            
-                <a class="menu-item" href="https://betterfor.github.io/about/" title="">关于</a>
-            
-            <a href="javascript:void(0);" class="theme-switch"><i class="fas fa-adjust fa-rotate-180 fa-fw"></i></a>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
         </div>
     </div>
-</nav>
-<nav class="navbar-mobile">
-     <div class="navbar-container">
-        <div class="navbar-header">
-            <div><a href="javascript:void(0);" class="theme-switch"><i class="fas fa-adjust fa-rotate-180 fa-fw"></i></a><a href="https://betterfor.github.io/">月霜天</a></div>
-            <div class="menu-toggle" id="menu-toggle">
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="月霜天的小站"></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
                 <span></span><span></span><span></span>
             </div>
         </div>
-        <div class="navbar-menu" id="mobile-menu">
-            
-            
-                <a class="menu-item" href="https://betterfor.github.io/posts/" title="">文章</a>
-            
-                <a class="menu-item" href="https://betterfor.github.io/tags/" title="">标签</a>
-            
-                <a class="menu-item" href="https://betterfor.github.io/categories/" title="">种类</a>
-            
-                <a class="menu-item" href="https://betterfor.github.io/about/" title="">关于</a>
-            
-        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
     </div>
-</nav><main class="main">
-                <div class="container">
-                    
-    
-    
-    
-
-    <article class="post-warp">
-        <h1 class="post-title animated flipInX">Golang 1.16版本新特性 =&gt; 撤回版本(retract)</h1>
-
-        <div class="post-meta">
-            <div class="post-meta-main">
-                <a class="author" href="https://betterfor.github.io/" rel="author"><i class="fas fa-user-circle fa-fw"></i>betterfor&nbsp;</a>
-                <span class="post-category">
-                        收录于
-                        <i class="far fa-folder fa-fw"></i><a href="https://betterfor.github.io/categories/golang/">golang</a>
-                            
-                    </span>
-            </div>
-            <div class="post-meta-other">
-                <i class="far fa-calendar-alt fa-fw"></i><time datetime=2021-02-25>2021-02-25</time>&nbsp;
-                <i class="fas fa-pencil-alt fa-fw"></i>约 391 字&nbsp;
-                <i class="far fa-clock fa-fw"></i>预计阅读 2 分钟&nbsp;</div>
-        </div>
-
-        
-
-        <div class="post-toc" id="post-toc">
-                <h2 class="post-toc-title">目录</h2>
-                <div class="post-toc-content always-active">
-                    <nav id="TableOfContents">
-  <ul>
-    <li><a href="#准备工作">准备工作</a></li>
-    <li><a href="#创建test模块">创建test模块</a></li>
-    <li><a href="#问题">问题</a></li>
-  </ul>
-</nav>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Golang 1.16版本新特性 =&gt; 撤回版本(retract)</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/golang/"><i class="far fa-folder fa-fw"></i>golang</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-02-25">2021-02-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1530 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 4 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="true">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
                 </div>
-            </div>
-            <div class="post-toc-mobile" id="post-toc-mobile">
-                <details>
-                    <summary><div class="post-toc-title"><span>目录</span><span><i class="details icon fas fa-angle-down"></i></span></div></summary>
-                    <div class="post-toc-content">
-                        
-                        
-                        <nav id="TableOfContentsMobile">
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#准备工作">准备工作</a></li>
     <li><a href="#创建test模块">创建test模块</a></li>
     <li><a href="#问题">问题</a></li>
   </ul>
-</nav>
-                    </div>
-                </details>
-            </div>
-
-        <div class="post-content">
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            <p>一般来说，模块作者需要使用一种方法来只是不应该使用某个已发布的模块。</p>
+</nav></div>
+            </div><div class="content" id="content"><p>一般来说，模块作者需要使用一种方法来只是不应该使用某个已发布的模块。</p>
 <ul>
 <li>出现一个严重的安全漏洞</li>
 <li>不闲不兼容或bug</li>
@@ -219,7 +102,7 @@
 <blockquote>
 <p>出现过模块最新版本为1.0.0，错误发布1.1.0，然后在github上把版本删除，使用1.0.1版本，但是有人使用代理模块并且下载了1.1.0版本，所以其他人再下载指定latest会下载1.1.0版本的代码。</p>
 </blockquote>
-<a class="post-dummy-target" id="准备工作"></a><h2>准备工作</h2>
+<h2 id="准备工作">准备工作</h2>
 <ul>
 <li>retract模块，github的完整路径是https://github.com/betterfor/retract，你可以使用自己的模块实验。</li>
 <li>awesomeProjcet，本地模块，使用了test包的依赖的简单main函数。</li>
@@ -227,7 +110,7 @@
 <blockquote>
 <p>请确保golang版本是1.16+</p>
 </blockquote>
-<a class="post-dummy-target" id="创建test模块"></a><h2>创建test模块</h2>
+<h2 id="创建test模块">创建test模块</h2>
 <p>1、先在github上创建好仓库</p>
 <p>2、拉取代码仓库</p>
 <div class="highlight"><div class="chroma">
@@ -474,7 +357,7 @@ awesomeProjcet
 github.com/betterfor/retract v0.2.0 <span class="o">(</span>retracted<span class="o">)</span> <span class="o">[</span>v0.3.0<span class="o">]</span>
 </code></pre></td></tr></table>
 </div>
-</div><a class="post-dummy-target" id="问题"></a><h2>问题</h2>
+</div><h2 id="问题">问题</h2>
 <p>如果模块现在的版本是v0版本，不小心发布了v1版本，需要撤回v1版本，该怎么操作？</p>
 <p>1、按照上面的操作步骤进行，我们发现打过<code>v1.0.0</code>版本后,仍会显示<code>v1.0.0</code></p>
 <div class="highlight"><div class="chroma">
@@ -536,204 +419,48 @@ github.com/betterfor/retract v0.1.0 v0.3.0 v0.4.0
 <blockquote>
 <p>如果你将来发布v1版本时，应该要从v1.0.2开始，因为v1.0.0和v1.0.1已经被占用了</p>
 </blockquote>
-
-        </div>
-
-        <div class="post-footer" id="post-footer">
+</div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>本文于 2021-05-12 更新</span>
+                <span>更新于 2021-05-12&nbsp;<a class="git-hash" href="https://betterfor.github.io/commit/8462c49e60448735bd494f55c3f7e7b1f9d7b941" target="_blank" title="commit by betterfor(xiejian) 8462c49e60448735bd494f55c3f7e7b1f9d7b941: hugo主题配置修改">
+                                    <i class="fas fa-hashtag fa-fw"></i>8462c49</a></span>
             </div>
-            <div class="post-info-license">
-                
-            </div>
+            <div class="post-info-license"></div>
         </div>
         <div class="post-info-line">
-            <div class="post-info-md">
-                
-                    
-                        <span><a class="link-to-markdown" href="https://betterfor.github.io/2021/02/golang_retract/index.md" target="_blank">阅读原始文档</a></span>
-                    
-                
-            </div>
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2021/02/golang_retract/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
             <div class="post-info-share">
-                
-                    <span>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</span>
-                
+                <span></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/linux/">linux</a>,&nbsp;<a href="/tags/develop/">develop</a></section>
         <section>
-            
-                
-                    <span class="tag">
-                        <a href="https://betterfor.github.io/tags/linux/"><i class="fas fa-tag fa-fw"></i>linux</a>
-                    </span>
-                
-                    <span class="tag">
-                        <a href="https://betterfor.github.io/tags/develop/"><i class="fas fa-tag fa-fw"></i>develop</a>
-                    </span>
-                
-            
-        </section>
-        <section>
-            <span><a href="javascript:window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="https://betterfor.github.io/">主页</a></span>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
         </section>
     </div>
 
-    <div class="post-nav">
-        
-            <a href="https://betterfor.github.io/2021/02/docker_command/" class="prev" rel="prev" title="Docker命令大全"><i class="fas fa-angle-left fa-fw"></i>Docker命令大全</a>
-        
-        
-            <a href="https://betterfor.github.io/2021/03/pod%E5%9F%BA%E7%A1%80/" class="next" rel="next" title="Pod的基础">Pod的基础<i class="fas fa-angle-right fa-fw"></i></a>
-        
-    </div>
+    <div class="post-nav"><a href="/2021/02/docker_command/" class="prev" rel="prev" title="Docker命令大全"><i class="fas fa-angle-left fa-fw"></i>Docker命令大全</a>
+            <a href="/2021/03/pod%E5%9F%BA%E7%A1%80/" class="next" rel="next" title="Pod的基础">Pod的基础<i class="fas fa-angle-right fa-fw"></i></a></div>
 </div>
-
-        <div class="post-comment">
-            
-            <h2>这个评论 true  true </h2>
-
-
-            
+<div id="comments"><div id="gitalk" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://github.com/gitalk/gitalk"></a>Gitalk</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.83.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
-    </article></div>
-            </main>
-            <footer class="footer">
-    <div class="copyright">
-        <div class="copyright-line">
-            由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreffer">Hugo</a> 强力驱动&nbsp;|&nbsp;主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="external nofollow noopener noreffer">LoveIt<i class="far fa-heart fa-fw"></i></a>
-        </div>
-        <div class="copyright-line">
-            <i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://betterfor.github.io/">betterfor</a></span><span class="license">&nbsp;|&nbsp;<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
-    </div>
-</footer>
-
-
-    
-    
-
-
-
-
-    
-    
-
-
-
-
-    
-    
-
-
-
-
-
-    
-    
-
-
-
-    
-    
-
-
-
-    
-    
-
-
-
-
-
-    
-    
-
-
-
-
-
-    
-    
-
-
-
-    
-    
-
-
-
-
-
-    
-    
-
-
-
-
-    
-    
-
-
-
-
-    
-    
-
-
-
-    
-    
-
-
-
-
-
-    
-    
-
-
-<script src="/js/lib/jquery/jquery.slim.min.min.js"></script>
-<script src="/js/lib/lazysizes/lazysizes.min.min.js"></script>
-<script src="/js/lib/smooth-scroll/smooth-scroll.polyfills.min.min.js"></script><script>window.scroll = new SmoothScroll('[data-scroll]', {speed: 300, speedAsDuration: true});</script>
-
-
-    
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-
-
-<script src="/js/blog.min.js"></script>
-
-
-    
-</div>
-        <a href="#" class="dynamic-to-top" id="dynamic-to-top" data-scroll><span>&nbsp;</span></a>
-    </body>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"gitalk":{"admin":["betterfor"],"clientID":"fba15d94f073857ee898","clientSecret":"90083900b5dd077594528a709f18fe4b16b2a1a2","id":"2021-02-25T15:15:36+08:00","owner":"betterfor","repo":"betterfor.github.io","title":"Golang 1.16版本新特性 =\u003e 撤回版本(retract)"}},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
 </html>

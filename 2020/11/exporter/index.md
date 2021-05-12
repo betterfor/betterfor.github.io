@@ -304,3 +304,4 @@ histogram_quantile(0.95,rate(hq_failture_total_bucket[1m]))
 _total,_count,_sum和_bucket这些后缀是留给counter，summary和histogram指标使用的。
 除了在counter类型的指标上始终具有_total后缀外，不要将其他后缀放在指标名称的末尾。
 
+

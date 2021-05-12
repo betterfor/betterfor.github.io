@@ -1,57 +1,28 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>develop on 月霜天</title>
-    <link>https://betterfor.github.io/tags/develop/</link>
-    <description>Recent content in develop on 月霜天</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>zh</language>
-    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Thu, 25 Feb 2021 15:15:36 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/develop/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Golang 1.16版本新特性 =&gt; 撤回版本(retract)</title>
-      <link>https://betterfor.github.io/2021/02/golang_retract/</link>
-      <pubDate>Thu, 25 Feb 2021 15:15:36 +0800</pubDate>
-      
-      <guid>https://betterfor.github.io/2021/02/golang_retract/</guid>
-      <description>一般来说，模块作者需要使用一种方法来只是不应该使用某个已发布的模块。
- 出现一个严重的安全漏洞 不闲不兼容或bug 版本发布错误   出现过模块最新版本为1.0.0，错误发布1.1.0，然后在github上把版本删除，使用1.0.1版本，但是有人使用代理模块并且下载了1.1.0版本，所以其他人再下载指定latest会下载1.1.0版本的代码。
- 准备工作  retract模块，github的完整路径是https://github.com/betterfor/retract，你可以使用自己的模块实验。 awesomeProjcet，本地模块，使用了test包的依赖的简单main函数。   请确保golang版本是1.16+
- 创建test模块 1、先在github上创建好仓库
-2、拉取代码仓库
-1 2 3 4  $ git clone https://github.com/betterfor/retract.git $ cd retract/ $ go mod init go: creating new go.mod: module github.com/betterfor/retract   3、在模块中新建foo.go文件
-1 2 3 4 5  package retract func Foo() string { return &amp;#34;v0.0.1&amp;#34; }   4、将retract模块的改动提交git并push
-1 2 3  $ git add .</description>
-    </item>
-    
-    <item>
-      <title>使用Navicate连接Oracle失败 ORA-25847:connection to server failed,probable Orable Net admin error</title>
-      <link>https://betterfor.github.io/2021/01/oracle_connect/</link>
-      <pubDate>Mon, 18 Jan 2021 14:04:32 +0800</pubDate>
-      
-      <guid>https://betterfor.github.io/2021/01/oracle_connect/</guid>
-      <description>使用Navicate 15连接Oracle数据库出现如下错误
-通过查询可知是oci.dll版本太低，使用的11.2版本。因为Navicate是通过Oracle客户端连接Oracle服务器，Oracle的客户端分为两种，一种是标准版，一种是简洁版，即Oracle Install Client。出现ORA-28547错误时，多数是因为Navicat本地的OCI版本与Oracle服务器服务器不符造成的。
-OCI下载地址
-这里看到许多文章提示不管使用的32位系统还是64位系统都应下载32为的Install Client
-这里我实际操作了一下，64位的系统并不支持32位，所以一定要根据自己的系统版本下载。
-打开Navicate程序，打开 “工具” -&amp;gt; &amp;ldquo;选项&amp;rdquo; -&amp;gt; &amp;ldquo;环境&amp;rdquo; -&amp;gt; &amp;ldquo;OCI环境&amp;rdquo;
-将刚才下载的oci.dll文件完整目录填上，确定后重启Navicate，就会发现可以成功连接了。</description>
-    </item>
-    
-    <item>
-      <title>并查集</title>
-      <link>https://betterfor.github.io/2021/01/%E5%B9%B6%E6%9F%A5%E9%9B%86/</link>
-      <pubDate>Mon, 11 Jan 2021 15:17:18 +0800</pubDate>
-      
-      <guid>https://betterfor.github.io/2021/01/%E5%B9%B6%E6%9F%A5%E9%9B%86/</guid>
-      <description>并查集 目的: 解决元素分组问题
-用途: 1、判断有向图中是否产生环 2、维护无向图的连通性，判断两个点是否在同一个连通块中
-操作: 1、初始化: 每个集合的parent都是自己 2、查询: 查询集合的parent 3、合并: 把不相连的元素合并到同一个集合中
-方法 1、初始化 假如有编号为1, 2, 3, &amp;hellip;, n的n个元素，我们用一个数组fa[]来存储每个元素的父节点（因为每个元素有且只有一个父节点，所以这是可行的）。 一开始，我们先将它们的父节点设为自己。
-1 2 3 4  var fa = make([]int,n) for i := 0; i &amp;lt; n; i++ { fa[i] = i }   2、查询 我们用递归的写法实现对代表元素的查询：一层一层访问父节点，直至根节点（根节点的标志就是父节点是本身）。 要判断两个元素是否属于同一个集合，只需要看它们的根节点是否相同即可。
-1 2 3 4 5 6  find = func(x int) int { if x == fa[x] { return x } return find(fa[x]) }   路径压缩方法</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>develop - 标签 - 月霜天的小站</title>
+        <link>https://betterfor.github.io/tags/develop/</link>
+        <description>develop - 标签 - 月霜天的小站</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 25 Feb 2021 15:15:36 &#43;0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/develop/" rel="self" type="application/rss+xml" /><item>
+    <title>Golang 1.16版本新特性 =&gt; 撤回版本(retract)</title>
+    <link>https://betterfor.github.io/2021/02/golang_retract/</link>
+    <pubDate>Thu, 25 Feb 2021 15:15:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2021/02/golang_retract/</guid>
+    <description><![CDATA[一般来说，模块作者需要使用一种方法来只是不应该使用某个已发布的模块。 出现一个严重的安全漏洞 不闲不兼容或bug 版本发布错误 出现过模块最新版本为]]></description>
+</item><item>
+    <title>使用Navicate连接Oracle失败 ORA-25847:connection to server failed,probable Orable Net admin error</title>
+    <link>https://betterfor.github.io/2021/01/oracle_connect/</link>
+    <pubDate>Mon, 18 Jan 2021 14:04:32 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2021/01/oracle_connect/</guid>
+    <description><![CDATA[使用Navicate 15连接Oracle数据库出现如下错误 通过查询可知是oci.dll版本太低，使用的11.2版本。因为Navicate是通]]></description>
+</item><item>
+    <title>并查集</title>
+    <link>https://betterfor.github.io/2021/01/%E5%B9%B6%E6%9F%A5%E9%9B%86/</link>
+    <pubDate>Mon, 11 Jan 2021 15:17:18 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2021/01/%E5%B9%B6%E6%9F%A5%E9%9B%86/</guid>
+    <description><![CDATA[并查集 目的: 解决元素分组问题 用途: 1、判断有向图中是否产生环 2、维护无向图的连通性，判断两个点是否在同一个连通块中 操作: 1、初始化: 每个集合]]></description>
+</item></channel>
 </rss>

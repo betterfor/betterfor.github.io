@@ -1,29 +1,14 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>logic on 月霜天</title>
-    <link>https://betterfor.github.io/categories/logic/</link>
-    <description>Recent content in logic on 月霜天</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>zh</language>
-    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Tue, 15 Dec 2020 20:28:08 +0800</lastBuildDate><atom:link href="https://betterfor.github.io/categories/logic/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>6道有趣的智力题</title>
-      <link>https://betterfor.github.io/2020/12/%E6%99%BA%E5%8A%9B%E9%A2%98/</link>
-      <pubDate>Tue, 15 Dec 2020 20:28:08 +0800</pubDate>
-      
-      <guid>https://betterfor.github.io/2020/12/%E6%99%BA%E5%8A%9B%E9%A2%98/</guid>
-      <description>一 有20瓶药丸，其中19瓶装有1克/粒的药丸，余下一瓶装有1.1克/粒的药丸。给你一台称重精准的天平，怎么找出较重的那瓶药丸？天平只能使用一次。 初次看到这题，如果不限制次数，那么可以二分法，天平两边10个比较，直到找到较重的为止。
-但是，现在限制只能使用一次天平。
-怎么办呢？
-假设只有两瓶药丸，一瓶较重，从两瓶中各取一粒，称重为2.1克，我们无法得知是从哪一瓶多出的0.1克。
-我们需要将因子不平衡，如果从1号药瓶取出1粒，从2号药瓶取出2粒，如果算出重量是3.1克，那么1号瓶较重，如果算出重量为3.2克，那么2号瓶较重。
-我们将这个结论推广一下，从1号药瓶取出1粒，从2号药瓶取出2粒，以此类推，如果每粒药丸均重1克，那么得到总重量为（1+2+3+&amp;hellip;+20=21*20/2=210）, 因此，如果称重为210.9克，那么较重的那瓶来自于9号瓶。
-二 有个8*8的棋盘，其中对角的角落有两个方块被切掉了。给定31块多米诺骨牌，一块骨牌恰好可以覆盖两个格子。用31块骨牌能否盖住整个棋盘呢？ 乍一看，棋盘88=64，多米诺312=62，刚好能盖住。。其实是错觉
-假设棋盘有32个黑格和32个白格交叉排列，切掉对角的方格是同种颜色的，此时只剩30个黑格和32个白格（或32个黑格和30个白格）， 而一块多米诺骨牌必须要覆盖一个白格和一个黑格，31块多米诺骨牌要覆盖31个白格和31个黑格。
-三 有两个水壶，容量为5升和3升，若水量不限量，怎么用这两个水壶得到4升的水？注：水壶不规则形状，无法精确装满半壶水。     5升 3升 注释     5 0 装满5升的壶   2 3 用5升的壶装满3升的壶   0 2 将5升壶中的2升水倒入3升壶中   5 2 装满5升壶   4 3 用5升壶装满3升壶       5升 3升 注释     0 3 装满3升壶   3 3 将3升壶倒入5升壶中，同时装满3升壶   5 1 将3升壶倒入5升壶中   1 0 将3升壶中的1升水倒入5升壶中   1 3 装满3升壶   4 0 将3升壶倒入5升壶中    四 在岛上住着一群人，有一天来了一个游客，定了奇怪的规矩：所有的蓝眼睛必须尽快离开岛。 每个人都能看到别人眼睛的颜色，但不知道自己眼睛的颜色（别人不能告知）， 此外他们不知道有多少个蓝眼睛，只知道至少有一个蓝眼睛，每个人都是聪明的，那么蓝眼睛要花几天才能离开这个岛呢？ 假设有c个蓝眼睛，且c&amp;gt;0 1、c=1：只有一个蓝眼睛 蓝眼睛的人观察之后发现没有蓝眼睛，那么一定能推导出自己是蓝眼睛，因此他会当天离开</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>logic - 分类 - 月霜天的小站</title>
+        <link>https://betterfor.github.io/categories/logic/</link>
+        <description>logic - 分类 - 月霜天的小站</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 15 Dec 2020 20:28:08 &#43;0800</lastBuildDate><atom:link href="https://betterfor.github.io/categories/logic/" rel="self" type="application/rss+xml" /><item>
+    <title>6道有趣的智力题</title>
+    <link>https://betterfor.github.io/2020/12/%E6%99%BA%E5%8A%9B%E9%A2%98/</link>
+    <pubDate>Tue, 15 Dec 2020 20:28:08 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2020/12/%E6%99%BA%E5%8A%9B%E9%A2%98/</guid>
+    <description><![CDATA[一 有20瓶药丸，其中19瓶装有1克/粒的药丸，余下一瓶装有1.1克/粒的药丸。给你一台称重精准的天平，怎么找出较重的那瓶药丸？天平只能使用一]]></description>
+</item></channel>
 </rss>
