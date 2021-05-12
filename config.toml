@@ -1,15 +1,15 @@
 baseURL = "https://betterfor.github.io/"
 languageCode = "zh"                                      # website language
 defaultContentLanguage = "zh"                            # [en, zh, ...] determines which i18n file to use
-title = "风落云起"                                   # website title
+title = "月霜天"                                   		 # website title
 theme = "LoveIt"                                         # theme
-enableGitInfo = true                                    # whether to use git commit log to generate lastmod record
+enableGitInfo = true                                     # whether to use git commit log to generate lastmod record
 hasCJKLanguage = false                                   # whether to include chinese/japanese/korean
 paginate = 8                                             # amount of posts in each page only when home_mode is post
 enableEmoji = true                                       # whether to use emoji code
 enableRobotsTXT = true                                   # whether to use robots.txt
 googleAnalytics = ""                                     # [UA-XXXXXXXX-X] google analytics code
-disqusShortname = ""                             # Disqus shortname to use Disqus in posts
+disqusShortname = ""                             		 # Disqus shortname to use Disqus in posts
 copyright = "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
                                                          # copyright description used only for seo schema
 
@@ -60,7 +60,7 @@ staticDir = ["static", "static/others"]               # static directories
 [params]
   version = "5.x"                                        # LoveIt theme version
   description = "LoveIt Theme Demo"                      # site description
-  keywords = ["Golang", "Theme", "Hugo"]                   # site keywords
+  keywords = ["Golang", "Kubernetes", "Hugo"]                   # site keywords
 
                                                       #### Home Page Info
   home_mode = "other"                                     # [post, other] home mode
@@ -85,6 +85,7 @@ staticDir = ["static", "static/others"]               # static directories
   yandex_verification = ""
   pinterest_verification = ""
   baidu_verification = ""
+  enableGitalk = true
 
   [params.cdn]                                       #### CSS and JS Files CDN
     fontawesome_free_css = ''                           # for example '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.10.1/css/all.min.css" integrity="sha256-fdcFNFiBMrNfWL6OcAGQz6jDgNTRxnrLEd4vJYFWScE=" crossorigin="anonymous">'
@@ -202,8 +203,8 @@ staticDir = ["static", "static/others"]               # static directories
   [params.gitalk]                                        # Gittalk Comment Config (https://github.com/gitalk/gitalk)
     owner = "betterfor"
     repo = "betterfor.github.io"
-    clientId = "8471cf5ee2098c86390e"
-    clientSecret = "7c69bf90b7ec25c2c5923a9b6643794806d6a37e"
+    clientId = "fba15d94f073857ee898"
+    clientSecret = "90083900b5dd077594528a709f18fe4b16b2a1a2"
 
   [params.valine]                                        # Valine Comment Config (https://github.com/xCss/Valine)
     enable = false
