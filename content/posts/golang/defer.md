@@ -1,7 +1,7 @@
 ---
 title: "Defer"
 date: 2021-02-11T10:31:33+08:00
-draft: true
+draft: false
 
 tags: ['linux','develop']
 categories: ['golang']
