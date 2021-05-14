@@ -3,13 +3,27 @@
         <title>develop - 标签 - 月霜天的小站</title>
         <link>https://betterfor.github.io/tags/develop/</link>
         <description>develop - 标签 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 25 Feb 2021 15:15:36 &#43;0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/develop/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 26 Feb 2021 14:46:05 &#43;0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/develop/" rel="self" type="application/rss+xml" /><item>
+    <title>Mutex的源码解析</title>
+    <link>https://betterfor.github.io/2021/02/mutex/</link>
+    <pubDate>Fri, 26 Feb 2021 14:46:05 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2021/02/mutex/</guid>
+    <description><![CDATA[我们来看一下sync包下有哪些常见的使用：cond.go map.go mutex.go once.go pool.go rwmutex.go waitgroup.go 什么是sync？ Package sync provides basic synchronization primitives such as mutual exclusion locks. Other than the Once and WaitGroup types, most are intended for use by low-level library routines. Higher-level]]></description>
+</item><item>
     <title>Golang 1.16版本新特性 =&gt; 撤回版本(retract)</title>
     <link>https://betterfor.github.io/2021/02/golang_retract/</link>
     <pubDate>Thu, 25 Feb 2021 15:15:36 &#43;0800</pubDate>
     <author>作者</author>
     <guid>https://betterfor.github.io/2021/02/golang_retract/</guid>
     <description><![CDATA[一般来说，模块作者需要使用一种方法来只是不应该使用某个已发布的模块。 出现一个严重的安全漏洞 不闲不兼容或bug 版本发布错误 出现过模块最新版本为]]></description>
+</item><item>
+    <title>Defer</title>
+    <link>https://betterfor.github.io/2021/02/defer/</link>
+    <pubDate>Thu, 11 Feb 2021 10:31:33 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2021/02/defer/</guid>
+    <description><![CDATA[什么是defer？ defer是go语言提供的一种用于注册延迟调用的机制，让函数或语句可以在当前函数执行完毕后（包括通过return正常结束或]]></description>
 </item><item>
     <title>使用Navicate连接Oracle失败 ORA-25847:connection to server failed,probable Orable Net admin error</title>
     <link>https://betterfor.github.io/2021/01/oracle_connect/</link>
