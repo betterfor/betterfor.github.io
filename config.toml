@@ -132,7 +132,7 @@ enableEmoji = true
           # Gravatar 邮箱，用于优先在主页显示的头像
           gravatarEmail = ""
           # 主页显示头像的 URL
-          avatarURL = "/images/avatar.png"
+          avatarURL = "https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/dd.jpg"
           # 主页显示的网站标题 (支持 HTML 格式)
           title = "月霜天"
           # 主页显示的网站副标题
@@ -337,7 +337,7 @@ enableEmoji = true
       # Gravatar 邮箱，用于优先在主页显示的头像
       gravatarEmail = ""
       # 主页显示头像的 URL
-      avatarURL = "/images/avatar.png"
+      avatarURL = "https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/dd.jpg"
       #  主页显示的网站标题 (支持 HTML 格式)
       title = "这是我的小站"
       # 主页显示的网站副标题
