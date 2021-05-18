@@ -1,0 +1,56 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>月霜天的小笔记 - 分类 - 月霜天的小站</title>
+        <link>https://betterfor.github.io/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E7%AC%94%E8%AE%B0/</link>
+        <description>月霜天的小笔记 - 分类 - 月霜天的小站</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 24 Mar 2021 22:51:40 &#43;0800</lastBuildDate><atom:link href="https://betterfor.github.io/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E7%AC%94%E8%AE%B0/" rel="self" type="application/rss+xml" /><item>
+    <title>Pod升级与回滚</title>
+    <link>https://betterfor.github.io/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</link>
+    <pubDate>Wed, 24 Mar 2021 22:51:40 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</guid>
+    <description><![CDATA[一、简介 当集群中的某个服务需要升级时，我们需要停止目前与该服务的相关的所有pod，然后下载新版本镜像并创建新的pod。如果集群规模比较大，则]]></description>
+</item><item>
+    <title>Pod调度</title>
+    <link>https://betterfor.github.io/2021/03/pod%E8%B0%83%E5%BA%A6/</link>
+    <pubDate>Tue, 23 Mar 2021 22:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2021/03/pod%E8%B0%83%E5%BA%A6/</guid>
+    <description><![CDATA[一、简介 在大多数情况下，我们不关心pod会被调度到哪个节点，只关心pod是否被成功调度到集群的一个可用节点。但是，在真实生产环境中存在一种需]]></description>
+</item><item>
+    <title>Pod的基础</title>
+    <link>https://betterfor.github.io/2021/03/pod%E5%9F%BA%E7%A1%80/</link>
+    <pubDate>Mon, 22 Mar 2021 21:55:59 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2021/03/pod%E5%9F%BA%E7%A1%80/</guid>
+    <description><![CDATA[一、简介 pod在整个生命周期中被系统定义为各种状态，熟悉pod的各种状态对于理解如何设置pod的调度策略、重启策略都是很有必要的。 二、pod]]></description>
+</item><item>
+    <title>Docker命令大全</title>
+    <link>https://betterfor.github.io/2021/02/docker_command/</link>
+    <pubDate>Fri, 12 Feb 2021 19:26:01 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2021/02/docker_command/</guid>
+    <description><![CDATA[Docker是一个虚拟环境容器，可以将你的开发环境、代码、配置文件等一并打包到这个容器中，并发布和应用到任意平台中。所以你需要知道一点doc]]></description>
+</item><item>
+    <title>十大基础排序算法</title>
+    <link>https://betterfor.github.io/2021/02/%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/</link>
+    <pubDate>Sun, 07 Feb 2021 13:43:54 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2021/02/%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/</guid>
+    <description><![CDATA[排序算法 所谓的排序算法就是将一串记录，按照递增或递减的顺序排列起来。 通常提到的一共有十种排序：冒泡、选择、插入、快速、归并、堆、希尔、计数、]]></description>
+</item><item>
+    <title>并查集</title>
+    <link>https://betterfor.github.io/2021/01/%E5%B9%B6%E6%9F%A5%E9%9B%86/</link>
+    <pubDate>Mon, 11 Jan 2021 15:17:18 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2021/01/%E5%B9%B6%E6%9F%A5%E9%9B%86/</guid>
+    <description><![CDATA[并查集 目的: 解决元素分组问题 用途: 1、判断有向图中是否产生环 2、维护无向图的连通性，判断两个点是否在同一个连通块中 操作: 1、初始化: 每个集合]]></description>
+</item><item>
+    <title>6道有趣的智力题</title>
+    <link>https://betterfor.github.io/2020/12/%E6%99%BA%E5%8A%9B%E9%A2%98/</link>
+    <pubDate>Tue, 15 Dec 2020 20:28:08 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2020/12/%E6%99%BA%E5%8A%9B%E9%A2%98/</guid>
+    <description><![CDATA[一 有20瓶药丸，其中19瓶装有1克/粒的药丸，余下一瓶装有1.1克/粒的药丸。给你一台称重精准的天平，怎么找出较重的那瓶药丸？天平只能使用一]]></description>
+</item></channel>
+</rss>

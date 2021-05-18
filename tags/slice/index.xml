@@ -1,0 +1,14 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>slice - 标签 - 月霜天的小站</title>
+        <link>https://betterfor.github.io/tags/slice/</link>
+        <description>slice - 标签 - 月霜天的小站</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Dec 2020 09:18:56 &#43;0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/slice/" rel="self" type="application/rss+xml" /><item>
+    <title>常见的数据结构--切片</title>
+    <link>https://betterfor.github.io/2020/12/slice/</link>
+    <pubDate>Mon, 07 Dec 2020 09:18:56 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2020/12/slice/</guid>
+    <description><![CDATA[在使用过程中，我们经常会用到数组这一数据结构，而在golang中，提供了数组和切片两种，数组是固定长度的且长度为定值，而切片是可以扩张的数组]]></description>
+</item></channel>
+</rss>
