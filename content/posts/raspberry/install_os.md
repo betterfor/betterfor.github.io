@@ -1,10 +1,10 @@
 ---
 title: "树莓派安装ubuntu系统"
 date: 2020-11-27T18:30:01+08:00
-draft: true
+draft: false
 
-tags: ['linux']
-categories: ['raspberry']
+tags: ['raspberry']
+categories: ["月霜天的小教程"]
 comment: true
 toc: true
 autoCollapseToc: false

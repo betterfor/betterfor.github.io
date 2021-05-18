@@ -4,7 +4,7 @@ date: 2020-11-20T20:17:48+08:00
 draft: true
 
 tags: ['github']
-categories: ['other']
+categories: ["月霜天的小随笔"]
 comment: true
 toc: true
 autoCollapseToc: false

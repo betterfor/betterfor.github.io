@@ -1,10 +1,10 @@
 ---
-title: "Grafana"
+title: "Grafana的使用方法"
 date: 2020-11-20T10:26:46+08:00
 draft: true
 
 tags: ['grafana']
-categories: ['golang']
+categories: ["月霜天的小教程"]
 comment: true
 toc: true
 autoCollapseToc: true

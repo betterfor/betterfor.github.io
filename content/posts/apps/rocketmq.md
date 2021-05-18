@@ -3,8 +3,8 @@ title: "docker安装部署Rocketmq"
 date: 2021-01-07T16:50:55+08:00
 draft: false
 
-tags: ['linux','tool']
-categories: ['golang']
+tags: ['docker','rocketmq']
+categories: ["月霜天的小教程"]
 comment: true
 toc: true
 autoCollapseToc: false

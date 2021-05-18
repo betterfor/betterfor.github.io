@@ -3,8 +3,8 @@ title: "常见的数据结构--链表"
 date: 2020-12-06T15:19:21+08:00
 draft: false
 
-tags: ['基础知识']
-categories: ['golang']
+tags: ['golang',"数据结构"]
+categories: ["月霜天的GO"]
 comment: true
 toc: true
 autoCollapseToc: false

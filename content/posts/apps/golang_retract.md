@@ -3,8 +3,8 @@ title: "Golang 1.16版本新特性 => 撤回版本(retract)"
 date: 2021-02-25T15:15:36+08:00
 draft: false
 
-tags: ['linux','develop']
-categories: ['golang']
+tags: ['golang']
+categories: ["月霜天的GO"]
 comment: true
 toc: true
 autoCollapseToc: false
@@ -207,4 +207,5 @@ go list -m -versions github.com/betterfor/retract
 github.com/betterfor/retract v0.1.0 v0.3.0 v0.4.0
 ```
 ok! v0.4.0就是最新的版本
+
 > 如果你将来发布v1版本时，应该要从v1.0.2开始，因为v1.0.0和v1.0.1已经被占用了

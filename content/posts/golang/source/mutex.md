@@ -3,8 +3,8 @@ title: "Mutex的源码解析"
 date: 2021-02-26T14:46:05+08:00
 draft: false
 
-tags: ['linux','develop']
-categories: ['golang']
+tags: ['golang',"源码分析"]
+categories: ["月霜天的GO"]
 comment: true
 toc: true
 autoCollapseToc: false

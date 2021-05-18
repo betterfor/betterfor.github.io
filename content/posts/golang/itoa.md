@@ -1,10 +1,10 @@
 ---
-title: "Iota"
+title: "Iota的使用方法"
 date: 2021-02-10T20:14:57+08:00
 draft: false
 
 tags: ['iota']
-categories: ['golang']
+categories: ["月霜天的GO"]
 comment: true
 toc: true
 autoCollapseToc: false

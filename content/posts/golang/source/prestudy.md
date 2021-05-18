@@ -1,10 +1,10 @@
 ---
 title: "golang源码剖析 准备"
 date: 2020-11-25T15:25:38+08:00
-draft: false
+draft: true
 
-tags: ['基础知识']
-categories: ['golang']
+tags: ["源码分析"]
+categories: ["月霜天的GO"]
 comment: true
 toc: true
 autoCollapseToc: false

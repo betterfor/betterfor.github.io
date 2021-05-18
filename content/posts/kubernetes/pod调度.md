@@ -3,8 +3,8 @@ title: "Pod调度"
 date: 2021-03-23T22:32:36+08:00
 draft: false
 
-tags: ['pod']
-categories: ['kubernetes']
+tags: ['kubernetes','pod']
+categories: ["月霜天的小笔记"]
 comment: true
 toc: true
 autoCollapseToc: false

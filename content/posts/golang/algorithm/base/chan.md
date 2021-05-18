@@ -3,8 +3,8 @@ title: "常见的数据结构--chan"
 date: 2020-12-09T10:25:54+08:00
 draft: false
 
-tags: ['基础知识']
-categories: ['golang']
+tags: ["golang",'源码分析',"channel"]
+categories: ["月霜天的GO"]
 comment: true
 toc: true
 autoCollapseToc: false

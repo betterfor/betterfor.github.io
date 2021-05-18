@@ -1,10 +1,10 @@
 ---
-title: "Defer"
+title: "Defer的使用方法"
 date: 2021-02-11T10:31:33+08:00
 draft: false
 
-tags: ['linux','develop']
-categories: ['golang']
+tags: ['defer','golang']
+categories: ["月霜天的GO"]
 comment: true
 toc: true
 autoCollapseToc: false

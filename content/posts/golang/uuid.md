@@ -1,10 +1,10 @@
 ---
-title: "Uuid"
+title: "生成uuid的几种方式"
 date: 2021-02-08T14:16:15+08:00
 draft: false
 
 tags: ['uuid','snowflake']
-categories: ['golang']
+categories: ["月霜天的GO"]
 comment: true
 toc: true
 autoCollapseToc: false
