@@ -10,7 +10,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://betterfor.github.io/2021/02/docker_command/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-02-12T19:26:01&#43;08:00" />
-<meta property="article:modified_time" content="2021-05-18T11:22:47&#43;08:00" />
+<meta property="article:modified_time" content="2021-06-03T13:59:57&#43;08:00" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"/>
@@ -29,8 +29,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/betterfor.github.io\/2021\/02\/docker_command\/"
-        },"genre": "posts","keywords": "docker","wordcount":  1222 ,
-        "url": "https:\/\/betterfor.github.io\/2021\/02\/docker_command\/","datePublished": "2021-02-12T19:26:01+08:00","dateModified": "2021-05-18T11:22:47+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+        },"genre": "posts","keywords": "docker","wordcount":  2613 ,
+        "url": "https:\/\/betterfor.github.io\/2021\/02\/docker_command\/","datePublished": "2021-02-12T19:26:01+08:00","dateModified": "2021-06-03T13:59:57+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "月霜天"},"author": {
                 "@type": "Person",
@@ -93,8 +93,8 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">Docker命令大全</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw"></i>月霜天的小笔记</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-02-12">2021-02-12</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1222 字&nbsp;
-                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-02-12">2021-02-12</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2613 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 6 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  kept="">
                 <div class="details-summary toc-title">
                     <span>目录</span>
@@ -112,6 +112,15 @@
     <li><a href="#pull">pull</a></li>
     <li><a href="#push">push</a></li>
     <li><a href="#search">search</a></li>
+    <li><a href="#images">images</a></li>
+    <li><a href="#rmi">rmi</a></li>
+    <li><a href="#tag">tag</a></li>
+    <li><a href="#build">build</a></li>
+    <li><a href="#history">history</a></li>
+    <li><a href="#save">save</a></li>
+    <li><a href="#load">load</a></li>
+    <li><a href="#import">import</a></li>
+    <li><a href="#image">image</a></li>
   </ul>
 </nav></div>
             </div><div class="content" id="content"><blockquote>
@@ -499,12 +508,387 @@ tutum/hello-world   Image to test docker deployments. Has Apache…   78        
 <li>OFFICIAL：是否是官方发布</li>
 <li>AUTOMATED：自动构建</li>
 </ul>
-</div><div class="post-footer" id="post-footer">
+<h2 id="images">images</h2>
+<p><code>docker images</code>：列出本地镜像</p>
+<p><strong>语法</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker images [OPTIONS] [REPOSITORY[:TAG]]
+
+Options:
+  -a, --all             列出本地所有的镜像（含中间映像层，默认情况下，过滤掉中间映像层）
+      --digests         显示镜像的摘要信息
+  -f, --filter filter   显示满足条件的镜像
+      --format string   指定返回值的模板文件
+      --no-trunc        显示完整的镜像信息
+  -q, --quiet      只显示镜像ID
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>实例</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker images
+
+REPOSITORY                                                    TAG                 IMAGE ID       CREATED         SIZE
+registry.cn-hangzhou.aliyuncs.com/google_containers/kicbase   v0.0.15-snapshot4   06db6ca72446   2 months ago    941MB
+hello-world                                                   latest              bf756fb1ae65   13 months ago   13.3kB
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="rmi">rmi</h2>
+<p><code>docker rmi</code>：删除本地一个或多个镜像</p>
+<p><strong>语法</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker rmi [OPTIONS] IMAGE [IMAGE...]
+
+Options:
+  -f, --force      强制删除
+      --no-prune   不移除该镜像的过程镜像，默认移除
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>实例</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker rmi hello-world -f
+Untagged: hello-world:latest
+Untagged: hello-world@sha256:31b9c7d48790f0d8c50ab433d9c3b7e17666d6993084c002c2ff1ca09b96391d
+Deleted: sha256:bf756fb1ae65adf866bd8c456593cd24beb6a0a061dedf42b26a993176745f6b
+Deleted: sha256:9c27e219663c25e0f28493790cc0b88bc973ba3b1686355f221c38a36978ac63
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="tag">tag</h2>
+<p><code>docker tag</code>：标记本地镜像，将其归入某一仓库。</p>
+<p><strong>语法</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>用法</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker tag hello-world hello-world:v1
+docker images hello-world
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+hello-world   latest    bf756fb1ae65   13 months ago   13.3kB
+hello-world   v1        bf756fb1ae65   13 months ago   13.3kB
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="build">build</h2>
+<p><code>docker build</code>：使用Dockerfile创建镜像。</p>
+<p><strong>语法</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker build [OPTIONS] PATH | URL | -
+
+Options:
+      --add-host list           添加(host:ip)
+      --build-arg list          设置镜像创建时的变量
+      --cache-from strings      镜像缓存
+      --cgroup-parent string    容器可选的父cgroup
+      --compress                压缩构建上下文使用gzip
+      --cpu-period int          限制cpu cfs周期
+      --cpu-quota int           限制cpu cfs配额
+  -c, --cpu-shares int          设置cpu使用权重
+      --cpuset-cpus string      设置使用的cpu id
+      --cpuset-mems string      设置使用的内存id
+      --disable-content-trust   忽略校验，默认开启
+  -f, --file string             指定要使用的Dockerfile路径，默认是&#39;PATH/Dockerfile&#39;
+      --force-rm                设置镜像过程中删除中间容器
+      --iidfile string          写入镜像id到文件
+      --isolation string        使用容器隔离技术
+      --label list              设置镜像使用的元数据
+  -m, --memory bytes            设置内存最大值
+      --memory-swap bytes       设置swap的最大值为内存+swap，-1表示不受限
+      --network string          在构建期间设置RUN指令的网络模式，默认为&#34;default&#34;
+      --no-cache                创建镜像过程中不使用缓存
+      --pull                    尝试去更新镜像的最新版本
+  -q, --quiet                   安静模式，成功后只输出镜像ID
+      --rm                      设置镜像成功后删除中间容器
+      --security-opt strings    安全选项
+      --shm-size bytes          设置/dev/shm，默认值是64M
+  -t, --tag list                镜像的名字及标签，通常为&#39;name:tag&#39;格式，可以在一次构建中为一个镜像设置多个标签
+      --target string           设置指定构建步骤
+      --ulimit ulimit           Ulimit选项
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>用法</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker build -t my-image:v1 .
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="history">history</h2>
+<p><code>docker history</code>：展示一个镜像的历史。</p>
+<p><strong>语法</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker history [OPTIONS] IMAGE
+
+Options:
+      --format string   指定模板输出
+  -H, --human           以可读的格式打印镜像大小和日期，默认true
+      --no-trunc        显示完整的提交记录
+  -q, --quiet           仅列出提交记录的ID
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>实例</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker history hello-world:v1
+IMAGE          CREATED         CREATED BY                                      SIZE      COMMENT
+bf756fb1ae65   13 months ago   /bin/sh -c #(nop)  CMD [&#34;/hello&#34;]               0B
+&lt;missing&gt;      13 months ago   /bin/sh -c #(nop) COPY file:7bf12aab75c3867a…   13.3kB
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="save">save</h2>
+<p><code>docker save</code>：保存一个或多个镜像成tar归档文件（默认标准输出）。</p>
+<p><strong>语法</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker save [OPTIONS] IMAGE [IMAGE...]
+
+Options:
+  -o, --output string   输出到的文件
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>实例</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker save -o hello.tar hello-world:v1
+ll hello.tar
+-rw-------. 1 golang golang 24576 2月  11 19:57 hello.tar
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="load">load</h2>
+<p><code>docker load</code>：导入使用<code>docker save</code>命令导出的镜像。</p>
+<p><strong>语法</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker load [OPTIONS]
+
+Options:
+  -i, --input string   指定导入的文件，代替标准输入
+  -q, --quiet          精简输出信息
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>实例</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ docker images hello-world
+REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
+$ docker load -i hello.tar
+9c27e219663c: Loading layer [==================================================&gt;]  15.36kB/15.36kB
+Loaded image: hello-world:v1
+$ docker images hello-world
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+hello-world   v1        bf756fb1ae65   13 months ago   13.3kB
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="import">import</h2>
+<p><code>docker import</code>：从归档文件中创建镜像。</p>
+<p><strong>语法</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker import [OPTIONS] file|URL|- [REPOSITORY[:TAG]]
+
+Options:
+  -c, --change list       应用docker指令创建镜像
+  -m, --message string    提交时的说明文字
+      --platform string   设置多平台可用
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>实例</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ docker import hello.tar hello-world:v2
+sha256:0243f312226d99ba0cd5e167e894c2910803595a8f81aec270305ae52dca41e6
+$ docker images hello-world
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+hello-world   v2        0243f312226d   7 seconds ago   18.3kB
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="image">image</h2>
+<p><code>docker image</code>：管理镜像</p>
+<p><strong>语法</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker image COMMAND
+
+Commands:
+  build       同docker build
+  history     同docker history
+  import      同docker import
+  inspect     展示镜像的详细信息
+  load        同docker load
+  ls          列举镜像
+  prune       删除未使用的镜像
+  pull        同docker pull
+  push        同docker push
+  rm          同docker rmi
+  save        同docker save
+  tag         同docker tag
+</code></pre></td></tr></table>
+</div>
+</div></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2021-05-18&nbsp;<a class="git-hash" href="https://betterfor.github.io/commit/015be8457ef4893c13f8bb255b5bdf134fdfcb68" target="_blank" title="commit by betterfor(xiejian) 015be8457ef4893c13f8bb255b5bdf134fdfcb68: 调整目录">
-                                    <i class="fas fa-hashtag fa-fw"></i>015be84</a></span>
+                <span>更新于 2021-06-03&nbsp;<a class="git-hash" href="https://betterfor.github.io/commit/9fec13d4b0496e9178962fb685593c36d7bcd8f0" target="_blank" title="commit by betterfor(xiejian) 9fec13d4b0496e9178962fb685593c36d7bcd8f0: 原子锁">
+                                    <i class="fas fa-hashtag fa-fw"></i>9fec13d</a></span>
             </div>
             <div class="post-info-license"></div>
         </div>
