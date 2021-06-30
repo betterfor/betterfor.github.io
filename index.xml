@@ -3,9 +3,23 @@
         <title>月霜天的小站</title>
         <link>https://betterfor.github.io/</link>
         <description>月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 03 Jun 2021 09:59:51 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 28 Jun 2021 14:07:33 &#43;0800</lastBuildDate>
             <atom:link href="https://betterfor.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>高并发系统下的限速策略</title>
+    <link>https://betterfor.github.io/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/</link>
+    <pubDate>Mon, 28 Jun 2021 14:07:33 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/</guid>
+    <description><![CDATA[限流又称为流量控制，是限制到达系统的并发请求数，当达到限制条件时可以拒绝请求，可以起到保护下游服务，熔断流量的作用。常用的限流策略有漏桶算法]]></description>
+</item><item>
+    <title>Golang定时器1.13源码分析</title>
+    <link>https://betterfor.github.io/2021/06/golang%E5%AE%9A%E6%97%B6%E5%99%A81.13/</link>
+    <pubDate>Wed, 09 Jun 2021 14:42:10 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2021/06/golang%E5%AE%9A%E6%97%B6%E5%99%A81.13/</guid>
+    <description><![CDATA[本文将基于Golang源码对Timer的底层实现进行深度剖析。 注：本文基于golang-1.13源码进行分析。 概述 我们在开发过程中通常会用到]]></description>
+</item><item>
     <title>并发编程之原子操作</title>
     <link>https://betterfor.github.io/2021/06/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/</link>
     <pubDate>Thu, 03 Jun 2021 09:59:51 &#43;0800</pubDate>
@@ -61,19 +75,5 @@
     <author>作者</author>
     <guid>https://betterfor.github.io/2021/02/defer/</guid>
     <description><![CDATA[什么是defer？ defer是go语言提供的一种用于注册延迟调用的机制，让函数或语句可以在当前函数执行完毕后（包括通过return正常结束或]]></description>
-</item><item>
-    <title>Iota的使用方法</title>
-    <link>https://betterfor.github.io/2021/02/itoa/</link>
-    <pubDate>Wed, 10 Feb 2021 20:14:57 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://betterfor.github.io/2021/02/itoa/</guid>
-    <description><![CDATA[iota是golang语言的常数计量器，只能在常量的表达式中使用。 iota在const关键字出现时被重置为0(const内部的第一行之前)。]]></description>
-</item><item>
-    <title>生成uuid的几种方式</title>
-    <link>https://betterfor.github.io/2021/02/uuid/</link>
-    <pubDate>Mon, 08 Feb 2021 14:16:15 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://betterfor.github.io/2021/02/uuid/</guid>
-    <description><![CDATA[背景 在复杂的分布式系统中，往往需要对大量的数据和消息进行唯一标识。数据日益增长，对数据库需要进行切分，而水平切分数据库需要一个唯一ID来标识]]></description>
 </item></channel>
 </rss>

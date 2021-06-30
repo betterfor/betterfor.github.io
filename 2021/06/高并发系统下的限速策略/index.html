@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>高并发系统下的限速策略 - 月霜天的小站</title><meta name="Description" content="月霜天的小站"><meta property="og:title" content="高并发系统下的限速策略" />
+<meta property="og:description" content="限流又称为流量控制，是限制到达系统的并发请求数，当达到限制条件时可以拒绝请求，可以起到保护下游服务，熔断流量的作用。常用的限流策略有漏桶算法" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://betterfor.github.io/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-06-28T14:07:33&#43;08:00" />
+<meta property="article:modified_time" content="2021-06-28T14:07:33&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"/>
+
+<meta name="twitter:title" content="高并发系统下的限速策略"/>
+<meta name="twitter:description" content="限流又称为流量控制，是限制到达系统的并发请求数，当达到限制条件时可以拒绝请求，可以起到保护下游服务，熔断流量的作用。常用的限流策略有漏桶算法"/>
+<meta name="application-name" content="月霜天">
+<meta name="apple-mobile-web-app-title" content="月霜天"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://betterfor.github.io/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/" /><link rel="prev" href="https://betterfor.github.io/2021/06/golang%E5%AE%9A%E6%97%B6%E5%99%A81.13/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "高并发系统下的限速策略",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/betterfor.github.io\/2021\/06\/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5\/"
+        },"genre": "posts","keywords": "golang, 源码库","wordcount":  4890 ,
+        "url": "https:\/\/betterfor.github.io\/2021\/06\/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5\/","datePublished": "2021-06-28T14:07:33+08:00","dateModified": "2021-06-28T14:07:33+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "月霜天"},"author": {
+                "@type": "Person",
+                "name": "月霜天"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico" /></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico" /></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">高并发系统下的限速策略</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/"><i class="far fa-folder fa-fw"></i>月霜天的GO</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-06-28">2021-06-28</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 4890 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 10 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#限流算法">限流算法</a>
+      <ul>
+        <li><a href="#计数器算法">计数器算法</a></li>
+        <li><a href="#滑动窗口">滑动窗口</a></li>
+        <li><a href="#漏桶算法">漏桶算法</a></li>
+        <li><a href="#令牌桶算法">令牌桶算法</a></li>
+        <li><a href="#小结">小结</a></li>
+      </ul>
+    </li>
+    <li><a href="#限流源码">限流源码</a>
+      <ul>
+        <li><a href="#golangorgxtimeratehttpsgithubcomgolangtime"><a href="https://github.com/golang/time">golang.org/x/time/rate</a></a>
+          <ul>
+            <li><a href="#limit类型">Limit类型</a></li>
+            <li><a href="#limiter结构体">Limiter结构体</a></li>
+            <li><a href="#revervation结构体">Revervation结构体</a></li>
+            <li><a href="#limiter消费token">Limiter消费token</a></li>
+            <li><a href="#limiter归还token">Limiter归还token</a></li>
+            <li><a href="#小结-1">小结</a></li>
+          </ul>
+        </li>
+        <li><a href="#uber-goratelimithttpsgithubcomuber-goratelimit"><a href="https://github.com/uber-go/ratelimit">uber-go/ratelimit</a></a>
+          <ul>
+            <li><a href="#例子">例子</a></li>
+            <li><a href="#基本实现">基本实现</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>限流又称为流量控制，是限制到达系统的并发请求数，当达到限制条件时可以拒绝请求，可以起到保护下游服务，熔断流量的作用。常用的限流策略有漏桶算法、令牌桶算法、滑动窗口。</p>
+<h2 id="限流算法">限流算法</h2>
+<h3 id="计数器算法">计数器算法</h3>
+<p>计数器算法是限流算法中最简单也是最容易实现的一种算法。设置某段时间内的计数器是一个定值，当请求值在范围内则放行，如果超过计数器则限流。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="p">(</span>
+	<span class="nx">once</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Once</span>
+	<span class="nx">ErrExceededLimit</span> <span class="p">=</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;Too many requests, exceed the limit. &#34;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="kd">type</span> <span class="nx">fixedWindowCounter</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">duration</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span>
+	<span class="nx">currentRequests</span><span class="p">,</span> <span class="nx">allowRequests</span> <span class="kt">int32</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">New</span><span class="p">(</span><span class="nx">duration</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">,</span> <span class="nx">allowRequests</span> <span class="kt">int32</span><span class="p">)</span> <span class="o">*</span><span class="nx">fixedWindowCounter</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">fixedWindowCounter</span><span class="p">{</span><span class="nx">duration</span><span class="p">:</span> <span class="nx">duration</span><span class="p">,</span> <span class="nx">allowRequests</span><span class="p">:</span> <span class="nx">allowRequests</span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">fixedWindowCounter</span><span class="p">)</span> <span class="nf">Take</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="nx">once</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="k">for</span>  <span class="p">{</span>
+				<span class="k">select</span> <span class="p">{</span>
+				<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">time</span><span class="p">.</span><span class="nf">After</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">duration</span><span class="p">):</span>
+					<span class="nx">atomic</span><span class="p">.</span><span class="nf">StoreInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">currentRequests</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+		<span class="p">}()</span>
+	<span class="p">})</span>
+
+	<span class="nx">curRequest</span> <span class="o">:=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">LoadInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">currentRequests</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">curRequest</span> <span class="o">&gt;=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">allowRequests</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">ErrExceededLimit</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="p">!</span><span class="nx">atomic</span><span class="p">.</span><span class="nf">CompareAndSwapInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">currentRequests</span><span class="p">,</span> <span class="nx">curRequest</span><span class="p">,</span> <span class="nx">curRequest</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">ErrExceededLimit</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="滑动窗口">滑动窗口</h3>
+<p>计数器算法虽然简单，但是会有临界问题，如果有恶意请求在时间边界处大量请求，这会导致瞬间的请求量变大。</p>
+<p>所以引入滑动窗口，例如把1分钟化成6格，每格就是10秒，每过10秒，滑动窗口就会向右滑动一格，每个格子都有自己的计数器。</p>
+<p>由此可见，当滑动窗口的格子划分的越多，那么滑动窗口的滚动就越平滑，限流的统计就会越精确。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="p">(</span>
+	<span class="nx">once</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Once</span>
+	<span class="nx">ErrExceededLimit</span> <span class="p">=</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;Too many requests, exceed the limit. &#34;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="kd">type</span> <span class="nx">slidingWindowCounter</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">total</span><span class="p">,</span> <span class="nx">slot</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span>
+	<span class="nx">durationRequests</span> <span class="kd">chan</span> <span class="kt">int32</span>
+	<span class="nx">inDurRequests</span> <span class="kt">int32</span>
+	<span class="nx">currentRequests</span><span class="p">,</span> <span class="nx">allowRequests</span> <span class="kt">int32</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">New</span><span class="p">(</span><span class="nx">slot</span><span class="p">,</span> <span class="nx">total</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">,</span> <span class="nx">allowRequests</span> <span class="kt">int32</span><span class="p">)</span> <span class="o">*</span><span class="nx">slidingWindowCounter</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">slidingWindowCounter</span><span class="p">{</span><span class="nx">durationRequests</span><span class="p">:</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int32</span><span class="p">,</span> <span class="nx">total</span><span class="o">/</span><span class="nx">slot</span><span class="o">/</span><span class="mi">1000</span><span class="p">),</span> <span class="nx">total</span><span class="p">:</span> <span class="nx">total</span><span class="p">,</span> <span class="nx">slot</span><span class="p">:</span> <span class="nx">slot</span><span class="p">,</span> <span class="nx">allowRequests</span><span class="p">:</span> <span class="nx">allowRequests</span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">slidingWindowCounter</span><span class="p">)</span> <span class="nf">Take</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="nx">once</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="k">go</span> <span class="nf">sliding</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span>
+			<span class="k">go</span> <span class="nf">calculate</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span>
+		<span class="p">}()</span>
+	<span class="p">})</span>
+
+	<span class="nx">curRequest</span> <span class="o">:=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">LoadInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">currentRequests</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">curRequest</span> <span class="o">&gt;=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">allowRequests</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">ErrExceededLimit</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="p">!</span><span class="nx">atomic</span><span class="p">.</span><span class="nf">CompareAndSwapInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">currentRequests</span><span class="p">,</span> <span class="nx">curRequest</span><span class="p">,</span> <span class="nx">curRequest</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">ErrExceededLimit</span>
+	<span class="p">}</span>
+	<span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">inDurRequests</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+	<span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">sliding</span><span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">slidingWindowCounter</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">for</span>  <span class="p">{</span>
+		<span class="k">select</span> <span class="p">{</span>
+		<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">time</span><span class="p">.</span><span class="nf">After</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">slot</span><span class="p">):</span>
+			<span class="nx">t</span> <span class="o">:=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">SwapInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">inDurRequests</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+			<span class="nx">c</span><span class="p">.</span><span class="nx">durationRequests</span> <span class="o">&lt;-</span> <span class="nx">t</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">calculate</span><span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">slidingWindowCounter</span><span class="p">)</span> <span class="p">{</span>
+	<span class="c1">// 通道加满
+</span><span class="c1"></span>	<span class="k">for</span>  <span class="p">{</span>
+		<span class="o">&lt;-</span><span class="nx">time</span><span class="p">.</span><span class="nf">After</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">slot</span><span class="p">)</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">durationRequests</span><span class="p">)</span> <span class="o">==</span> <span class="nb">cap</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">durationRequests</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">break</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="c1">// 定时从通道中取出数据，对currentRequests置0
+</span><span class="c1"></span>	<span class="k">for</span>  <span class="p">{</span>
+		<span class="o">&lt;-</span><span class="nx">time</span><span class="p">.</span><span class="nf">After</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">slot</span><span class="p">)</span>
+		<span class="nx">t</span> <span class="o">:=</span> <span class="o">&lt;-</span> <span class="nx">c</span><span class="p">.</span><span class="nx">durationRequests</span>
+		<span class="k">if</span> <span class="nx">t</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+			<span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">currentRequests</span><span class="p">,</span> <span class="o">-</span><span class="nx">t</span><span class="p">)</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="漏桶算法">漏桶算法</h3>
+<p>水（请求）先到漏桶中，漏桶以一定速率出水，当水的流入速度过大时会直接溢出，可以看出漏桶算法能强行限制数据的传输速率。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="p">(</span>
+	<span class="nx">once</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Once</span>
+	<span class="nx">ErrExceededLimit</span> <span class="p">=</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;Too many requests, exceed the limit. &#34;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="kd">type</span> <span class="nx">leakyBucket</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">duration</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span>
+	<span class="nx">bucketSize</span> <span class="kd">chan</span> <span class="kd">struct</span><span class="p">{}</span>
+	<span class="nx">allowRequests</span> <span class="kt">int32</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">New</span><span class="p">(</span><span class="nx">duration</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">,</span> <span class="nx">bucketSize</span><span class="p">,</span> <span class="nx">allowRequests</span> <span class="kt">int32</span><span class="p">)</span> <span class="o">*</span><span class="nx">leakyBucket</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">leakyBucket</span><span class="p">{</span><span class="nx">duration</span><span class="p">:</span> <span class="nx">duration</span><span class="p">,</span> <span class="nx">bucketSize</span><span class="p">:</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{},</span> <span class="nx">allowRequests</span><span class="o">/</span><span class="nx">bucketSize</span><span class="p">),</span> <span class="nx">allowRequests</span><span class="p">:</span> <span class="nx">allowRequests</span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">leakyBucket</span><span class="p">)</span> <span class="nf">Take</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="nx">once</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="k">for</span>  <span class="p">{</span>
+				<span class="k">select</span> <span class="p">{</span>
+				<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">time</span><span class="p">.</span><span class="nf">After</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nf">Duration</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">duration</span><span class="p">.</span><span class="nf">Nanoseconds</span><span class="p">()</span><span class="o">/</span><span class="nb">int64</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">allowRequests</span><span class="p">))):</span>
+					<span class="nx">c</span><span class="p">.</span><span class="nx">bucketSize</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+		<span class="p">}()</span>
+	<span class="p">})</span>
+	<span class="k">select</span> <span class="p">{</span>
+	<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">c</span><span class="p">.</span><span class="nx">bucketSize</span><span class="p">:</span>
+		<span class="k">return</span> <span class="kc">nil</span>
+	<span class="k">default</span><span class="p">:</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">ErrExceededLimit</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="令牌桶算法">令牌桶算法</h3>
+<p><a href="https://en.wikipedia.org/wiki/Token_bucket" target="_blank" rel="noopener noreffer">令牌桶</a>是一种常见于用于控制速率的控流算法。系统会以一个恒定的速度往桶里放入令牌，而如果请求需要被处理，则需要先从桶里获取一个令牌，当桶里没有令牌可取时，则拒绝服务。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="p">(</span>
+	<span class="nx">once</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Once</span>
+	<span class="nx">ErrExceededLimit</span> <span class="p">=</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;Too many requests, exceed the limit. &#34;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="kd">type</span> <span class="nx">leakyBucket</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">duration</span>      <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span>
+	<span class="nx">token</span>         <span class="kd">chan</span> <span class="kd">struct</span><span class="p">{}</span>
+	<span class="nx">allowRequests</span> <span class="kt">int32</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">New</span><span class="p">(</span><span class="nx">duration</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">,</span> <span class="nx">allowRequests</span> <span class="kt">int32</span><span class="p">)</span> <span class="o">*</span><span class="nx">leakyBucket</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">leakyBucket</span><span class="p">{</span><span class="nx">duration</span><span class="p">:</span> <span class="nx">duration</span><span class="p">,</span> <span class="nx">token</span><span class="p">:</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{},</span> <span class="nx">allowRequests</span><span class="p">),</span> <span class="nx">allowRequests</span><span class="p">:</span> <span class="nx">allowRequests</span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">leakyBucket</span><span class="p">)</span> <span class="nf">Take</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="nx">once</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="k">for</span>  <span class="p">{</span>
+				<span class="k">select</span> <span class="p">{</span>
+				<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">time</span><span class="p">.</span><span class="nf">After</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nf">Duration</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">duration</span><span class="p">.</span><span class="nf">Nanoseconds</span><span class="p">()</span><span class="o">/</span><span class="nb">int64</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">allowRequests</span><span class="p">))):</span>
+					<span class="nx">c</span><span class="p">.</span><span class="nx">token</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+		<span class="p">}()</span>
+	<span class="p">})</span>
+	<span class="k">select</span> <span class="p">{</span>
+	<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">c</span><span class="p">.</span><span class="nx">token</span><span class="p">:</span>
+		<span class="k">return</span> <span class="kc">nil</span>
+	<span class="k">default</span><span class="p">:</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">ErrExceededLimit</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="小结">小结</h3>
+<p>计数器算法优点是简单，能够满足简单的限流需求，缺点是临界问题，流量曲线可能不够平滑，会有“突刺现象”，在窗口切换时可能会产生两倍于阈值的流量请求。</p>
+<p>滑动窗口算法作为对计数器算法的改进，能有效解决窗口切换时可能会产生两倍于阈值的流量请求的问题。</p>
+<p>漏桶算法的出水速度是恒定的，那么瞬时大流量，将有大部分请求会被丢弃。</p>
+<p>令牌桶算法生成的令牌速度是恒定的，而请求去拿令牌桶是没有速度限制的，这意味着面对瞬时流量，可以短时间内拿到大量令牌。</p>
+<h2 id="限流源码">限流源码</h2>
+<h3 id="golangorgxtimeratehttpsgithubcomgolangtime"><a href="https://github.com/golang/time" target="_blank" rel="noopener noreffer">golang.org/x/time/rate</a></h3>
+<p>是一个令牌桶算法。</p>
+<p>Limiter有三个主要的方法 Allow、Reserve和Wait，最常用的是Wait和Allow方法</p>
+<p>这三个方法每调用一次都会消耗一个令牌，这三个方法的区别在于没有令牌时，他们的处理方式不同</p>
+<p>Allow： 如果没有令牌，则直接返回false</p>
+<p>Reserve：如果没有令牌，则返回一个reservation，</p>
+<p>Wait：如果没有令牌，则等待直到获取一个令牌或者其上下文被取消。</p>
+<p>tokens更新的策略：</p>
+<p>1、 成功获取到令牌或成功预约(Reserve)到令牌</p>
+<p>2、预约取消时(Cancel)并且需要还原令牌到令牌桶中时</p>
+<p>3、重新设置限流器的速率时(SetLimit)</p>
+<p>4、重新设置限流器的容量时(SetBurst)</p>
+<h4 id="limit类型">Limit类型</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Limit 就是float64的别名，定义事件的最大频率，表示每秒发生的事件数。0表示无限制。
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Limit</span> <span class="kt">float64</span>
+
+<span class="c1">// Inf 是无限速率限制允许所有事件(即使突发为0)
+</span><span class="c1"></span><span class="kd">const</span> <span class="nx">Inf</span> <span class="p">=</span> <span class="nf">Limit</span><span class="p">(</span><span class="nx">math</span><span class="p">.</span><span class="nx">MaxFloat64</span><span class="p">)</span>
+
+<span class="c1">// Every 指定向Token桶中防止token的间隔，计算出每秒的数据量
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">Every</span><span class="p">(</span><span class="nx">interval</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">)</span> <span class="nx">Limit</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nx">interval</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">Inf</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="nf">Limit</span><span class="p">(</span><span class="nx">interval</span><span class="p">.</span><span class="nf">Seconds</span><span class="p">())</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="limiter结构体">Limiter结构体</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// The methods AllowN, ReserveN, and WaitN consume n tokens.
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Limiter</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">mu</span>     <span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
+	<span class="nx">limit</span>  <span class="nx">Limit</span>
+	<span class="nx">burst</span>  <span class="kt">int</span>	<span class="c1">// 令牌桶的最大数量，如果burst=0且limit=Inf，则允许处理任何事件
+</span><span class="c1"></span>	<span class="nx">tokens</span> <span class="kt">float64</span>	<span class="c1">// 可用令牌数
+</span><span class="c1"></span>	<span class="nx">last</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span>	<span class="c1">// 记录上次limiter的tokens被更新的时间
+</span><span class="c1"></span>	<span class="nx">lastEvent</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span> <span class="c1">// 记录速率受限的时间点（过去时间点或未来时间点）
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="revervation结构体">Revervation结构体</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Reservation 预定令牌的操作，timeToAct 是本次预约需要等待到的指定时间点才有足够预约的令牌。
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Reservation</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">ok</span>        <span class="kt">bool</span>	<span class="c1">// 到截止时间是否能够获取足够的令牌
+</span><span class="c1"></span>	<span class="nx">lim</span>       <span class="o">*</span><span class="nx">Limiter</span>
+	<span class="nx">tokens</span>    <span class="kt">int</span>	<span class="c1">// 需要获取的令牌数
+</span><span class="c1"></span>	<span class="nx">timeToAct</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span>	<span class="c1">// 需要等待的时间点
+</span><span class="c1"></span>	<span class="nx">limit</span> <span class="nx">Limit</span>	<span class="c1">// 代表预定的时间，可以被更改
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="limiter消费token">Limiter消费token</h4>
+<p><code>Limiter</code>有3个消费<code>token</code>的方法，分别是<code>Allow</code>/<code>Reverse</code>/<code>Wait</code>，最终这些方法调用<code>reserveN</code>和<code>advance</code>来实现。</p>
+<ul>
+<li><code>advance</code>的实现</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// advance 更新令牌桶的状态，计算出令牌桶未更新的时间，然后计算出需要向令牌桶中添加的令牌数
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">lim</span> <span class="o">*</span><span class="nx">Limiter</span><span class="p">)</span> <span class="nf">advance</span><span class="p">(</span><span class="nx">now</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">)</span> <span class="p">(</span><span class="nx">newNow</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">,</span> <span class="nx">newLast</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">,</span> <span class="nx">newTokens</span> <span class="kt">float64</span><span class="p">)</span> <span class="p">{</span>
+	<span class="c1">// last不能在now之后，否则计算出来的elapsed为负数，会导致令牌桶数量减少
+</span><span class="c1"></span>	<span class="nx">last</span> <span class="o">:=</span> <span class="nx">lim</span><span class="p">.</span><span class="nx">last</span>
+	<span class="k">if</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Before</span><span class="p">(</span><span class="nx">last</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">last</span> <span class="p">=</span> <span class="nx">now</span>
+	<span class="p">}</span>
+
+	<span class="c1">// 根据令牌桶的余数计算出令牌桶未进行更新的最大时间
+</span><span class="c1"></span>	<span class="nx">maxElapsed</span> <span class="o">:=</span> <span class="nx">lim</span><span class="p">.</span><span class="nx">limit</span><span class="p">.</span><span class="nf">durationFromTokens</span><span class="p">(</span><span class="nb">float64</span><span class="p">(</span><span class="nx">lim</span><span class="p">.</span><span class="nx">burst</span><span class="p">)</span> <span class="o">-</span> <span class="nx">lim</span><span class="p">.</span><span class="nx">tokens</span><span class="p">)</span>
+	<span class="nx">elapsed</span> <span class="o">:=</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Sub</span><span class="p">(</span><span class="nx">last</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">elapsed</span> <span class="p">&gt;</span> <span class="nx">maxElapsed</span> <span class="p">{</span>
+		<span class="nx">elapsed</span> <span class="p">=</span> <span class="nx">maxElapsed</span>
+	<span class="p">}</span>
+
+	<span class="c1">// 根据未更新的时间（未向桶中加入令牌的时间段）计算出产生的令牌数
+</span><span class="c1"></span>	<span class="nx">delta</span> <span class="o">:=</span> <span class="nx">lim</span><span class="p">.</span><span class="nx">limit</span><span class="p">.</span><span class="nf">tokensFromDuration</span><span class="p">(</span><span class="nx">elapsed</span><span class="p">)</span>
+	<span class="nx">tokens</span> <span class="o">:=</span> <span class="nx">lim</span><span class="p">.</span><span class="nx">tokens</span> <span class="o">+</span> <span class="nx">delta</span>
+	<span class="k">if</span> <span class="nx">burst</span> <span class="o">:=</span> <span class="nb">float64</span><span class="p">(</span><span class="nx">lim</span><span class="p">.</span><span class="nx">burst</span><span class="p">);</span> <span class="nx">tokens</span> <span class="p">&gt;</span> <span class="nx">burst</span> <span class="p">{</span>
+		<span class="nx">tokens</span> <span class="p">=</span> <span class="nx">burst</span>
+	<span class="p">}</span>
+
+	<span class="k">return</span> <span class="nx">now</span><span class="p">,</span> <span class="nx">last</span><span class="p">,</span> <span class="nx">tokens</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>reverseN</code>的实现</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// reserveN is a helper method for AllowN, ReserveN, and WaitN.
+</span><span class="c1">// reserveN 判断在maxFutureReserve时间内是否有足够的令牌
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">lim</span> <span class="o">*</span><span class="nx">Limiter</span><span class="p">)</span> <span class="nf">reserveN</span><span class="p">(</span><span class="nx">now</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">,</span> <span class="nx">n</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">maxFutureReserve</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">)</span> <span class="nx">Reservation</span> <span class="p">{</span>
+	<span class="nx">lim</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+
+	<span class="k">if</span> <span class="nx">lim</span><span class="p">.</span><span class="nx">limit</span> <span class="o">==</span> <span class="nx">Inf</span> <span class="p">{</span>
+		<span class="nx">lim</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+		<span class="k">return</span> <span class="nx">Reservation</span><span class="p">{</span>
+			<span class="nx">ok</span><span class="p">:</span>        <span class="kc">true</span><span class="p">,</span> <span class="c1">// 桶中有足够的令牌
+</span><span class="c1"></span>			<span class="nx">lim</span><span class="p">:</span>       <span class="nx">lim</span><span class="p">,</span>
+			<span class="nx">tokens</span><span class="p">:</span>    <span class="nx">n</span><span class="p">,</span>
+			<span class="nx">timeToAct</span><span class="p">:</span> <span class="nx">now</span><span class="p">,</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+
+	<span class="c1">// 更新桶的状态，tokens为桶可用的令牌数
+</span><span class="c1"></span>	<span class="nx">now</span><span class="p">,</span> <span class="nx">last</span><span class="p">,</span> <span class="nx">tokens</span> <span class="o">:=</span> <span class="nx">lim</span><span class="p">.</span><span class="nf">advance</span><span class="p">(</span><span class="nx">now</span><span class="p">)</span>
+
+	<span class="c1">// 计算取完后桶中剩下的令牌数
+</span><span class="c1"></span>	<span class="nx">tokens</span> <span class="o">-=</span> <span class="nb">float64</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span>
+
+	<span class="c1">// 如果tokens&lt;0，说明tokens不够，计算需要等待的时间
+</span><span class="c1"></span>	<span class="kd">var</span> <span class="nx">waitDuration</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span>
+	<span class="k">if</span> <span class="nx">tokens</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="nx">waitDuration</span> <span class="p">=</span> <span class="nx">lim</span><span class="p">.</span><span class="nx">limit</span><span class="p">.</span><span class="nf">durationFromTokens</span><span class="p">(</span><span class="o">-</span><span class="nx">tokens</span><span class="p">)</span>
+	<span class="p">}</span>
+
+	<span class="nx">ok</span> <span class="o">:=</span> <span class="nx">n</span> <span class="o">&lt;=</span> <span class="nx">lim</span><span class="p">.</span><span class="nx">burst</span> <span class="o">&amp;&amp;</span> <span class="nx">waitDuration</span> <span class="o">&lt;=</span> <span class="nx">maxFutureReserve</span>
+
+	<span class="c1">// Prepare reservation
+</span><span class="c1"></span>	<span class="nx">r</span> <span class="o">:=</span> <span class="nx">Reservation</span><span class="p">{</span>
+		<span class="nx">ok</span><span class="p">:</span>    <span class="nx">ok</span><span class="p">,</span>
+		<span class="nx">lim</span><span class="p">:</span>   <span class="nx">lim</span><span class="p">,</span>
+		<span class="nx">limit</span><span class="p">:</span> <span class="nx">lim</span><span class="p">.</span><span class="nx">limit</span><span class="p">,</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">ok</span> <span class="p">{</span>
+		<span class="nx">r</span><span class="p">.</span><span class="nx">tokens</span> <span class="p">=</span> <span class="nx">n</span>
+		<span class="nx">r</span><span class="p">.</span><span class="nx">timeToAct</span> <span class="p">=</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">waitDuration</span><span class="p">)</span>
+	<span class="p">}</span>
+
+	<span class="c1">// 更新桶中的token，时间，lastEvent
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">ok</span> <span class="p">{</span>
+		<span class="nx">lim</span><span class="p">.</span><span class="nx">last</span> <span class="p">=</span> <span class="nx">now</span>
+		<span class="nx">lim</span><span class="p">.</span><span class="nx">tokens</span> <span class="p">=</span> <span class="nx">tokens</span>
+		<span class="nx">lim</span><span class="p">.</span><span class="nx">lastEvent</span> <span class="p">=</span> <span class="nx">r</span><span class="p">.</span><span class="nx">timeToAct</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">lim</span><span class="p">.</span><span class="nx">last</span> <span class="p">=</span> <span class="nx">last</span>
+	<span class="p">}</span>
+
+	<span class="nx">lim</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+	<span class="k">return</span> <span class="nx">r</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这上面提到了<code>durationFromTokens</code>和<code>tokensFromDuration</code>两种方法。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// durationFromTokens 限制令牌所花费的时间
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">limit</span> <span class="nx">Limit</span><span class="p">)</span> <span class="nf">durationFromTokens</span><span class="p">(</span><span class="nx">tokens</span> <span class="kt">float64</span><span class="p">)</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span> <span class="p">{</span>
+	<span class="nx">seconds</span> <span class="o">:=</span> <span class="nx">tokens</span> <span class="o">/</span> <span class="nb">float64</span><span class="p">(</span><span class="nx">limit</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Nanosecond</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Duration</span><span class="p">(</span><span class="mf">1e9</span><span class="o">*</span><span class="nx">seconds</span><span class="p">)</span> <span class="c1">// 1s * seconds
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="c1">// tokensFromDuration 根据时间可以产生的令牌数
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">limit</span> <span class="nx">Limit</span><span class="p">)</span> <span class="nf">tokensFromDuration</span><span class="p">(</span><span class="nx">d</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">)</span> <span class="kt">float64</span> <span class="p">{</span>
+	<span class="c1">// Split the integer and fractional parts ourself to minimize rounding errors.
+</span><span class="c1"></span>	<span class="c1">// See golang.org/issues/34861.
+</span><span class="c1"></span>	<span class="c1">// 之前的版本如下
+</span><span class="c1"></span>	<span class="c1">// return d.Seconds() * float64(limit)
+</span><span class="c1"></span>	<span class="c1">// 这里的d.Seconds()已经是小数了，两个小数相乘会带来精度的缺失。
+</span><span class="c1"></span>	<span class="nx">sec</span> <span class="o">:=</span> <span class="nb">float64</span><span class="p">(</span><span class="nx">d</span><span class="o">/</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span> <span class="o">*</span> <span class="nb">float64</span><span class="p">(</span><span class="nx">limit</span><span class="p">)</span>
+	<span class="nx">nsec</span> <span class="o">:=</span> <span class="nb">float64</span><span class="p">(</span><span class="nx">d</span><span class="o">%</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span> <span class="o">*</span> <span class="nb">float64</span><span class="p">(</span><span class="nx">limit</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">sec</span> <span class="o">+</span> <span class="nx">nsec</span><span class="o">/</span><span class="mf">1e9</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="limiter归还token">Limiter归还token</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">Reservation</span><span class="p">)</span> <span class="nf">CancelAt</span><span class="p">(</span><span class="nx">now</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">!</span><span class="nx">r</span><span class="p">.</span><span class="nx">ok</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+
+	<span class="nx">r</span><span class="p">.</span><span class="nx">lim</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">r</span><span class="p">.</span><span class="nx">lim</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+
+	<span class="c1">// 如果无需限流或tokens为0或过了截止时间，无需处理取消操作
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">r</span><span class="p">.</span><span class="nx">lim</span><span class="p">.</span><span class="nx">limit</span> <span class="o">==</span> <span class="nx">Inf</span> <span class="o">||</span> <span class="nx">r</span><span class="p">.</span><span class="nx">tokens</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">r</span><span class="p">.</span><span class="nx">timeToAct</span><span class="p">.</span><span class="nf">Before</span><span class="p">(</span><span class="nx">now</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+
+	<span class="c1">// 计算需要还原的令牌数量
+</span><span class="c1"></span>	<span class="nx">restoreTokens</span> <span class="o">:=</span> <span class="nb">float64</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">tokens</span><span class="p">)</span> <span class="o">-</span> <span class="nx">r</span><span class="p">.</span><span class="nx">limit</span><span class="p">.</span><span class="nf">tokensFromDuration</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">lim</span><span class="p">.</span><span class="nx">lastEvent</span><span class="p">.</span><span class="nf">Sub</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">timeToAct</span><span class="p">))</span>
+	<span class="k">if</span> <span class="nx">restoreTokens</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+	<span class="c1">// 重新计算令牌桶的状态
+</span><span class="c1"></span>	<span class="nx">now</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">tokens</span> <span class="o">:=</span> <span class="nx">r</span><span class="p">.</span><span class="nx">lim</span><span class="p">.</span><span class="nf">advance</span><span class="p">(</span><span class="nx">now</span><span class="p">)</span>
+	<span class="c1">// 还原当前令牌桶的令牌数量，当前的令牌数tokens加上需要还原的令牌数restoreTokens
+</span><span class="c1"></span>	<span class="nx">tokens</span> <span class="o">+=</span> <span class="nx">restoreTokens</span>
+	<span class="k">if</span> <span class="nx">burst</span> <span class="o">:=</span> <span class="nb">float64</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">lim</span><span class="p">.</span><span class="nx">burst</span><span class="p">);</span> <span class="nx">tokens</span> <span class="p">&gt;</span> <span class="nx">burst</span> <span class="p">{</span>
+		<span class="nx">tokens</span> <span class="p">=</span> <span class="nx">burst</span>
+	<span class="p">}</span>
+	<span class="c1">// update state
+</span><span class="c1"></span>	<span class="nx">r</span><span class="p">.</span><span class="nx">lim</span><span class="p">.</span><span class="nx">last</span> <span class="p">=</span> <span class="nx">now</span>
+	<span class="nx">r</span><span class="p">.</span><span class="nx">lim</span><span class="p">.</span><span class="nx">tokens</span> <span class="p">=</span> <span class="nx">tokens</span>
+	<span class="c1">// 如果相等，说明和没有消费一样，直接还原成上次的状态
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">r</span><span class="p">.</span><span class="nx">timeToAct</span> <span class="o">==</span> <span class="nx">r</span><span class="p">.</span><span class="nx">lim</span><span class="p">.</span><span class="nx">lastEvent</span> <span class="p">{</span>
+		<span class="nx">prevEvent</span> <span class="o">:=</span> <span class="nx">r</span><span class="p">.</span><span class="nx">timeToAct</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">limit</span><span class="p">.</span><span class="nf">durationFromTokens</span><span class="p">(</span><span class="nb">float64</span><span class="p">(</span><span class="o">-</span><span class="nx">r</span><span class="p">.</span><span class="nx">tokens</span><span class="p">)))</span>
+		<span class="k">if</span> <span class="p">!</span><span class="nx">prevEvent</span><span class="p">.</span><span class="nf">Before</span><span class="p">(</span><span class="nx">now</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">r</span><span class="p">.</span><span class="nx">lim</span><span class="p">.</span><span class="nx">lastEvent</span> <span class="p">=</span> <span class="nx">prevEvent</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="小结-1">小结</h4>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="%e9%ab%98%e5%b9%b6%e5%8f%91%e7%b3%bb%e7%bb%9f%e4%b8%8b%e7%9a%84%e9%99%90%e9%80%9f%e7%ad%96%e7%95%a5.assets/time_rate_limiter.jpg"
+        data-srcset="%e9%ab%98%e5%b9%b6%e5%8f%91%e7%b3%bb%e7%bb%9f%e4%b8%8b%e7%9a%84%e9%99%90%e9%80%9f%e7%ad%96%e7%95%a5.assets/time_rate_limiter.jpg, %e9%ab%98%e5%b9%b6%e5%8f%91%e7%b3%bb%e7%bb%9f%e4%b8%8b%e7%9a%84%e9%99%90%e9%80%9f%e7%ad%96%e7%95%a5.assets/time_rate_limiter.jpg 1.5x, %e9%ab%98%e5%b9%b6%e5%8f%91%e7%b3%bb%e7%bb%9f%e4%b8%8b%e7%9a%84%e9%99%90%e9%80%9f%e7%ad%96%e7%95%a5.assets/time_rate_limiter.jpg 2x"
+        data-sizes="auto"
+        alt="高并发系统下的限速策略.assets/time_rate_limiter.jpg"
+        title="高并发系统下的限速策略.assets/time_rate_limiter.jpg" /></p>
+<blockquote>
+<p>按照图示，令牌桶的实现似乎是这样的：有一个定时器Timer和队列Queue，Timer定时向Queue放token，用户从Queue取token。</p>
+</blockquote>
+<p>这固然是Token Bucket的一种实现方式，这么做也非常直观，但是效率太低了：我们需要不仅多维护一个Timer和BlockingQueue，而且还耗费了一些不必要的内存。</p>
+<p>在Golang的<code>timer/rate</code>中的实现, 并没有单独维护一个Timer，而是采用了lazyload的方式，直到每次消费之前才根据时间差更新Token数目，而且也不是用BlockingQueue来存放Token，而是仅仅通过计数的方式。</p>
+<p><code>NewLimiter</code>的第一个参数是速率limit，代表了一秒钟可以产生多少Token。
+那么简单换算一下，我们就可以知道一个Token的生成间隔是多少。</p>
+<p>有了这个生成间隔，我们就可以轻易地得到两个数据：
+**1. 生成N个新的Token一共需要多久。**time/rate中对应的实现函数 durationFromTokens。
+**2. 给定一段时长，这段时间一共可以生成多少个Token。**time/rate中对应的实现函数为tokensFromDuration。</p>
+<p>那么，有了这些转换函数，整个过程就很清晰了，如下：</p>
+<ol>
+<li>
+<p>计算从上次取Token的时间到当前时刻，期间一共新产生了多少Token：我们只在取Token之前生成新的Token，也就意味着每次取Token的间隔，实际上也是生成Token的间隔。我们可以利用tokensFromDuration, 轻易的算出这段时间一共产生Token的数目。
+那么，当前Token数目 = 新产生的Token数目 + 之前剩余的Token数目 - 要消费的Token数目。</p>
+</li>
+<li>
+<p>如果消费后剩余Token数目大于零，说明此时Token桶内仍不为空，此时Token充足，无需调用侧等待。
+如果Token数目小于零，则需等待一段时间。
+那么这个时候，我们可以利用durationFromTokens将当前负值的Token数转化为需要等待的时间。</p>
+</li>
+<li>
+<p>将需要等待的时间等相关结果返回给调用方。</p>
+</li>
+</ol>
+<p>从上面可以看出，其实整个过程就是利用了<strong>Token数可以和时间相互转化</strong>的原理。 而如果Token数为负，则需要等待相关时间即可。</p>
+<h3 id="uber-goratelimithttpsgithubcomuber-goratelimit"><a href="https://github.com/uber-go/ratelimit" target="_blank" rel="noopener noreffer">uber-go/ratelimit</a></h3>
+<p>基于漏桶实现。</p>
+<h4 id="例子">例子</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go">	<span class="nx">rl</span> <span class="o">:=</span> <span class="nx">ratelimit</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="c1">// per second
+</span><span class="c1"></span>
+    <span class="nx">prev</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">()</span>
+    <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+        <span class="nx">now</span> <span class="o">:=</span> <span class="nx">rl</span><span class="p">.</span><span class="nf">Take</span><span class="p">()</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Sub</span><span class="p">(</span><span class="nx">prev</span><span class="p">))</span>
+        <span class="nx">prev</span> <span class="p">=</span> <span class="nx">now</span>
+    <span class="p">}</span>
+    <span class="c1">// Output:
+</span><span class="c1"></span>    <span class="c1">// 0 0
+</span><span class="c1"></span>    <span class="c1">// 1 10ms
+</span><span class="c1"></span>    <span class="c1">// 2 10ms
+</span><span class="c1"></span>    <span class="c1">// 3 10ms
+</span><span class="c1"></span>    <span class="c1">// 4 10ms
+</span><span class="c1"></span>    <span class="c1">// 5 10ms
+</span><span class="c1"></span>    <span class="c1">// 6 10ms
+</span><span class="c1"></span>    <span class="c1">// 7 10ms
+</span><span class="c1"></span>    <span class="c1">// 8 10ms
+</span><span class="c1"></span>    <span class="c1">// 9 10ms
+</span></code></pre></td></tr></table>
+</div>
+</div><h4 id="基本实现">基本实现</h4>
+<p>要实现上面的每秒固定速率，很简单。</p>
+<p>在<code>ratelimit</code>的<code>New</code>函数中，传入的参数是每秒允许请求量(Requests Per Second)。</p>
+<p>我们就能很轻松计算出每个请求的时间间隔：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">perRequest</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span> <span class="o">/</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Duration</span><span class="p">(</span><span class="nx">rate</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>如图，当请求1处理结束后，记录请求1的处理完成时间，记为<code>limiter.last</code>。请求2到达时，如果此时的时间与<code>limiter.last</code>的时间间隔小于<code>preRequest</code>，那么<code>sleep</code>一段时间。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="%e9%ab%98%e5%b9%b6%e5%8f%91%e7%b3%bb%e7%bb%9f%e4%b8%8b%e7%9a%84%e9%99%90%e9%80%9f%e7%ad%96%e7%95%a5.assets/wait-interval.png"
+        data-srcset="%e9%ab%98%e5%b9%b6%e5%8f%91%e7%b3%bb%e7%bb%9f%e4%b8%8b%e7%9a%84%e9%99%90%e9%80%9f%e7%ad%96%e7%95%a5.assets/wait-interval.png, %e9%ab%98%e5%b9%b6%e5%8f%91%e7%b3%bb%e7%bb%9f%e4%b8%8b%e7%9a%84%e9%99%90%e9%80%9f%e7%ad%96%e7%95%a5.assets/wait-interval.png 1.5x, %e9%ab%98%e5%b9%b6%e5%8f%91%e7%b3%bb%e7%bb%9f%e4%b8%8b%e7%9a%84%e9%99%90%e9%80%9f%e7%ad%96%e7%95%a5.assets/wait-interval.png 2x"
+        data-sizes="auto"
+        alt="高并发系统下的限速策略.assets/wait-interval.png"
+        title="高并发系统下的限速策略.assets/wait-interval.png" /></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">sleepFor</span> <span class="p">=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">PreRequest</span> <span class="o">-</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Sub</span><span class="p">(</span><span class="nx">t</span><span class="p">.</span><span class="nx">last</span><span class="p">)</span>
+<span class="k">if</span> <span class="nx">sleepFor</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+    <span class="nx">t</span><span class="p">.</span><span class="nx">clock</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">sleepFor</span><span class="p">)</span>
+    <span class="nx">t</span><span class="p">.</span><span class="nx">last</span> <span class="p">=</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">sleepFor</span><span class="p">)</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">t</span><span class="p">.</span><span class="nx">last</span> <span class="p">=</span> <span class="nx">now</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>然而，在现实请求中，流量经常是突发的，有些请求间隔比较长，有些请求间隔比较短。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="%e9%ab%98%e5%b9%b6%e5%8f%91%e7%b3%bb%e7%bb%9f%e4%b8%8b%e7%9a%84%e9%99%90%e9%80%9f%e7%ad%96%e7%95%a5.assets/3-requests.png"
+        data-srcset="%e9%ab%98%e5%b9%b6%e5%8f%91%e7%b3%bb%e7%bb%9f%e4%b8%8b%e7%9a%84%e9%99%90%e9%80%9f%e7%ad%96%e7%95%a5.assets/3-requests.png, %e9%ab%98%e5%b9%b6%e5%8f%91%e7%b3%bb%e7%bb%9f%e4%b8%8b%e7%9a%84%e9%99%90%e9%80%9f%e7%ad%96%e7%95%a5.assets/3-requests.png 1.5x, %e9%ab%98%e5%b9%b6%e5%8f%91%e7%b3%bb%e7%bb%9f%e4%b8%8b%e7%9a%84%e9%99%90%e9%80%9f%e7%ad%96%e7%95%a5.assets/3-requests.png 2x"
+        data-sizes="auto"
+        alt="高并发系统下的限速策略.assets/3-requests.png"
+        title="高并发系统下的限速策略.assets/3-requests.png" /></p>
+<p>所以uber引入最大松弛量，把之前间隔比较长的请求时间，匀给后面的使用。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="%e9%ab%98%e5%b9%b6%e5%8f%91%e7%b3%bb%e7%bb%9f%e4%b8%8b%e7%9a%84%e9%99%90%e9%80%9f%e7%ad%96%e7%95%a5.assets/maxslack.png"
+        data-srcset="%e9%ab%98%e5%b9%b6%e5%8f%91%e7%b3%bb%e7%bb%9f%e4%b8%8b%e7%9a%84%e9%99%90%e9%80%9f%e7%ad%96%e7%95%a5.assets/maxslack.png, %e9%ab%98%e5%b9%b6%e5%8f%91%e7%b3%bb%e7%bb%9f%e4%b8%8b%e7%9a%84%e9%99%90%e9%80%9f%e7%ad%96%e7%95%a5.assets/maxslack.png 1.5x, %e9%ab%98%e5%b9%b6%e5%8f%91%e7%b3%bb%e7%bb%9f%e4%b8%8b%e7%9a%84%e9%99%90%e9%80%9f%e7%ad%96%e7%95%a5.assets/maxslack.png 2x"
+        data-sizes="auto"
+        alt="高并发系统下的限速策略.assets/maxslack.png"
+        title="高并发系统下的限速策略.assets/maxslack.png" /></p>
+<p>而实现起来也很简单，就是把每个请求多出的等待时间累加起来，给后面的请求冲抵。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">t</span><span class="p">.</span><span class="nx">sleepFor</span> <span class="o">+=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">preReqeust</span> <span class="o">-</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Sub</span><span class="p">(</span><span class="nx">t</span><span class="p">.</span><span class="nx">last</span><span class="p">)</span>
+<span class="k">if</span> <span class="nx">t</span><span class="p">.</span><span class="nx">sleepFor</span> <span class="p">&lt;</span> <span class="nx">t</span><span class="p">.</span><span class="nx">maxSlack</span> <span class="p">{</span>
+    <span class="nx">t</span><span class="p">.</span><span class="nx">sleepFor</span> <span class="p">=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">maxSlack</span>
+<span class="p">}</span>
+<span class="k">if</span> <span class="nx">t</span><span class="p">.</span><span class="nx">sleepFor</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+    <span class="nx">t</span><span class="p">.</span><span class="nx">clock</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">t</span><span class="p">.</span><span class="nx">sleepFor</span><span class="p">)</span>
+    <span class="nx">t</span><span class="p">.</span><span class="nx">last</span> <span class="p">=</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">t</span><span class="p">.</span><span class="nx">sleepFor</span><span class="p">)</span>
+    <span class="nx">t</span><span class="p">.</span><span class="nx">sleepFor</span> <span class="p">=</span> <span class="mi">0</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">t</span><span class="p">.</span><span class="nx">last</span> <span class="p">=</span> <span class="nx">now</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>源码解析：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">New</span><span class="p">(</span><span class="nx">rate</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">opts</span> <span class="o">...</span><span class="nx">Option</span><span class="p">)</span> <span class="nx">Limiter</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nf">newAtomicBased</span><span class="p">(</span><span class="nx">rate</span><span class="p">,</span> <span class="nx">opts</span><span class="o">...</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">// buildConfig combines defaults with options.
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">buildConfig</span><span class="p">(</span><span class="nx">opts</span> <span class="p">[]</span><span class="nx">Option</span><span class="p">)</span> <span class="nx">config</span> <span class="p">{</span>
+	<span class="nx">c</span> <span class="o">:=</span> <span class="nx">config</span><span class="p">{</span>
+		<span class="nx">clock</span><span class="p">:</span> <span class="nx">clock</span><span class="p">.</span><span class="nf">New</span><span class="p">(),</span>
+		<span class="nx">slack</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+		<span class="nx">per</span><span class="p">:</span>   <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span>
+	<span class="p">}</span>
+
+	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">opt</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">opts</span> <span class="p">{</span>
+		<span class="nx">opt</span><span class="p">.</span><span class="nf">apply</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">c</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">newAtomicBased</span><span class="p">(</span><span class="nx">rate</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">opts</span> <span class="o">...</span><span class="nx">Option</span><span class="p">)</span> <span class="o">*</span><span class="nx">atomicLimiter</span> <span class="p">{</span>
+	<span class="nx">config</span> <span class="o">:=</span> <span class="nf">buildConfig</span><span class="p">(</span><span class="nx">opts</span><span class="p">)</span>
+	<span class="c1">// 两个请求的最小时间间隔
+</span><span class="c1"></span>	<span class="nx">perRequest</span> <span class="o">:=</span> <span class="nx">config</span><span class="p">.</span><span class="nx">per</span> <span class="o">/</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Duration</span><span class="p">(</span><span class="nx">rate</span><span class="p">)</span>
+	<span class="nx">l</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">atomicLimiter</span><span class="p">{</span>
+		<span class="nx">perRequest</span><span class="p">:</span> <span class="nx">perRequest</span><span class="p">,</span>
+		<span class="nx">maxSlack</span><span class="p">:</span>   <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Duration</span><span class="p">(</span><span class="nx">config</span><span class="p">.</span><span class="nx">slack</span><span class="p">)</span> <span class="o">*</span> <span class="nx">perRequest</span><span class="p">,</span> <span class="c1">// 最大松弛量
+</span><span class="c1"></span>		<span class="nx">clock</span><span class="p">:</span>      <span class="nx">config</span><span class="p">.</span><span class="nx">clock</span><span class="p">,</span>
+	<span class="p">}</span>
+
+	<span class="nx">initialState</span> <span class="o">:=</span> <span class="nx">state</span><span class="p">{</span>
+		<span class="nx">last</span><span class="p">:</span>     <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">{},</span>
+		<span class="nx">sleepFor</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+	<span class="p">}</span>
+	<span class="nx">atomic</span><span class="p">.</span><span class="nf">StorePointer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">initialState</span><span class="p">))</span>
+	<span class="k">return</span> <span class="nx">l</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">atomicLimiter</span><span class="p">)</span> <span class="nf">Take</span><span class="p">()</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="p">(</span>
+		<span class="nx">newState</span> <span class="nx">state</span>
+		<span class="nx">taken</span>    <span class="kt">bool</span>
+		<span class="nx">interval</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span>
+	<span class="p">)</span>
+	<span class="k">for</span> <span class="p">!</span><span class="nx">taken</span> <span class="p">{</span>
+		<span class="nx">now</span> <span class="o">:=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">clock</span><span class="p">.</span><span class="nf">Now</span><span class="p">()</span>
+
+		<span class="nx">previousStatePointer</span> <span class="o">:=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">LoadPointer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">t</span><span class="p">.</span><span class="nx">state</span><span class="p">)</span>
+		<span class="nx">oldState</span> <span class="o">:=</span> <span class="p">(</span><span class="o">*</span><span class="nx">state</span><span class="p">)(</span><span class="nx">previousStatePointer</span><span class="p">)</span>
+
+		<span class="nx">newState</span> <span class="p">=</span> <span class="nx">state</span><span class="p">{</span>
+			<span class="nx">last</span><span class="p">:</span>     <span class="nx">now</span><span class="p">,</span>
+			<span class="nx">sleepFor</span><span class="p">:</span> <span class="nx">oldState</span><span class="p">.</span><span class="nx">sleepFor</span><span class="p">,</span>
+		<span class="p">}</span>
+
+		<span class="c1">// 如果是第一次请求，更新状态
+</span><span class="c1"></span>		<span class="k">if</span> <span class="nx">oldState</span><span class="p">.</span><span class="nx">last</span><span class="p">.</span><span class="nf">IsZero</span><span class="p">()</span> <span class="p">{</span>
+			<span class="nx">taken</span> <span class="p">=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">CompareAndSwapPointer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">t</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="nx">previousStatePointer</span><span class="p">,</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">newState</span><span class="p">))</span>
+			<span class="k">continue</span>
+		<span class="p">}</span>
+
+		<span class="nx">newState</span><span class="p">.</span><span class="nx">sleepFor</span> <span class="o">+=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">perRequest</span> <span class="o">-</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Sub</span><span class="p">(</span><span class="nx">oldState</span><span class="p">.</span><span class="nx">last</span><span class="p">)</span>
+		<span class="c1">// 例如请求1完成后，请求2在几个小时后到达，那么对于now.Sub(oldState.last)会非常大，而这里newState.sleepFor表示允许冲抵的最长时间。
+</span><span class="c1"></span>		<span class="k">if</span> <span class="nx">newState</span><span class="p">.</span><span class="nx">sleepFor</span> <span class="p">&lt;</span> <span class="nx">t</span><span class="p">.</span><span class="nx">maxSlack</span> <span class="p">{</span> <span class="c1">// t.maxSlack默认10个请求的间隔大小
+</span><span class="c1"></span>			<span class="nx">newState</span><span class="p">.</span><span class="nx">sleepFor</span> <span class="p">=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">maxSlack</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="nx">newState</span><span class="p">.</span><span class="nx">sleepFor</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+			<span class="c1">// 代表此前的请求多余出的时间，无法完全冲抵此次所需量
+</span><span class="c1"></span>			<span class="nx">newState</span><span class="p">.</span><span class="nx">last</span> <span class="p">=</span> <span class="nx">newState</span><span class="p">.</span><span class="nx">last</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">newState</span><span class="p">.</span><span class="nx">sleepFor</span><span class="p">)</span>
+			<span class="nx">interval</span><span class="p">,</span> <span class="nx">newState</span><span class="p">.</span><span class="nx">sleepFor</span> <span class="p">=</span> <span class="nx">newState</span><span class="p">.</span><span class="nx">sleepFor</span><span class="p">,</span> <span class="mi">0</span>
+		<span class="p">}</span>
+		<span class="nx">taken</span> <span class="p">=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">CompareAndSwapPointer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">t</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="nx">previousStatePointer</span><span class="p">,</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">newState</span><span class="p">))</span>
+	<span class="p">}</span>
+	<span class="nx">t</span><span class="p">.</span><span class="nx">clock</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">interval</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">newState</span><span class="p">.</span><span class="nx">last</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2021-06-28</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/golang/">golang</a>,&nbsp;<a href="/tags/%E6%BA%90%E7%A0%81%E5%BA%93/">源码库</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2021/06/golang%E5%AE%9A%E6%97%B6%E5%99%A81.13/" class="prev" rel="prev" title="Golang定时器1.13源码分析"><i class="fas fa-angle-left fa-fw"></i>Golang定时器1.13源码分析</a></div>
+</div>
+<div id="comments"><div id="gitalk" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://github.com/gitalk/gitalk"></a>Gitalk</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.84.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"gitalk":{"admin":["betterfor"],"clientID":"fba15d94f073857ee898","clientSecret":"90083900b5dd077594528a709f18fe4b16b2a1a2","id":"2021-06-28T14:07:33+08:00","owner":"betterfor","repo":"betterfor.github.io","title":"高并发系统下的限速策略"}},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

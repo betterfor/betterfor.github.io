@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Golang定时器1.13源码分析 - 月霜天的小站</title><meta name="Description" content="月霜天的小站"><meta property="og:title" content="Golang定时器1.13源码分析" />
+<meta property="og:description" content="本文将基于Golang源码对Timer的底层实现进行深度剖析。 注：本文基于golang-1.13源码进行分析。 概述 我们在开发过程中通常会用到" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://betterfor.github.io/2021/06/golang%E5%AE%9A%E6%97%B6%E5%99%A81.13/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-06-09T14:42:10&#43;08:00" />
+<meta property="article:modified_time" content="2021-06-09T14:42:10&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"/>
+
+<meta name="twitter:title" content="Golang定时器1.13源码分析"/>
+<meta name="twitter:description" content="本文将基于Golang源码对Timer的底层实现进行深度剖析。 注：本文基于golang-1.13源码进行分析。 概述 我们在开发过程中通常会用到"/>
+<meta name="application-name" content="月霜天">
+<meta name="apple-mobile-web-app-title" content="月霜天"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://betterfor.github.io/2021/06/golang%E5%AE%9A%E6%97%B6%E5%99%A81.13/" /><link rel="prev" href="https://betterfor.github.io/2021/06/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/" /><link rel="next" href="https://betterfor.github.io/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Golang定时器1.13源码分析",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/betterfor.github.io\/2021\/06\/golang%E5%AE%9A%E6%97%B6%E5%99%A81.13\/"
+        },"genre": "posts","keywords": "linux, develop","wordcount":  2480 ,
+        "url": "https:\/\/betterfor.github.io\/2021\/06\/golang%E5%AE%9A%E6%97%B6%E5%99%A81.13\/","datePublished": "2021-06-09T14:42:10+08:00","dateModified": "2021-06-09T14:42:10+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "月霜天"},"author": {
+                "@type": "Person",
+                "name": "月霜天"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico" /></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico" /></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Golang定时器1.13源码分析</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/"><i class="far fa-folder fa-fw"></i>月霜天的GO</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-06-09">2021-06-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2480 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#概述">概述</a></li>
+    <li><a href="#底层实现">底层实现</a></li>
+    <li><a href="#timerbucket">TimerBucket</a>
+      <ul>
+        <li><a href="#timer-bucket">timer bucket</a></li>
+        <li><a href="#timerproc调度">timerproc调度</a></li>
+      </ul>
+    </li>
+    <li><a href="#为什么是64个timer-bucket">为什么是64个timer bucket?</a></li>
+    <li><a href="#为什么是四叉堆">为什么是四叉堆？</a></li>
+    <li><a href="#sleep实现">sleep实现</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>本文将基于Golang源码对Timer的底层实现进行深度剖析。</p>
+<p>注：<strong>本文基于golang-1.13源码进行分析</strong>。</p>
+<h2 id="概述">概述</h2>
+<p>我们在开发过程中通常会用到<code>time.NewTimer</code>和<code>time.NewTicker</code>进行定时或延迟操作，而<code>Timer</code>和<code>Ticker</code>的底层实现大致相同，本文主要对<code>Timer</code>进行源码解析。</p>
+<p><code>Timer</code>的使用方法如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">timer</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">NewTimer</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+<span class="o">&lt;-</span><span class="nx">timer</span><span class="p">.</span><span class="nx">C</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>使用<code>time.NewTimer</code>构造一个1秒的定时器，同时使用<code>&lt;-timer.C</code>阻塞等待定时器的触发。</p>
+<h2 id="底层实现">底层实现</h2>
+<p>对于<code>NewTimer(d Duration) *Timer</code> 函数，我们可以在源码中找到它的实现，在<a href="https://github.com/golang/go/blob/e71b61180aa19a60c23b3b7e3f6586726ebe4fd1/src/time/sleep.go#L82" target="_blank" rel="noopener noreffer">time/sleep.go#L82</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">NewTimer</span><span class="p">(</span><span class="nx">d</span> <span class="nx">Duration</span><span class="p">)</span> <span class="o">*</span><span class="nx">Timer</span> <span class="p">{</span>
+	<span class="nx">c</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">Time</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+	<span class="nx">t</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">Timer</span><span class="p">{</span>
+		<span class="nx">C</span><span class="p">:</span> <span class="nx">c</span><span class="p">,</span>
+		<span class="nx">r</span><span class="p">:</span> <span class="nx">runtimeTimer</span><span class="p">{</span>
+			<span class="nx">when</span><span class="p">:</span> <span class="nf">when</span><span class="p">(</span><span class="nx">d</span><span class="p">),</span>
+			<span class="nx">f</span><span class="p">:</span>    <span class="nx">sendTime</span><span class="p">,</span>
+			<span class="nx">arg</span><span class="p">:</span>  <span class="nx">c</span><span class="p">,</span>
+		<span class="p">},</span>
+	<span class="p">}</span>
+	<span class="nf">startTimer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">t</span><span class="p">.</span><span class="nx">r</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">t</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这里主要分成两步：</p>
+<p>1、创建一个<code>Timer</code>的对象，包含一个有缓冲channel的c，用来接收<code>Timer</code>触发消息的，包含<code>runtimeTimer</code>结构体，<code>when</code>是代表timer触发的绝对时间(当前时间+d)，<code>f</code>是timer触发时的回调函数，<code>arg</code>就是传给<code>f</code>的参数。</p>
+<p>2、调用<code>startTimer</code>函数，顾名思义，就是启动<code>timer</code>。</p>
+<p>具体的逻辑都在<code>startTimer</code>中,而<code>startTimer</code>具体的函数定义在<a href="https://github.com/golang/go/blob/e71b61180aa19a60c23b3b7e3f6586726ebe4fd1/src/runtime/time.go#L110" target="_blank" rel="noopener noreffer">runtime/time.go#L110</a>，而它实际上调用的是<a href="https://github.com/golang/go/blob/e71b61180aa19a60c23b3b7e3f6586726ebe4fd1/src/runtime/time.go#L131" target="_blank" rel="noopener noreffer"><code>addTimer</code></a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">addtimer</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">timer</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">tb</span> <span class="o">:=</span> <span class="nx">t</span><span class="p">.</span><span class="nf">assignBucket</span><span class="p">()</span>
+	<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tb</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+	<span class="nx">ok</span> <span class="o">:=</span> <span class="nx">tb</span><span class="p">.</span><span class="nf">addtimerLocked</span><span class="p">(</span><span class="nx">t</span><span class="p">)</span>
+	<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tb</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+	<span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
+		<span class="nf">badTimer</span><span class="p">()</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看到<code>addtimer</code>做了两件事：</p>
+<p>1、<code>assignBucket</code>找到可以被插入的<code>bucket</code></p>
+<p>2、<code>addtimerLocked</code>将<code>timer</code>插入到<code>bucket</code></p>
+<p>那么<code>bucket</code>是什么？<code>timer</code>是怎么插入到<code>bucket</code>中的？<code>timer</code>到期后又是怎么触发的？</p>
+<p>接下来我们来详细看看这个<code>bucket</code></p>
+<h2 id="timerbucket">TimerBucket</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">const</span> <span class="nx">timersLen</span> <span class="p">=</span> <span class="mi">64</span>
+
+<span class="c1">// timer包含每个P的堆，timer进入队列中关联当前的P，所以每个P中timer都是独立于其他P的
+</span><span class="c1">// 如果GOMAXPROCS &gt; timersLen，那么timersBucket可能会管理多个P
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">timers</span> <span class="p">[</span><span class="nx">timersLen</span><span class="p">]</span><span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">timersBucket</span>
+
+	<span class="c1">// 内存对齐
+</span><span class="c1"></span>	<span class="nx">pad</span> <span class="p">[</span><span class="nx">cpu</span><span class="p">.</span><span class="nx">CacheLinePadSize</span> <span class="o">-</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nf">Sizeof</span><span class="p">(</span><span class="nx">timersBucket</span><span class="p">{})</span><span class="o">%</span><span class="nx">cpu</span><span class="p">.</span><span class="nx">CacheLinePadSize</span><span class="p">]</span><span class="kt">byte</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">timersBucket</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">lock</span>         <span class="nx">mutex</span>
+	<span class="nx">gp</span>           <span class="o">*</span><span class="nx">g</span>
+	<span class="nx">created</span>      <span class="kt">bool</span>
+	<span class="nx">sleeping</span>     <span class="kt">bool</span>
+	<span class="nx">rescheduling</span> <span class="kt">bool</span>
+	<span class="nx">sleepUntil</span>   <span class="kt">int64</span>
+	<span class="nx">waitnote</span>     <span class="nx">note</span>
+	<span class="nx">t</span>            <span class="p">[]</span><span class="o">*</span><span class="nx">timer</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在<code>runtime</code>中，有64个全局的<code>timer bucket</code>。每个<code>bucket</code>负责管理<code>timer</code>。<code>timer</code>的整个生命周期包括创建、销毁、唤醒和睡眠等都由<code>timer bucket</code>管理和调度。</p>
+<h3 id="timer-bucket">timer bucket</h3>
+<p>每个<code>timer bucket</code>实际上内部使用最小四叉堆来存储和管理每个timer。最小堆是常见的数据结构，具体实现类似于二叉树。在最小堆中，作为排序依据的<code>key</code>是<code>timer</code>的<code>when</code>属性，也就是何时触发。即最近一次触发的<code>timer</code>会在栈顶。</p>
+<h3 id="timerproc调度">timerproc调度</h3>
+<p>每个<code>timer bucket</code>负责管理一堆有序的<code>timer</code>，同时每个<code>timer bucket</code>都有一个对应的<code>timerproc</code>的goroutine来负责不断调度这些<code>timer</code>。代码在<a href="https://github.com/golang/go/blob/e71b61180aa19a60c23b3b7e3f6586726ebe4fd1/src/runtime/time.go#L169" target="_blank" rel="noopener noreffer">runtime/time.go#L169</a></p>
+<p><code>timeproc</code>的整个流程如下：</p>
+<p>1、创建：虽然<code>timer bucket</code>一直都存在，但是<code>timerproc</code>的协程并不是一开始就存在，而是第一个<code>timer</code>被加到<code>timer bucket</code>中，判断<code>tb.created</code>后，才创建一个goroutine</p>
+<p>2、调度：从<code>timer bucket</code>不断取栈顶元素，如果栈顶的<code>timer</code>已触发，则将其从最小堆中移除，并调用对应的callback(<code>sendTime</code>)</p>
+<p>3、如果<code>timer</code>是<code>ticker</code>(周期性<code>timer</code>)，则生成新的<code>timer</code>塞进<code>timer bucket</code></p>
+<p>4、挂起：如果<code>timer bucket</code>为空，意味着所有的<code>timer</code>已经被消费完了，则调用<code>gopark</code>挂起该goroutine</p>
+<p>5、唤醒：当有新的timer被添加到<code>timer bucket</code>,如果goroutine处于挂起状态，会调用<code>goready</code>唤醒<code>timerproc</code></p>
+<p>当<code>timer</code>触发时，触发的<code>sendTime</code>函数如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">sendTime</span><span class="p">(</span><span class="nx">c</span> <span class="kd">interface</span><span class="p">{},</span> <span class="nx">seq</span> <span class="kt">uintptr</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">select</span> <span class="p">{</span>
+	<span class="k">case</span> <span class="nx">c</span><span class="p">.(</span><span class="kd">chan</span> <span class="nx">Time</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="nf">Now</span><span class="p">():</span>
+	<span class="k">default</span><span class="p">:</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>对于<code>ticket</code>，<code>sendTime</code>会被调用多次，而channel的缓冲长度只有1，如果<code>ticket</code>没有及时消费，会被丢弃。</p>
+<h2 id="为什么是64个timer-bucket">为什么是64个timer bucket?</h2>
+<p>在go1.10之前，只有一个<code>timers</code>，负责管理<code>timer</code>，没有桶，但是问题非常明显：</p>
+<p>1、创建和停止<code>timer</code>都需要对<code>timers</code>进行加锁操作</p>
+<p>2、当<code>timer</code>过多时，调度负担重，可能会造成延迟</p>
+<p>因此，在go1.10时引入了全局64个分桶的策略，将<code>timer</code>分散到分桶中，每个桶负责自己分配到的timer即可。有效地降低了锁的粒度和<code>timer</code>调度的负担。</p>
+<p>而关于为什么是64个？</p>
+<p>这是因为理想情况下，分桶的数量和<code>GOMAXPROCS</code>一致是最优解，有多少个P就有多少个<code>timer bucket</code>。但是，这涉及到了go启动时的动态内存分配，作为<code>runtime</code>减少程序负担，所以在内存使用和性能之间权衡下，使用64能覆盖大多数的<code>GOMAXPROCS</code>。</p>
+<p>每个<code>bucket</code>具体负责的<code>timer</code>和P相关</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">timer</span><span class="p">)</span> <span class="nf">assignBucket</span><span class="p">()</span> <span class="o">*</span><span class="nx">timersBucket</span> <span class="p">{</span>
+	<span class="nx">id</span> <span class="o">:=</span> <span class="nb">uint8</span><span class="p">(</span><span class="nf">getg</span><span class="p">().</span><span class="nx">m</span><span class="p">.</span><span class="nx">p</span><span class="p">.</span><span class="nf">ptr</span><span class="p">().</span><span class="nx">id</span><span class="p">)</span> <span class="o">%</span> <span class="nx">timersLen</span>
+	<span class="nx">t</span><span class="p">.</span><span class="nx">tb</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">timers</span><span class="p">[</span><span class="nx">id</span><span class="p">].</span><span class="nx">timersBucket</span>
+	<span class="k">return</span> <span class="nx">t</span><span class="p">.</span><span class="nx">tb</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>如果<code>GOMAXPROCS</code>&gt;64，会导致<code>timer bucket</code>会关联多个P上的<code>timer</code>。</p>
+<h2 id="为什么是四叉堆">为什么是四叉堆？</h2>
+<p><a href="https://en.wikipedia.org/wiki/D-ary_heap" target="_blank" rel="noopener noreffer"><em>d</em>-ary heap</a></p>
+<blockquote>
+<p>4-heaps may perform better than binary heaps in practice, even for delete-min operations.</p>
+</blockquote>
+<h2 id="sleep实现">sleep实现</h2>
+<p>我们可以使用定时器来实现<code>Sleep</code>，但是底层却不是这么做的。<a href="https://github.com/golang/go/blob/e71b61180aa19a60c23b3b7e3f6586726ebe4fd1/src/runtime/time.go#L84" target="_blank" rel="noopener noreffer">runtime/time.go#L84</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">timeSleep</span><span class="p">(</span><span class="nx">ns</span> <span class="kt">int64</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nx">ns</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+
+	<span class="nx">gp</span> <span class="o">:=</span> <span class="nf">getg</span><span class="p">()</span>
+	<span class="nx">t</span> <span class="o">:=</span> <span class="nx">gp</span><span class="p">.</span><span class="nx">timer</span>
+	<span class="k">if</span> <span class="nx">t</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">t</span> <span class="p">=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">timer</span><span class="p">)</span>
+		<span class="nx">gp</span><span class="p">.</span><span class="nx">timer</span> <span class="p">=</span> <span class="nx">t</span>
+	<span class="p">}</span>
+	<span class="o">*</span><span class="nx">t</span> <span class="p">=</span> <span class="nx">timer</span><span class="p">{}</span>
+	<span class="nx">t</span><span class="p">.</span><span class="nx">when</span> <span class="p">=</span> <span class="nf">nanotime</span><span class="p">()</span> <span class="o">+</span> <span class="nx">ns</span>
+	<span class="nx">t</span><span class="p">.</span><span class="nx">f</span> <span class="p">=</span> <span class="nx">goroutineReady</span>
+	<span class="nx">t</span><span class="p">.</span><span class="nx">arg</span> <span class="p">=</span> <span class="nx">gp</span>
+	<span class="nx">tb</span> <span class="o">:=</span> <span class="nx">t</span><span class="p">.</span><span class="nf">assignBucket</span><span class="p">()</span>
+	<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tb</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+	<span class="k">if</span> <span class="p">!</span><span class="nx">tb</span><span class="p">.</span><span class="nf">addtimerLocked</span><span class="p">(</span><span class="nx">t</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tb</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+		<span class="nf">badTimer</span><span class="p">()</span>
+	<span class="p">}</span>
+	<span class="nf">goparkunlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tb</span><span class="p">.</span><span class="nx">lock</span><span class="p">,</span> <span class="nx">waitReasonSleep</span><span class="p">,</span> <span class="nx">traceEvGoSleep</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>1、每个goroutine底层的G对象上，都有一个timer属性，这个是runtimeTimer对象，专门用来sleep使用。当第一次调用sleep时，都会创建runtimeTimer，之后sleep的时候会一直复用这个对象</p>
+<p>2、调用sleep，触发timer后，直接gopark，将当前goroutine挂起</p>
+<p>3、timerproc调用callback时，调用的是goroutineReady，唤醒被挂起的goroutine</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2021-06-09</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2021/06/golang%E5%AE%9A%E6%97%B6%E5%99%A81.13/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/linux/">linux</a>,&nbsp;<a href="/tags/develop/">develop</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2021/06/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/" class="prev" rel="prev" title="并发编程之原子操作"><i class="fas fa-angle-left fa-fw"></i>并发编程之原子操作</a>
+            <a href="/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/" class="next" rel="next" title="高并发系统下的限速策略">高并发系统下的限速策略<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="gitalk" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://github.com/gitalk/gitalk"></a>Gitalk</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.84.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"gitalk":{"admin":["betterfor"],"clientID":"fba15d94f073857ee898","clientSecret":"90083900b5dd077594528a709f18fe4b16b2a1a2","id":"2021-06-09T14:42:10+08:00","owner":"betterfor","repo":"betterfor.github.io","title":"Golang定时器1.13源码分析"}},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
