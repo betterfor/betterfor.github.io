@@ -29,7 +29,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/betterfor.github.io\/2021\/06\/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5\/"
-        },"genre": "posts","keywords": "golang, 源码库","wordcount":  4890 ,
+        },"genre": "posts","keywords": "golang, 源码库","wordcount":  4841 ,
         "url": "https:\/\/betterfor.github.io\/2021\/06\/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5\/","datePublished": "2021-06-28T14:07:33+08:00","dateModified": "2021-06-28T14:07:33+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "月霜天"},"author": {
@@ -93,7 +93,7 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">高并发系统下的限速策略</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/"><i class="far fa-folder fa-fw"></i>月霜天的GO</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-06-28">2021-06-28</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 4890 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-06-28">2021-06-28</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 4841 字&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 10 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  kept="">
                 <div class="details-summary toc-title">
@@ -162,46 +162,22 @@
 </span><span class="lnt">21
 </span><span class="lnt">22
 </span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="p">(</span>
-	<span class="nx">once</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Once</span>
-	<span class="nx">ErrExceededLimit</span> <span class="p">=</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;Too many requests, exceed the limit. &#34;</span><span class="p">)</span>
-<span class="p">)</span>
-
-<span class="kd">type</span> <span class="nx">fixedWindowCounter</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">duration</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span>
-	<span class="nx">currentRequests</span><span class="p">,</span> <span class="nx">allowRequests</span> <span class="kt">int32</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">New</span><span class="p">(</span><span class="nx">duration</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">,</span> <span class="nx">allowRequests</span> <span class="kt">int32</span><span class="p">)</span> <span class="o">*</span><span class="nx">fixedWindowCounter</span> <span class="p">{</span>
-	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">fixedWindowCounter</span><span class="p">{</span><span class="nx">duration</span><span class="p">:</span> <span class="nx">duration</span><span class="p">,</span> <span class="nx">allowRequests</span><span class="p">:</span> <span class="nx">allowRequests</span><span class="p">}</span>
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">New</span><span class="p">(</span><span class="nx">duration</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">,</span> <span class="nx">allowRequests</span> <span class="kt">int32</span><span class="p">)</span> <span class="o">*</span><span class="nx">fixedWindowCounter</span> <span class="p">{</span>
+	<span class="nx">c</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">fixedWindowCounter</span><span class="p">{</span><span class="nx">duration</span><span class="p">:</span> <span class="nx">duration</span><span class="p">,</span> <span class="nx">allowRequests</span><span class="p">:</span> <span class="nx">allowRequests</span><span class="p">}</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span>  <span class="p">{</span>
+			<span class="k">select</span> <span class="p">{</span>
+			<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">time</span><span class="p">.</span><span class="nf">After</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">duration</span><span class="p">):</span>
+				<span class="nx">atomic</span><span class="p">.</span><span class="nf">StoreInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">currentRequests</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}()</span>
+	<span class="k">return</span> <span class="nx">c</span>
 <span class="p">}</span>
 
 <span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">fixedWindowCounter</span><span class="p">)</span> <span class="nf">Take</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
-	<span class="nx">once</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-			<span class="k">for</span>  <span class="p">{</span>
-				<span class="k">select</span> <span class="p">{</span>
-				<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">time</span><span class="p">.</span><span class="nf">After</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">duration</span><span class="p">):</span>
-					<span class="nx">atomic</span><span class="p">.</span><span class="nf">StoreInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">currentRequests</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-				<span class="p">}</span>
-			<span class="p">}</span>
-		<span class="p">}()</span>
-	<span class="p">})</span>
-
 	<span class="nx">curRequest</span> <span class="o">:=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">LoadInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">currentRequests</span><span class="p">)</span>
 	<span class="k">if</span> <span class="nx">curRequest</span> <span class="o">&gt;=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">allowRequests</span> <span class="p">{</span>
 		<span class="k">return</span> <span class="nx">ErrExceededLimit</span>
@@ -278,13 +254,9 @@
 </span><span class="lnt">57
 </span><span class="lnt">58
 </span><span class="lnt">59
-</span><span class="lnt">60
-</span><span class="lnt">61
-</span><span class="lnt">62
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="p">(</span>
-	<span class="nx">once</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Once</span>
 	<span class="nx">ErrExceededLimit</span> <span class="p">=</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;Too many requests, exceed the limit. &#34;</span><span class="p">)</span>
 <span class="p">)</span>
 
@@ -296,17 +268,15 @@
 <span class="p">}</span>
 
 <span class="kd">func</span> <span class="nf">New</span><span class="p">(</span><span class="nx">slot</span><span class="p">,</span> <span class="nx">total</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">,</span> <span class="nx">allowRequests</span> <span class="kt">int32</span><span class="p">)</span> <span class="o">*</span><span class="nx">slidingWindowCounter</span> <span class="p">{</span>
-	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">slidingWindowCounter</span><span class="p">{</span><span class="nx">durationRequests</span><span class="p">:</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int32</span><span class="p">,</span> <span class="nx">total</span><span class="o">/</span><span class="nx">slot</span><span class="o">/</span><span class="mi">1000</span><span class="p">),</span> <span class="nx">total</span><span class="p">:</span> <span class="nx">total</span><span class="p">,</span> <span class="nx">slot</span><span class="p">:</span> <span class="nx">slot</span><span class="p">,</span> <span class="nx">allowRequests</span><span class="p">:</span> <span class="nx">allowRequests</span><span class="p">}</span>
+	<span class="nx">c</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">slidingWindowCounter</span><span class="p">{</span><span class="nx">durationRequests</span><span class="p">:</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int32</span><span class="p">,</span> <span class="nx">total</span><span class="o">/</span><span class="nx">slot</span><span class="o">/</span><span class="mi">1000</span><span class="p">),</span> <span class="nx">total</span><span class="p">:</span> <span class="nx">total</span><span class="p">,</span> <span class="nx">slot</span><span class="p">:</span> <span class="nx">slot</span><span class="p">,</span> <span class="nx">allowRequests</span><span class="p">:</span> <span class="nx">allowRequests</span><span class="p">}</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">go</span> <span class="nf">sliding</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span>
+		<span class="k">go</span> <span class="nf">calculate</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span>
+	<span class="p">}()</span>
+	<span class="k">return</span> <span class="nx">c</span>
 <span class="p">}</span>
 
 <span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">slidingWindowCounter</span><span class="p">)</span> <span class="nf">Take</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
-	<span class="nx">once</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-			<span class="k">go</span> <span class="nf">sliding</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span>
-			<span class="k">go</span> <span class="nf">calculate</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span>
-		<span class="p">}()</span>
-	<span class="p">})</span>
-
 	<span class="nx">curRequest</span> <span class="o">:=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">LoadInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">currentRequests</span><span class="p">)</span>
 	<span class="k">if</span> <span class="nx">curRequest</span> <span class="o">&gt;=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">allowRequests</span> <span class="p">{</span>
 		<span class="k">return</span> <span class="nx">ErrExceededLimit</span>
@@ -382,12 +352,9 @@
 </span><span class="lnt">29
 </span><span class="lnt">30
 </span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="p">(</span>
-	<span class="nx">once</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Once</span>
 	<span class="nx">ErrExceededLimit</span> <span class="p">=</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;Too many requests, exceed the limit. &#34;</span><span class="p">)</span>
 <span class="p">)</span>
 
@@ -398,20 +365,19 @@
 <span class="p">}</span>
 
 <span class="kd">func</span> <span class="nf">New</span><span class="p">(</span><span class="nx">duration</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">,</span> <span class="nx">bucketSize</span><span class="p">,</span> <span class="nx">allowRequests</span> <span class="kt">int32</span><span class="p">)</span> <span class="o">*</span><span class="nx">leakyBucket</span> <span class="p">{</span>
-	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">leakyBucket</span><span class="p">{</span><span class="nx">duration</span><span class="p">:</span> <span class="nx">duration</span><span class="p">,</span> <span class="nx">bucketSize</span><span class="p">:</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{},</span> <span class="nx">allowRequests</span><span class="o">/</span><span class="nx">bucketSize</span><span class="p">),</span> <span class="nx">allowRequests</span><span class="p">:</span> <span class="nx">allowRequests</span><span class="p">}</span>
+	<span class="nx">c</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">leakyBucket</span><span class="p">{</span><span class="nx">duration</span><span class="p">:</span> <span class="nx">duration</span><span class="p">,</span> <span class="nx">bucketSize</span><span class="p">:</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{},</span> <span class="nx">allowRequests</span><span class="o">/</span><span class="nx">bucketSize</span><span class="p">),</span> <span class="nx">allowRequests</span><span class="p">:</span> <span class="nx">allowRequests</span><span class="p">}</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span>  <span class="p">{</span>
+			<span class="k">select</span> <span class="p">{</span>
+			<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">time</span><span class="p">.</span><span class="nf">After</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nf">Duration</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">duration</span><span class="p">.</span><span class="nf">Nanoseconds</span><span class="p">()</span><span class="o">/</span><span class="nb">int64</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">allowRequests</span><span class="p">))):</span>
+				<span class="nx">c</span><span class="p">.</span><span class="nx">bucketSize</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}()</span>
+	<span class="k">return</span> <span class="nx">c</span>
 <span class="p">}</span>
 
 <span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">leakyBucket</span><span class="p">)</span> <span class="nf">Take</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
-	<span class="nx">once</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-			<span class="k">for</span>  <span class="p">{</span>
-				<span class="k">select</span> <span class="p">{</span>
-				<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">time</span><span class="p">.</span><span class="nf">After</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nf">Duration</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">duration</span><span class="p">.</span><span class="nf">Nanoseconds</span><span class="p">()</span><span class="o">/</span><span class="nb">int64</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">allowRequests</span><span class="p">))):</span>
-					<span class="nx">c</span><span class="p">.</span><span class="nx">bucketSize</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>
-				<span class="p">}</span>
-			<span class="p">}</span>
-		<span class="p">}()</span>
-	<span class="p">})</span>
 	<span class="k">select</span> <span class="p">{</span>
 	<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">c</span><span class="p">.</span><span class="nx">bucketSize</span><span class="p">:</span>
 		<span class="k">return</span> <span class="kc">nil</span>
@@ -456,12 +422,9 @@
 </span><span class="lnt">29
 </span><span class="lnt">30
 </span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="p">(</span>
-	<span class="nx">once</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Once</span>
 	<span class="nx">ErrExceededLimit</span> <span class="p">=</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;Too many requests, exceed the limit. &#34;</span><span class="p">)</span>
 <span class="p">)</span>
 
@@ -472,20 +435,19 @@
 <span class="p">}</span>
 
 <span class="kd">func</span> <span class="nf">New</span><span class="p">(</span><span class="nx">duration</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">,</span> <span class="nx">allowRequests</span> <span class="kt">int32</span><span class="p">)</span> <span class="o">*</span><span class="nx">leakyBucket</span> <span class="p">{</span>
-	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">leakyBucket</span><span class="p">{</span><span class="nx">duration</span><span class="p">:</span> <span class="nx">duration</span><span class="p">,</span> <span class="nx">token</span><span class="p">:</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{},</span> <span class="nx">allowRequests</span><span class="p">),</span> <span class="nx">allowRequests</span><span class="p">:</span> <span class="nx">allowRequests</span><span class="p">}</span>
+	<span class="nx">c</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">leakyBucket</span><span class="p">{</span><span class="nx">duration</span><span class="p">:</span> <span class="nx">duration</span><span class="p">,</span> <span class="nx">token</span><span class="p">:</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{},</span> <span class="nx">allowRequests</span><span class="p">),</span> <span class="nx">allowRequests</span><span class="p">:</span> <span class="nx">allowRequests</span><span class="p">}</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span>  <span class="p">{</span>
+			<span class="k">select</span> <span class="p">{</span>
+			<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">time</span><span class="p">.</span><span class="nf">After</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nf">Duration</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">duration</span><span class="p">.</span><span class="nf">Nanoseconds</span><span class="p">()</span><span class="o">/</span><span class="nb">int64</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">allowRequests</span><span class="p">))):</span>
+				<span class="nx">c</span><span class="p">.</span><span class="nx">token</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}()</span>
+	<span class="k">return</span> <span class="nx">c</span>
 <span class="p">}</span>
 
 <span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">leakyBucket</span><span class="p">)</span> <span class="nf">Take</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
-	<span class="nx">once</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-			<span class="k">for</span>  <span class="p">{</span>
-				<span class="k">select</span> <span class="p">{</span>
-				<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">time</span><span class="p">.</span><span class="nf">After</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nf">Duration</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">duration</span><span class="p">.</span><span class="nf">Nanoseconds</span><span class="p">()</span><span class="o">/</span><span class="nb">int64</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">allowRequests</span><span class="p">))):</span>
-					<span class="nx">c</span><span class="p">.</span><span class="nx">token</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>
-				<span class="p">}</span>
-			<span class="p">}</span>
-		<span class="p">}()</span>
-	<span class="p">})</span>
 	<span class="k">select</span> <span class="p">{</span>
 	<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">c</span><span class="p">.</span><span class="nx">token</span><span class="p">:</span>
 		<span class="k">return</span> <span class="kc">nil</span>

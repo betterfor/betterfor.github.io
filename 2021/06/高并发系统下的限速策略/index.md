@@ -10,32 +10,20 @@
 计数器算法是限流算法中最简单也是最容易实现的一种算法。设置某段时间内的计数器是一个定值，当请求值在范围内则放行，如果超过计数器则限流。
 
 ```go
-var (
-	once sync.Once
-	ErrExceededLimit = errors.New("Too many requests, exceed the limit. ")
-)
-
-type fixedWindowCounter struct {
-	duration time.Duration
-	currentRequests, allowRequests int32
-}
-
 func New(duration time.Duration, allowRequests int32) *fixedWindowCounter {
-	return &fixedWindowCounter{duration: duration, allowRequests: allowRequests}
+	c := &fixedWindowCounter{duration: duration, allowRequests: allowRequests}
+	go func() {
+		for  {
+			select {
+			case <-time.After(c.duration):
+				atomic.StoreInt32(&c.currentRequests, 0)
+			}
+		}
+	}()
+	return c
 }
 
 func (c *fixedWindowCounter) Take() error {
-	once.Do(func() {
-		go func() {
-			for  {
-				select {
-				case <-time.After(c.duration):
-					atomic.StoreInt32(&c.currentRequests, 0)
-				}
-			}
-		}()
-	})
-
 	curRequest := atomic.LoadInt32(&c.currentRequests)
 	if curRequest >= c.allowRequests {
 		return ErrExceededLimit
@@ -57,7 +45,6 @@ func (c *fixedWindowCounter) Take() error {
 
 ```go
 var (
-	once sync.Once
 	ErrExceededLimit = errors.New("Too many requests, exceed the limit. ")
 )
 
@@ -69,17 +56,15 @@ type slidingWindowCounter struct {
 }
 
 func New(slot, total time.Duration, allowRequests int32) *slidingWindowCounter {
-	return &slidingWindowCounter{durationRequests: make(chan int32, total/slot/1000), total: total, slot: slot, allowRequests: allowRequests}
+	c := &slidingWindowCounter{durationRequests: make(chan int32, total/slot/1000), total: total, slot: slot, allowRequests: allowRequests}
+	go func() {
+		go sliding(c)
+		go calculate(c)
+	}()
+	return c
 }
 
 func (c *slidingWindowCounter) Take() error {
-	once.Do(func() {
-		go func() {
-			go sliding(c)
-			go calculate(c)
-		}()
-	})
-
 	curRequest := atomic.LoadInt32(&c.currentRequests)
 	if curRequest >= c.allowRequests {
 		return ErrExceededLimit
@@ -126,7 +111,6 @@ func calculate(c *slidingWindowCounter) {
 
 ```go
 var (
-	once sync.Once
 	ErrExceededLimit = errors.New("Too many requests, exceed the limit. ")
 )
 
@@ -137,20 +121,19 @@ type leakyBucket struct {
 }
 
 func New(duration time.Duration, bucketSize, allowRequests int32) *leakyBucket {
-	return &leakyBucket{duration: duration, bucketSize: make(chan struct{}, allowRequests/bucketSize), allowRequests: allowRequests}
+	c := &leakyBucket{duration: duration, bucketSize: make(chan struct{}, allowRequests/bucketSize), allowRequests: allowRequests}
+	go func() {
+		for  {
+			select {
+			case <-time.After(time.Duration(c.duration.Nanoseconds()/int64(c.allowRequests))):
+				c.bucketSize <- struct{}{}
+			}
+		}
+	}()
+	return c
 }
 
 func (c *leakyBucket) Take() error {
-	once.Do(func() {
-		go func() {
-			for  {
-				select {
-				case <-time.After(time.Duration(c.duration.Nanoseconds()/int64(c.allowRequests))):
-					c.bucketSize <- struct{}{}
-				}
-			}
-		}()
-	})
 	select {
 	case <-c.bucketSize:
 		return nil
@@ -166,7 +149,6 @@ func (c *leakyBucket) Take() error {
 
 ```go
 var (
-	once sync.Once
 	ErrExceededLimit = errors.New("Too many requests, exceed the limit. ")
 )
 
@@ -177,20 +159,19 @@ type leakyBucket struct {
 }
 
 func New(duration time.Duration, allowRequests int32) *leakyBucket {
-	return &leakyBucket{duration: duration, token: make(chan struct{}, allowRequests), allowRequests: allowRequests}
+	c := &leakyBucket{duration: duration, token: make(chan struct{}, allowRequests), allowRequests: allowRequests}
+	go func() {
+		for  {
+			select {
+			case <-time.After(time.Duration(c.duration.Nanoseconds()/int64(c.allowRequests))):
+				c.token <- struct{}{}
+			}
+		}
+	}()
+	return c
 }
 
 func (c *leakyBucket) Take() error {
-	once.Do(func() {
-		go func() {
-			for  {
-				select {
-				case <-time.After(time.Duration(c.duration.Nanoseconds()/int64(c.allowRequests))):
-					c.token <- struct{}{}
-				}
-			}
-		}()
-	})
 	select {
 	case <-c.token:
 		return nil
