@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Go定时器源码分析 - 月霜天的小站</title><meta name="Description" content="月霜天的小站"><meta property="og:title" content="Go定时器源码分析" />
+<meta property="og:description" content="虽然golang的定时器经过几版的改进优化，但是仍然是性能的大杀手。 golang1.13和1.14的区别 golang在1.10版本之前是由一" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://betterfor.github.io/2021/07/go%E5%AE%9A%E6%97%B6%E5%99%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-01T15:44:20+08:00" />
+<meta property="article:modified_time" content="2021-07-01T15:44:20+08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"/>
+
+<meta name="twitter:title" content="Go定时器源码分析"/>
+<meta name="twitter:description" content="虽然golang的定时器经过几版的改进优化，但是仍然是性能的大杀手。 golang1.13和1.14的区别 golang在1.10版本之前是由一"/>
+<meta name="application-name" content="月霜天">
+<meta name="apple-mobile-web-app-title" content="月霜天"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://betterfor.github.io/2021/07/go%E5%AE%9A%E6%97%B6%E5%99%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" /><link rel="prev" href="https://betterfor.github.io/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Go定时器源码分析",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/betterfor.github.io\/2021\/07\/go%E5%AE%9A%E6%97%B6%E5%99%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90\/"
+        },"genre": "posts","keywords": "linux, develop","wordcount":  6065 ,
+        "url": "https:\/\/betterfor.github.io\/2021\/07\/go%E5%AE%9A%E6%97%B6%E5%99%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90\/","datePublished": "2021-07-01T15:44:20+08:00","dateModified": "2021-07-01T15:44:20+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "月霜天"},"author": {
+                "@type": "Person",
+                "name": "月霜天"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico" /></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico" /></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Go定时器源码分析</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/"><i class="far fa-folder fa-fw"></i>月霜天的GO</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-07-01">2021-07-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 6065 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 13 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#golang113和114的区别">golang1.13和1.14的区别</a></li>
+    <li><a href="#函数签名">函数签名</a></li>
+    <li><a href="#golang113的定时器原理">golang1.13的定时器原理</a>
+      <ul>
+        <li><a href="#1添加定时器">1、添加定时器</a></li>
+        <li><a href="#2timersbucket">2、timersBucket</a></li>
+        <li><a href="#3分配桶">3、分配桶</a></li>
+        <li><a href="#4添加timer到四叉堆">4、添加timer到四叉堆</a></li>
+        <li><a href="#5timerproc">5、timerproc</a></li>
+        <li><a href="#6小结">6、小结</a></li>
+      </ul>
+    </li>
+    <li><a href="#深度分析golang114定时器">深度分析golang1.14定时器</a>
+      <ul>
+        <li><a href="#1timer">1、timer</a></li>
+        <li><a href="#2p">2、p</a></li>
+        <li><a href="#3定时器状态">3、定时器状态</a></li>
+        <li><a href="#4启动定时器">4、启动定时器</a></li>
+        <li><a href="#5停止定时器">5、停止定时器</a></li>
+        <li><a href="#6修改重置定时器">6、修改/重置定时器</a></li>
+        <li><a href="#7触发定时器">7、触发定时器</a>
+          <ul>
+            <li><a href="#1调度器触发">1、调度器触发</a></li>
+            <li><a href="#2系统监控触发">2、系统监控触发</a></li>
+          </ul>
+        </li>
+        <li><a href="#8运行定时器">8、运行定时器</a></li>
+        <li><a href="#9小结">9、小结</a></li>
+      </ul>
+    </li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>虽然golang的定时器经过几版的改进优化，但是仍然是性能的大杀手。</p>
+<h2 id="golang113和114的区别">golang1.13和1.14的区别</h2>
+<p>golang在1.10版本之前是由一个独立的<code>timerproc</code>通过小顶堆和<code>futexsleep</code>来管理定时任务。1.10版本之后是把独立的<code>timerproc</code>和小顶堆分成最多64个<code>timerproc</code>协程和四叉堆，用来休眠的方式还是 <a href="https://github.com/golang/go/blob/go1.13.15/src/runtime/os_linux.go#L15" target="_blank" rel="noopener noreffer">futexsleep</a></p>
+<p>而1.14版的timer是把存放定时事件的四叉堆放到了<code>P</code>结构中，同时取消了<code>timerproc</code>协程，转而使用<code>netpoll</code>的<code>epoll wait</code>来做就近时间的休眠等待。</p>
+<h2 id="函数签名">函数签名</h2>
+<p>对于<code>NewTimer</code>函数，我们可以找到实现 <a href="https://github.com/golang/go/blob/e71b61180aa19a60c23b3b7e3f6586726ebe4fd1/src/time/sleep.go#L82" target="_blank" rel="noopener noreffer">time/sleep.go#L82</a>。其实我们可以发现，<code>NewTimer</code>、<code>NewTicker</code>、<code>After</code>其实都是调用<code>addTimer</code>来新增定时任务。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Timer</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">C</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="nx">Time</span>
+	<span class="nx">r</span> <span class="nx">runtimeTimer</span>
+<span class="p">}</span>
+
+<span class="c1">// NewTimer creates a new Timer that will send
+</span><span class="c1">// the current time on its channel after at least duration d.
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">NewTimer</span><span class="p">(</span><span class="nx">d</span> <span class="nx">Duration</span><span class="p">)</span> <span class="o">*</span><span class="nx">Timer</span> <span class="p">{</span>
+	<span class="nx">c</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">Time</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+	<span class="nx">t</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">Timer</span><span class="p">{</span>
+		<span class="nx">C</span><span class="p">:</span> <span class="nx">c</span><span class="p">,</span>
+		<span class="nx">r</span><span class="p">:</span> <span class="nx">runtimeTimer</span><span class="p">{</span>
+			<span class="nx">when</span><span class="p">:</span> <span class="nf">when</span><span class="p">(</span><span class="nx">d</span><span class="p">),</span>
+			<span class="nx">f</span><span class="p">:</span>    <span class="nx">sendTime</span><span class="p">,</span>
+			<span class="nx">arg</span><span class="p">:</span>  <span class="nx">c</span><span class="p">,</span>
+		<span class="p">},</span>
+	<span class="p">}</span>
+	<span class="nf">startTimer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">t</span><span class="p">.</span><span class="nx">r</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">t</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">sendTime</span><span class="p">(</span><span class="nx">c</span> <span class="kd">interface</span><span class="p">{},</span> <span class="nx">seq</span> <span class="kt">uintptr</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">select</span> <span class="p">{</span>
+	<span class="k">case</span> <span class="nx">c</span><span class="p">.(</span><span class="kd">chan</span> <span class="nx">Time</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="nf">Now</span><span class="p">():</span>
+	<span class="k">default</span><span class="p">:</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">NewTicker</span><span class="p">(</span><span class="nx">d</span> <span class="nx">Duration</span><span class="p">)</span> <span class="o">*</span><span class="nx">Ticker</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nx">d</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="nb">panic</span><span class="p">(</span><span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;non-positive interval for NewTicker&#34;</span><span class="p">))</span>
+	<span class="p">}</span>
+	<span class="nx">c</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="nx">Time</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+	<span class="nx">t</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">Ticker</span><span class="p">{</span>
+		<span class="nx">C</span><span class="p">:</span> <span class="nx">c</span><span class="p">,</span>
+		<span class="nx">r</span><span class="p">:</span> <span class="nx">runtimeTimer</span><span class="p">{</span>
+			<span class="nx">when</span><span class="p">:</span>   <span class="nf">when</span><span class="p">(</span><span class="nx">d</span><span class="p">),</span>
+			<span class="nx">period</span><span class="p">:</span> <span class="nb">int64</span><span class="p">(</span><span class="nx">d</span><span class="p">),</span>
+			<span class="nx">f</span><span class="p">:</span>      <span class="nx">sendTime</span><span class="p">,</span>
+			<span class="nx">arg</span><span class="p">:</span>    <span class="nx">c</span><span class="p">,</span>
+		<span class="p">},</span>
+	<span class="p">}</span>
+	<span class="nf">startTimer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">t</span><span class="p">.</span><span class="nx">r</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">t</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这里主要分成两步：</p>
+<p>1、创建一个<code>Timer</code>对象，包含一个具有缓冲区channel的<code>c</code>，用来接收<code>Timer</code>消息的，包含的<code>runtimeTimer</code>结构体，<code>when</code>是代表<code>timer</code>触发的绝对时间(当前时间+d)，<code>f</code>是<code>timer</code>触发时的回调函数，<code>arg</code>是传给<code>f</code>的参数。</p>
+<p>2、调用<code>startTimer</code>，实际上是调用<code>runtime</code>包下的<code>addtimer</code>函数。</p>
+<p>3、<code>NewTicker</code>调用的是相同的函数，只是多了一个字段<code>period</code>，表示计时器再次被唤醒的时间，做轮询触发。</p>
+<h2 id="golang113的定时器原理">golang1.13的定时器原理</h2>
+<p>首先会初始化一个长度为64的<code>timers</code>数组，通过协程的<code>p</code>的<code>id</code>取模来分配<code>timersBucket</code>，如果发现新的定时任务比较新，那么调用<code>notewakeup</code>来激活唤醒<code>timerproc</code>的<code>futex</code>等待。如果发现没有实例化<code>timerproc</code>，则启动。</p>
+<h3 id="1添加定时器">1、添加定时器</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">addtimer</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">timer</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">tb</span> <span class="o">:=</span> <span class="nx">t</span><span class="p">.</span><span class="nf">assignBucket</span><span class="p">()</span>
+	<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tb</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+	<span class="nx">ok</span> <span class="o">:=</span> <span class="nx">tb</span><span class="p">.</span><span class="nf">addtimerLocked</span><span class="p">(</span><span class="nx">t</span><span class="p">)</span>
+	<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tb</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+	<span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
+		<span class="nf">badTimer</span><span class="p">()</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看到<code>addtimer</code>做了两件事：</p>
+<p>1、<code>assignBucket</code>找到可以被插入的<code>bucket</code></p>
+<p>2、<code>addtimerLocked</code>将<code>timer</code>插入到<code>bucket</code></p>
+<h3 id="2timersbucket">2、timersBucket</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">const</span> <span class="nx">timersLen</span> <span class="p">=</span> <span class="mi">64</span>
+
+<span class="c1">// timer包含每个P的堆，timer进入队列中关联当前的P，所以每个P中timer都是独立于其他P的
+</span><span class="c1">// 如果GOMAXPROCS &gt; timersLen，那么timersBucket可能会管理多个P
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">timers</span> <span class="p">[</span><span class="nx">timersLen</span><span class="p">]</span><span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">timersBucket</span>
+
+	<span class="c1">// 内存对齐
+</span><span class="c1"></span>	<span class="nx">pad</span> <span class="p">[</span><span class="nx">cpu</span><span class="p">.</span><span class="nx">CacheLinePadSize</span> <span class="o">-</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nf">Sizeof</span><span class="p">(</span><span class="nx">timersBucket</span><span class="p">{})</span><span class="o">%</span><span class="nx">cpu</span><span class="p">.</span><span class="nx">CacheLinePadSize</span><span class="p">]</span><span class="kt">byte</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">timersBucket</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">lock</span>         <span class="nx">mutex</span>
+	<span class="nx">gp</span>           <span class="o">*</span><span class="nx">g</span>
+	<span class="nx">created</span>      <span class="kt">bool</span>
+	<span class="nx">sleeping</span>     <span class="kt">bool</span>
+	<span class="nx">rescheduling</span> <span class="kt">bool</span>
+	<span class="nx">sleepUntil</span>   <span class="kt">int64</span>
+	<span class="nx">waitnote</span>     <span class="nx">note</span>
+	<span class="nx">t</span>            <span class="p">[]</span><span class="o">*</span><span class="nx">timer</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在<code>runtime</code>中，有64个全局定义的<code>timer bucket</code>。每个<code>bucket</code>负责管理<code>timer</code>。<code>timer</code>的整个生命周期包括创建、销毁、唤醒、睡眠等都是由<code>timer bucket</code>管理和调度。</p>
+<blockquote>
+<p>问：为什么是64个<code>timer bucket</code>?</p>
+<p>答：在1.10版本之前，只有1个<code>timers</code>对象，在添加定时器任务时都需要对<code>timers</code>进行加锁和解锁操作，影响性能；当<code>timer</code>过多，<code>timers</code>中的<code>t</code>很多，添加进四叉堆操作可能耗时比较长，可能会导致<code>timer</code>的延迟。因此引入全局64个分桶的策略，将<code>timer</code>分散到桶中，每个桶只负责自己的<code>timer</code>，有效降低了锁的粒度和<code>timer</code>调度的负担。</p>
+<p>而根据最优的情况下，应该是分桶的数量应该要和<code>GOMAXPROCS</code>数量一致，有多少个<code>P</code>就有多少个<code>timer bucket</code>。但是，这就涉及到<code>P</code>的动态分配问题，所以在性能的权衡下，使用64 能够覆盖大多数的场景。</p>
+</blockquote>
+<h3 id="3分配桶">3、分配桶</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">timer</span><span class="p">)</span> <span class="nf">assignBucket</span><span class="p">()</span> <span class="o">*</span><span class="nx">timersBucket</span> <span class="p">{</span>
+	<span class="nx">id</span> <span class="o">:=</span> <span class="nb">uint8</span><span class="p">(</span><span class="nf">getg</span><span class="p">().</span><span class="nx">m</span><span class="p">.</span><span class="nx">p</span><span class="p">.</span><span class="nf">ptr</span><span class="p">().</span><span class="nx">id</span><span class="p">)</span> <span class="o">%</span> <span class="nx">timersLen</span>
+	<span class="nx">t</span><span class="p">.</span><span class="nx">tb</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">timers</span><span class="p">[</span><span class="nx">id</span><span class="p">].</span><span class="nx">timersBucket</span>
+	<span class="k">return</span> <span class="nx">t</span><span class="p">.</span><span class="nx">tb</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="4添加timer到四叉堆">4、添加timer到四叉堆</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">tb</span> <span class="o">*</span><span class="nx">timersBucket</span><span class="p">)</span> <span class="nf">addtimerLocked</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">timer</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
+	<span class="c1">// 此时when应该是当前时间+duration
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">t</span><span class="p">.</span><span class="nx">when</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="nx">t</span><span class="p">.</span><span class="nx">when</span> <span class="p">=</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">63</span> <span class="o">-</span> <span class="mi">1</span>
+	<span class="p">}</span>
+	<span class="c1">// 将timer添加到四叉堆中
+</span><span class="c1"></span>	<span class="nx">t</span><span class="p">.</span><span class="nx">i</span> <span class="p">=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">tb</span><span class="p">.</span><span class="nx">t</span><span class="p">)</span>
+	<span class="nx">tb</span><span class="p">.</span><span class="nx">t</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">tb</span><span class="p">.</span><span class="nx">t</span><span class="p">,</span> <span class="nx">t</span><span class="p">)</span>
+	<span class="k">if</span> <span class="p">!</span><span class="nf">siftupTimer</span><span class="p">(</span><span class="nx">tb</span><span class="p">.</span><span class="nx">t</span><span class="p">,</span> <span class="nx">t</span><span class="p">.</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="kc">false</span>
+	<span class="p">}</span>
+	<span class="c1">// 首次添加
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">t</span><span class="p">.</span><span class="nx">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="c1">// 如果timerproc在sleep，唤醒它
+</span><span class="c1"></span>		<span class="k">if</span> <span class="nx">tb</span><span class="p">.</span><span class="nx">sleeping</span> <span class="o">&amp;&amp;</span> <span class="nx">tb</span><span class="p">.</span><span class="nx">sleepUntil</span> <span class="p">&gt;</span> <span class="nx">t</span><span class="p">.</span><span class="nx">when</span> <span class="p">{</span>
+			<span class="nx">tb</span><span class="p">.</span><span class="nx">sleeping</span> <span class="p">=</span> <span class="kc">false</span>
+			<span class="nf">notewakeup</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tb</span><span class="p">.</span><span class="nx">waitnote</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="c1">// 如果timerproc被挂起了，重新调度
+</span><span class="c1"></span>		<span class="k">if</span> <span class="nx">tb</span><span class="p">.</span><span class="nx">rescheduling</span> <span class="p">{</span>
+			<span class="nx">tb</span><span class="p">.</span><span class="nx">rescheduling</span> <span class="p">=</span> <span class="kc">false</span>
+			<span class="nf">goready</span><span class="p">(</span><span class="nx">tb</span><span class="p">.</span><span class="nx">gp</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="c1">// 如果timer的桶还没有创建，创建并开始timerproc
+</span><span class="c1"></span>		<span class="k">if</span> <span class="p">!</span><span class="nx">tb</span><span class="p">.</span><span class="nx">created</span> <span class="p">{</span>
+			<span class="nx">tb</span><span class="p">.</span><span class="nx">created</span> <span class="p">=</span> <span class="kc">true</span>
+			<span class="k">go</span> <span class="nf">timerproc</span><span class="p">(</span><span class="nx">tb</span><span class="p">)</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="kc">true</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>问：为什么是四叉堆？</p>
+<p>答：上推节点的操作更快；对缓存更友好。</p>
+</blockquote>
+<h3 id="5timerproc">5、timerproc</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// timerproc 外层循环不会退出
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">timerproc</span><span class="p">(</span><span class="nx">tb</span> <span class="o">*</span><span class="nx">timersBucket</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">tb</span><span class="p">.</span><span class="nx">gp</span> <span class="p">=</span> <span class="nf">getg</span><span class="p">()</span>
+	<span class="k">for</span> <span class="p">{</span>
+		<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tb</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+		<span class="c1">// 修改睡眠标识
+</span><span class="c1"></span>		<span class="nx">tb</span><span class="p">.</span><span class="nx">sleeping</span> <span class="p">=</span> <span class="kc">false</span>
+		<span class="c1">// 当前时间
+</span><span class="c1"></span>		<span class="nx">now</span> <span class="o">:=</span> <span class="nf">nanotime</span><span class="p">()</span>
+		<span class="nx">delta</span> <span class="o">:=</span> <span class="nb">int64</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+		<span class="k">for</span> <span class="p">{</span>
+			<span class="c1">// 如果桶内没有timer，退出
+</span><span class="c1"></span>			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">tb</span><span class="p">.</span><span class="nx">t</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+				<span class="nx">delta</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span>
+				<span class="k">break</span>
+			<span class="p">}</span>
+			<span class="c1">// 获取最早触发的timer
+</span><span class="c1"></span>			<span class="nx">t</span> <span class="o">:=</span> <span class="nx">tb</span><span class="p">.</span><span class="nx">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+			<span class="nx">delta</span> <span class="p">=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">when</span> <span class="o">-</span> <span class="nx">now</span>
+			<span class="c1">// 还没有到达触发时间，退出
+</span><span class="c1"></span>			<span class="k">if</span> <span class="nx">delta</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+				<span class="k">break</span>
+			<span class="p">}</span>
+			<span class="nx">ok</span> <span class="o">:=</span> <span class="kc">true</span>
+			<span class="k">if</span> <span class="nx">t</span><span class="p">.</span><span class="nx">period</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+				<span class="c1">// 需要周期性触发定时器，需要修改timer的触发时间，重新添加到最小堆中
+</span><span class="c1"></span>				<span class="c1">// leave in heap but adjust next time to fire
+</span><span class="c1"></span>				<span class="nx">t</span><span class="p">.</span><span class="nx">when</span> <span class="o">+=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">period</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="o">-</span><span class="nx">delta</span><span class="o">/</span><span class="nx">t</span><span class="p">.</span><span class="nx">period</span><span class="p">)</span>
+				<span class="k">if</span> <span class="p">!</span><span class="nf">siftdownTimer</span><span class="p">(</span><span class="nx">tb</span><span class="p">.</span><span class="nx">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+					<span class="nx">ok</span> <span class="p">=</span> <span class="kc">false</span>
+				<span class="p">}</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+				<span class="c1">// 从最小堆中移除
+</span><span class="c1"></span>				<span class="nx">last</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">tb</span><span class="p">.</span><span class="nx">t</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+				<span class="k">if</span> <span class="nx">last</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+					<span class="nx">tb</span><span class="p">.</span><span class="nx">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">=</span> <span class="nx">tb</span><span class="p">.</span><span class="nx">t</span><span class="p">[</span><span class="nx">last</span><span class="p">]</span>
+					<span class="nx">tb</span><span class="p">.</span><span class="nx">t</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">i</span> <span class="p">=</span> <span class="mi">0</span>
+				<span class="p">}</span>
+				<span class="nx">tb</span><span class="p">.</span><span class="nx">t</span><span class="p">[</span><span class="nx">last</span><span class="p">]</span> <span class="p">=</span> <span class="kc">nil</span>
+				<span class="nx">tb</span><span class="p">.</span><span class="nx">t</span> <span class="p">=</span> <span class="nx">tb</span><span class="p">.</span><span class="nx">t</span><span class="p">[:</span><span class="nx">last</span><span class="p">]</span>
+				<span class="k">if</span> <span class="nx">last</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+					<span class="k">if</span> <span class="p">!</span><span class="nf">siftdownTimer</span><span class="p">(</span><span class="nx">tb</span><span class="p">.</span><span class="nx">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+						<span class="nx">ok</span> <span class="p">=</span> <span class="kc">false</span>
+					<span class="p">}</span>
+				<span class="p">}</span>
+				<span class="nx">t</span><span class="p">.</span><span class="nx">i</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="c1">// 下标标记为-1，deltimer发现下标为-1时就不删除了
+</span><span class="c1"></span>			<span class="p">}</span>
+			<span class="nx">f</span> <span class="o">:=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">f</span>
+			<span class="nx">arg</span> <span class="o">:=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">arg</span>
+			<span class="nx">seq</span> <span class="o">:=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">seq</span>
+			<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tb</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+			<span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
+				<span class="nf">badTimer</span><span class="p">()</span>
+			<span class="p">}</span>
+			<span class="k">if</span> <span class="nx">raceenabled</span> <span class="p">{</span>
+				<span class="nf">raceacquire</span><span class="p">(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="nx">t</span><span class="p">))</span>
+			<span class="p">}</span>
+			<span class="nf">f</span><span class="p">(</span><span class="nx">arg</span><span class="p">,</span> <span class="nx">seq</span><span class="p">)</span>
+			<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tb</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="nx">delta</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">faketime</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+			<span class="c1">// 如果桶中没有timer，把协程挂起
+</span><span class="c1"></span>			<span class="nx">tb</span><span class="p">.</span><span class="nx">rescheduling</span> <span class="p">=</span> <span class="kc">true</span>
+			<span class="nf">goparkunlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tb</span><span class="p">.</span><span class="nx">lock</span><span class="p">,</span> <span class="nx">waitReasonTimerGoroutineIdle</span><span class="p">,</span> <span class="nx">traceEvGoBlock</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+			<span class="k">continue</span>
+		<span class="p">}</span>
+		<span class="c1">// 如果还有timer，睡眠到桶内最早触发的时间点后唤醒
+</span><span class="c1"></span>		<span class="nx">tb</span><span class="p">.</span><span class="nx">sleeping</span> <span class="p">=</span> <span class="kc">true</span>
+		<span class="nx">tb</span><span class="p">.</span><span class="nx">sleepUntil</span> <span class="p">=</span> <span class="nx">now</span> <span class="o">+</span> <span class="nx">delta</span>
+		<span class="nf">noteclear</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tb</span><span class="p">.</span><span class="nx">waitnote</span><span class="p">)</span>
+		<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tb</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+		<span class="nf">notetsleepg</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tb</span><span class="p">.</span><span class="nx">waitnote</span><span class="p">,</span> <span class="nx">delta</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="6小结">6、小结</h3>
+<p>1、首选预分配64个的<code>timer bucket</code>，<code>timer bucket</code>里面是一个四叉堆存放<code>timer</code></p>
+<p>2、每次新增的<code>timer</code>，添加到四叉堆中，会尝试唤醒和调度<code>bucket</code></p>
+<p>3、第一次新增的<code>bucket</code>会运行协程<code>timerproc</code>。<code>timerproc</code>是一个死循环，周期性地检查定时器状态。</p>
+<p>4、每次从最小堆中取出<code>timer</code>，如果是计时器，则重新加入到<code>bucket</code>中。如果<code>bucket</code>没有<code>timer</code>，则将<code>timerproc</code>挂起。如果还有<code>timer</code>，则睡眠到<code>bucket</code>中堆顶唤醒的时间。</p>
+<h2 id="深度分析golang114定时器">深度分析golang1.14定时器</h2>
+<h3 id="1timer">1、timer</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">timer</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="c1">// If this timer is on a heap, which P&#39;s heap it is on.
+</span><span class="c1"></span>	<span class="c1">// puintptr rather than *p to match uintptr in the versions
+</span><span class="c1"></span>	<span class="c1">// of this struct defined in other packages.
+</span><span class="c1"></span>	<span class="nx">pp</span> <span class="nx">puintptr</span>	<span class="c1">// 计时器所在的处理器P的指针地址
+</span><span class="c1"></span>
+	<span class="c1">// Timer wakes up at when, and then at when+period, ... (period &gt; 0 only)
+</span><span class="c1"></span>	<span class="c1">// each time calling f(arg, now) in the timer goroutine, so f must be
+</span><span class="c1"></span>	<span class="c1">// a well-behaved function and not block.
+</span><span class="c1"></span>	<span class="nx">when</span>   <span class="kt">int64</span>		<span class="c1">// 计时器被唤醒的时间
+</span><span class="c1"></span>	<span class="nx">period</span> <span class="kt">int64</span>		<span class="c1">// 计时器再次被唤醒的时间（周期）
+</span><span class="c1"></span>	<span class="nx">f</span>      <span class="kd">func</span><span class="p">(</span><span class="kd">interface</span><span class="p">{},</span> <span class="kt">uintptr</span><span class="p">)</span>	<span class="c1">// 回调函数，每次在计时器被唤醒时都会调用
+</span><span class="c1"></span>	<span class="nx">arg</span>    <span class="kd">interface</span><span class="p">{}</span>	<span class="c1">// 回调函数的参数
+</span><span class="c1"></span>	<span class="nx">seq</span>    <span class="kt">uintptr</span>		<span class="c1">// 回调函数的参数，仅在netpoll的应用场景下使用
+</span><span class="c1"></span>
+	<span class="c1">// What to set the when field to in timerModifiedXX status.
+</span><span class="c1"></span>	<span class="nx">nextwhen</span> <span class="kt">int64</span>	<span class="c1">// 当计时器状态为timerModifiedXX时，将会使用nextwhen设置到where字段上
+</span><span class="c1"></span>
+	<span class="c1">// The status field holds one of the values below.
+</span><span class="c1"></span>	<span class="nx">status</span> <span class="kt">uint32</span>	<span class="c1">// 计时器当前的状态值
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="2p">2、p</h3>
+<p>在添加方式上，go1.14发生了变更，改为将每个<code>timer</code>存储在处理器<code>p</code>上。这也是我们之前提到的优化结构，64只能泛指大多数情况，实际都是需要<code>p</code>进行处理。所以go1.14里的<code>p</code>结构中有了<code>timers</code>字段。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">p</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="o">...</span>
+    <span class="nx">timersLock</span> <span class="nx">mutex</span>
+    <span class="nx">timers</span> <span class="p">[]</span><span class="o">*</span><span class="nx">timer</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>同样，在<code>timers</code>数组仍是一个最小四叉堆。</p>
+<h3 id="3定时器状态">3、定时器状态</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Values for the timer status field.
+</span><span class="c1"></span><span class="kd">const</span> <span class="p">(</span>
+	<span class="c1">// timer尚未设置状态
+</span><span class="c1"></span>	<span class="nx">timerNoStatus</span> <span class="p">=</span> <span class="kc">iota</span>
+
+	<span class="c1">// 等待timer启动
+</span><span class="c1"></span>	<span class="nx">timerWaiting</span>
+
+	<span class="c1">// 运行timer的回调方法
+</span><span class="c1"></span>	<span class="nx">timerRunning</span>
+
+	<span class="c1">// timer已经被删除，但仍然在某些p的堆中
+</span><span class="c1"></span>	<span class="nx">timerDeleted</span>
+
+	<span class="c1">// timer即将被删除
+</span><span class="c1"></span>	<span class="nx">timerRemoving</span>
+
+	<span class="c1">// timer已经停止，且不存在任何p的堆中
+</span><span class="c1"></span>	<span class="nx">timerRemoved</span>
+
+	<span class="c1">// timer正在被修改
+</span><span class="c1"></span>	<span class="nx">timerModifying</span>
+
+	<span class="c1">// timer已被修改为更早的时间，新的时间被设置在nextwhen字段中，
+</span><span class="c1"></span>	<span class="nx">timerModifiedEarlier</span>
+
+	<span class="c1">// timer已被修改为更迟的时间，新的时间被设置在nextwhen字段中，
+</span><span class="c1"></span>	<span class="nx">timerModifiedLater</span>
+	
+	<span class="c1">// timer已经被修改，正在被移动
+</span><span class="c1"></span>	<span class="nx">timerMoving</span>
+<span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>因为涉及到<code>p</code>的管理，所以新增了10个<code>timer</code>的状态管理。</p>
+<h3 id="4启动定时器">4、启动定时器</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">addtimer</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">timer</span><span class="p">)</span> <span class="p">{</span>
+	<span class="c1">// when must never be negative; otherwise runtimer will overflow
+</span><span class="c1"></span>	<span class="c1">// during its delta calculation and never expire other runtime timers.
+</span><span class="c1"></span>	<span class="c1">// 边界条件判断
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">t</span><span class="p">.</span><span class="nx">when</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="nx">t</span><span class="p">.</span><span class="nx">when</span> <span class="p">=</span> <span class="nx">maxWhen</span>
+	<span class="p">}</span>
+	<span class="c1">// timer的状态为timerNoStatus
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">t</span><span class="p">.</span><span class="nx">status</span> <span class="o">!=</span> <span class="nx">timerNoStatus</span> <span class="p">{</span>
+		<span class="nf">throw</span><span class="p">(</span><span class="s">&#34;addtimer called with initialized timer&#34;</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="nx">t</span><span class="p">.</span><span class="nx">status</span> <span class="p">=</span> <span class="nx">timerWaiting</span>
+
+	<span class="nx">when</span> <span class="o">:=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">when</span>
+
+	<span class="nx">pp</span> <span class="o">:=</span> <span class="nf">getg</span><span class="p">().</span><span class="nx">m</span><span class="p">.</span><span class="nx">p</span><span class="p">.</span><span class="nf">ptr</span><span class="p">()</span>
+	<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">pp</span><span class="p">.</span><span class="nx">timersLock</span><span class="p">)</span>
+	<span class="c1">// 清除处理器p中的计时器队列，可以加快创建和删除计时器的程序的速度
+</span><span class="c1"></span>	<span class="nf">cleantimers</span><span class="p">(</span><span class="nx">pp</span><span class="p">)</span>		
+	<span class="c1">// 将当前所新创建的timer新增到p的堆中
+</span><span class="c1"></span>	<span class="nf">doaddtimer</span><span class="p">(</span><span class="nx">pp</span><span class="p">,</span> <span class="nx">t</span><span class="p">)</span>
+	<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">pp</span><span class="p">.</span><span class="nx">timersLock</span><span class="p">)</span>
+
+	<span class="c1">// 唤醒网络轮询器中休眠的线程，检查timer被唤醒的时间(when)是否在当前轮询预期运行的时间(pollerPollUntil)内，若是则唤醒
+</span><span class="c1"></span>	<span class="nf">wakeNetPoller</span><span class="p">(</span><span class="nx">when</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>添加<code>timer</code>到当前的<code>p</code>上，这应该只在一个新创建的timer中调用，这避免了更改某些<code>p</code>的最小堆<code>timer</code>的<code>when</code>字段的风险，因为这可能导致最小堆乱序。</p>
+<h3 id="5停止定时器">5、停止定时器</h3>
+<p>在定时器的运行中，一般会调用<code>timer.Stop</code>方法来停止/删除定时器，其实就是让这个<code>timer</code>从处理器<code>p</code>的堆中移除。</p>
+<ul>
+<li>timerWaiting/timerModifiedLater：修改<code>timer</code>状态为timerDeleted，删除数量+1</li>
+<li>timerModifiedEarlier：修改<code>timer</code>状态为timerDeleted，删除数量+1，adjustTimers+1</li>
+<li>timerDeleted/timerRemoving/timerRemoved：无需变更，已经满足条件</li>
+<li>timerRunning/timerMoving/timerModifying：正在执行、移动中，无法停止，等待下一次状态检查再处理</li>
+<li>timerNoStatus：无法停止，不满足条件</li>
+</ul>
+<h3 id="6修改重置定时器">6、修改/重置定时器</h3>
+<p>在程序调度中，有些因为逻辑改变，需要重置定时器。一般会调用<code>timer.Reset()</code>来重设<code>Duration</code>值。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">resettimer</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">timer</span><span class="p">,</span> <span class="nx">when</span> <span class="kt">int64</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nf">modtimer</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">when</span><span class="p">,</span> <span class="nx">t</span><span class="p">.</span><span class="nx">period</span><span class="p">,</span> <span class="nx">t</span><span class="p">.</span><span class="nx">f</span><span class="p">,</span> <span class="nx">t</span><span class="p">.</span><span class="nx">arg</span><span class="p">,</span> <span class="nx">t</span><span class="p">.</span><span class="nx">seq</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>实际调用<code>modtimer</code>方法。</p>
+<ul>
+<li>timerRunning/timerRemoving/timerMoving/timerModifying：等待状态改变</li>
+<li>timerDeleted-&gt;timerModifying-&gt;timerModifiedXXX</li>
+<li>timerNoStatus/timerRemoved-&gt;timerModifying-&gt;timerWaiting</li>
+<li>timerWaiting/timerModifiedXXX-&gt;timerModifying-&gt;timerModifiedXXX</li>
+</ul>
+<p>在处理完处理器的状态后，会分为两种情况进行处理：</p>
+<p>1、待修改的定时器已经被删除：由于原定时器没有了，所以会调用<code>doaddtimer</code>方法创建一个定时器，并赋值原先的<code>timer</code>，再调用<code>wakeNetPoller</code>在预定的时间唤醒网络轮询器</p>
+<p>2、正常逻辑处理：如果修改后的定时器的触发时间小于原本的触发是按，则修改定时器状态为timerModifiedEalier，并调用<code>wakeNetPoller</code>在预定的时间唤醒网络轮询器</p>
+<h3 id="7触发定时器">7、触发定时器</h3>
+<p>前面提到过，<code>timers</code>已经归属到<code>p</code>中去了，所以定时器的触发分成两个部分：</p>
+<ul>
+<li>通过调度器在调度时进行定时器的触发</li>
+<li>通过系统监控检查并触发定时器（到期未执行）</li>
+</ul>
+<h4 id="1调度器触发">1、调度器触发</h4>
+<p>调度器触发一般分为两种情况。</p>
+<p>一种是调度循环中调用<code>checkTimers</code>方法进行计时器的触发</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">schedule</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">_g_</span> <span class="o">:=</span> <span class="nf">getg</span><span class="p">()</span>
+    <span class="o">...</span>
+<span class="nx">top</span><span class="p">:</span>
+	<span class="nx">pp</span> <span class="o">:=</span> <span class="nx">_g_</span><span class="p">.</span><span class="nx">m</span><span class="p">.</span><span class="nx">p</span><span class="p">.</span><span class="nf">ptr</span><span class="p">()</span>
+	<span class="nx">pp</span><span class="p">.</span><span class="nx">preempt</span> <span class="p">=</span> <span class="kc">false</span>
+    <span class="o">...</span>
+    <span class="nf">checkTimers</span><span class="p">(</span><span class="nx">pp</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="o">...</span>
+    <span class="nf">execute</span><span class="p">(</span><span class="nx">gp</span><span class="p">,</span> <span class="nx">inheritTime</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>另一种是当前处理器<code>p</code>没有可执行的<code>timer</code>，且没有可执行的<code>G</code>。那么按照调度模型，就会去窃取其他定时器和<code>G</code>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">findrunnable</span><span class="p">()</span> <span class="p">(</span><span class="nx">gp</span> <span class="o">*</span><span class="nx">g</span><span class="p">,</span> <span class="nx">inheritTime</span> <span class="kt">bool</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">_g_</span> <span class="o">:=</span> <span class="nf">getg</span><span class="p">()</span>
+    <span class="o">...</span>
+<span class="nx">top</span><span class="p">:</span>
+	<span class="nx">_p_</span> <span class="o">:=</span> <span class="nx">_g_</span><span class="p">.</span><span class="nx">m</span><span class="p">.</span><span class="nx">p</span><span class="p">.</span><span class="nf">ptr</span><span class="p">()</span>
+    <span class="o">...</span>
+    <span class="nx">now</span><span class="p">,</span> <span class="nx">pollUntil</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nf">checkTimers</span><span class="p">(</span><span class="nx">_p_</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><hr>
+<p>我们来进一步分析<code>checkTimers</code>方法：</p>
+<p>1、检查处理器<code>p</code>上是否有需要处理的<code>timer</code></p>
+<p>2、如果没有需要执行的<code>timer</code>，则直接返回；否则，判断标记为删除的<code>timer</code>数量如果小于<code>p</code>上的<code>timer</code>数量则直接返回</p>
+<p>3、对需要处理的<code>timer</code>，根据时间将<code>timers</code>重新排序</p>
+<p>4、在调整完<code>timers</code>后，调用<code>runtimer</code>方法真正执行<code>timer</code>，触发定时器</p>
+<p>5、在最后的阶段，如果被标记为删除的<code>timer</code>数量如果大于<code>p</code>上的<code>timer</code>数量，则对标记为删除的<code>timer</code>进行清理。</p>
+<h4 id="2系统监控触发">2、系统监控触发</h4>
+<p>通过每次调度器调度和窃取的是否触发，还是有一定的随机性。</p>
+<p>因此需要一个系统监控来触发定时器。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">sysmon</span><span class="p">()</span> <span class="p">{</span>
+	<span class="o">...</span>
+	<span class="k">for</span> <span class="p">{</span>
+		<span class="o">...</span>
+		<span class="nx">next</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nf">timeSleepUntil</span><span class="p">()</span>
+		<span class="k">if</span> <span class="nx">debug</span><span class="p">.</span><span class="nx">schedtrace</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">sched</span><span class="p">.</span><span class="nx">gcwaiting</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">npidle</span><span class="p">)</span> <span class="o">==</span> <span class="nb">uint32</span><span class="p">(</span><span class="nx">gomaxprocs</span><span class="p">))</span> <span class="p">{</span>
+			<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+			<span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">gcwaiting</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">npidle</span><span class="p">)</span> <span class="o">==</span> <span class="nb">uint32</span><span class="p">(</span><span class="nx">gomaxprocs</span><span class="p">)</span> <span class="p">{</span>
+				<span class="k">if</span> <span class="nx">next</span> <span class="p">&gt;</span> <span class="nx">now</span> <span class="p">{</span>
+					<span class="nx">atomic</span><span class="p">.</span><span class="nf">Store</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">sysmonwait</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+					<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+					<span class="c1">// Make wake-up period small enough
+</span><span class="c1"></span>					<span class="c1">// for the sampling to be correct.
+</span><span class="c1"></span>					<span class="nx">sleep</span> <span class="o">:=</span> <span class="nx">forcegcperiod</span> <span class="o">/</span> <span class="mi">2</span>
+					<span class="k">if</span> <span class="nx">next</span><span class="o">-</span><span class="nx">now</span> <span class="p">&lt;</span> <span class="nx">sleep</span> <span class="p">{</span>
+						<span class="nx">sleep</span> <span class="p">=</span> <span class="nx">next</span> <span class="o">-</span> <span class="nx">now</span>
+					<span class="p">}</span>
+					<span class="nx">shouldRelax</span> <span class="o">:=</span> <span class="nx">sleep</span> <span class="o">&gt;=</span> <span class="nx">osRelaxMinNS</span>
+					<span class="k">if</span> <span class="nx">shouldRelax</span> <span class="p">{</span>
+						<span class="nf">osRelax</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+					<span class="p">}</span>
+					<span class="nf">notetsleep</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">sysmonnote</span><span class="p">,</span> <span class="nx">sleep</span><span class="p">)</span>
+					<span class="k">if</span> <span class="nx">shouldRelax</span> <span class="p">{</span>
+						<span class="nf">osRelax</span><span class="p">(</span><span class="kc">false</span><span class="p">)</span>
+					<span class="p">}</span>
+					<span class="nx">now</span> <span class="p">=</span> <span class="nf">nanotime</span><span class="p">()</span>
+					<span class="nx">next</span><span class="p">,</span> <span class="nx">_</span> <span class="p">=</span> <span class="nf">timeSleepUntil</span><span class="p">()</span>
+					<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+					<span class="nx">atomic</span><span class="p">.</span><span class="nf">Store</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">sysmonwait</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+					<span class="nf">noteclear</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">sysmonnote</span><span class="p">)</span>
+				<span class="p">}</span>
+				<span class="nx">idle</span> <span class="p">=</span> <span class="mi">0</span>
+				<span class="nx">delay</span> <span class="p">=</span> <span class="mi">20</span>
+			<span class="p">}</span>
+			<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="o">...</span>
+		<span class="c1">// poll network if not polled for more than 10ms
+</span><span class="c1"></span>		<span class="nx">lastpoll</span> <span class="o">:=</span> <span class="nb">int64</span><span class="p">(</span><span class="nx">atomic</span><span class="p">.</span><span class="nf">Load64</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">lastpoll</span><span class="p">))</span>
+		<span class="k">if</span> <span class="nf">netpollinited</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="nx">lastpoll</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">lastpoll</span><span class="o">+</span><span class="mi">10</span><span class="o">*</span><span class="mi">1000</span><span class="o">*</span><span class="mi">1000</span> <span class="p">&lt;</span> <span class="nx">now</span> <span class="p">{</span>
+			<span class="nx">atomic</span><span class="p">.</span><span class="nf">Cas64</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">lastpoll</span><span class="p">,</span> <span class="nb">uint64</span><span class="p">(</span><span class="nx">lastpoll</span><span class="p">),</span> <span class="nb">uint64</span><span class="p">(</span><span class="nx">now</span><span class="p">))</span>
+			<span class="nx">list</span> <span class="o">:=</span> <span class="nf">netpoll</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">// non-blocking - returns list of goroutines
+</span><span class="c1"></span>			<span class="k">if</span> <span class="p">!</span><span class="nx">list</span><span class="p">.</span><span class="nf">empty</span><span class="p">()</span> <span class="p">{</span>
+				<span class="nf">incidlelocked</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+				<span class="nf">injectglist</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">list</span><span class="p">)</span>
+				<span class="nf">incidlelocked</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+        <span class="k">if</span> <span class="nx">next</span> <span class="p">&lt;</span> <span class="nx">now</span> <span class="p">{</span>
+			<span class="nf">startm</span><span class="p">(</span><span class="kc">nil</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="o">...</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>1、在每次系统监控时，都会在流程上调用<code>timeSleepUntil</code>方法去获取下一个定时器应触发的时间，以及保存改定时器已经打开的定时器堆的<code>p</code>.</p>
+<p>2、检查当前是否存在GC，若正在STW则获取调度互斥锁。若发现下一个<code>timer</code>触发时间已经过去，则重新调用<code>timeSleepUntil</code>获取下一个定时器的时间和相应的<code>p</code>。</p>
+<p>3、如果发现超过10ms没有进行<code>netpoll</code>网络轮询，则主动调用<code>netpoll</code>方法触发轮询</p>
+<h3 id="8运行定时器">8、运行定时器</h3>
+<p>这里来分析一下<code>runtimer</code>方法：</p>
+<p>只有被标记为<code>timerWaiting</code>状态的定时器才能运行，尝试将状态更新为<code>timerRunning</code>，然后执行<code>runOneTimer</code>方法。</p>
+<p>标记为<code>timerDeleted</code>状态的定时器会去删除定时器，标记为<code>timerModifiedXXX</code>状态的定时器会去重新添加定时器。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">runOneTimer</span><span class="p">(</span><span class="nx">pp</span> <span class="o">*</span><span class="nx">p</span><span class="p">,</span> <span class="nx">t</span> <span class="o">*</span><span class="nx">timer</span><span class="p">,</span> <span class="nx">now</span> <span class="kt">int64</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">f</span> <span class="o">:=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">f</span>
+	<span class="nx">arg</span> <span class="o">:=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">arg</span>
+	<span class="nx">seq</span> <span class="o">:=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">seq</span>
+
+	<span class="k">if</span> <span class="nx">t</span><span class="p">.</span><span class="nx">period</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="c1">// ticker，需要再次触发
+</span><span class="c1"></span>		<span class="c1">// 重新计算下一次的触发时间，并且更新其在最小堆
+</span><span class="c1"></span>		<span class="nx">delta</span> <span class="o">:=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">when</span> <span class="o">-</span> <span class="nx">now</span>
+		<span class="nx">t</span><span class="p">.</span><span class="nx">when</span> <span class="o">+=</span> <span class="nx">t</span><span class="p">.</span><span class="nx">period</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="o">-</span><span class="nx">delta</span><span class="o">/</span><span class="nx">t</span><span class="p">.</span><span class="nx">period</span><span class="p">)</span>
+		<span class="nf">siftdownTimer</span><span class="p">(</span><span class="nx">pp</span><span class="p">.</span><span class="nx">timers</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+		<span class="c1">// 将状态修改为timerWaiting
+</span><span class="c1"></span>		<span class="k">if</span> <span class="p">!</span><span class="nx">atomic</span><span class="p">.</span><span class="nf">Cas</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">t</span><span class="p">.</span><span class="nx">status</span><span class="p">,</span> <span class="nx">timerRunning</span><span class="p">,</span> <span class="nx">timerWaiting</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nf">badTimer</span><span class="p">()</span>
+		<span class="p">}</span>
+		<span class="c1">// 设置p的下一次触发时间
+</span><span class="c1"></span>		<span class="nf">updateTimer0When</span><span class="p">(</span><span class="nx">pp</span><span class="p">)</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="c1">// 移除timer
+</span><span class="c1"></span>		<span class="nf">dodeltimer0</span><span class="p">(</span><span class="nx">pp</span><span class="p">)</span>
+		<span class="k">if</span> <span class="p">!</span><span class="nx">atomic</span><span class="p">.</span><span class="nf">Cas</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">t</span><span class="p">.</span><span class="nx">status</span><span class="p">,</span> <span class="nx">timerRunning</span><span class="p">,</span> <span class="nx">timerNoStatus</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nf">badTimer</span><span class="p">()</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+
+	<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">pp</span><span class="p">.</span><span class="nx">timersLock</span><span class="p">)</span>
+
+	<span class="c1">// 回调方法
+</span><span class="c1"></span>	<span class="nf">f</span><span class="p">(</span><span class="nx">arg</span><span class="p">,</span> <span class="nx">seq</span><span class="p">)</span>
+
+	<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">pp</span><span class="p">.</span><span class="nx">timersLock</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="9小结">9、小结</h3>
+<p>通过大致的go1.14源码分析，可以看出有以下改变：</p>
+<ul>
+<li>在每个处理器<code>p</code>中，<code>timers</code>以最小四叉堆方式存储</li>
+<li>在调度器的每轮跳读中都会对定时器进行触发和检查</li>
+<li>在系统监听<code>netpoll</code>会定时进行定时器的触发和检查</li>
+<li>在定时器的处理中，10个状态的流转和处理变化</li>
+</ul>
+<h2 id="总结">总结</h2>
+<p>go1.13最多可以开到GOMAXPROCS数量的timerproc协程，当然不超过64。但我们要知道timerproc自身就是协程，也需要runtime pmg的调度。反而go 1.14把检查到期定时任务的工作交给了runtime.schedule，不需要额外的调度，每次runtime.schedule和findrunable时直接运行到期的定时任务。</p>
+<p>线程上下文切换开销？新添加的定时任务的到期时间更小时，不管是使用futex还是epoll_wait系统调用都会被唤醒重新休眠，被唤醒的线程会产生上下文切换。但由于go1.14没有timerproc的存在，新定时任务可直接插入或多次插入后再考虑是否休眠。</p>
+<p>结论，golang 1.13的定时器在任务繁多时，必然会造成更多的上线文切换及runtime pmg调度，而golang 1.14做了更好的优化。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2021-07-01</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2021/07/go%E5%AE%9A%E6%97%B6%E5%99%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/linux/">linux</a>,&nbsp;<a href="/tags/develop/">develop</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/" class="prev" rel="prev" title="高并发系统下的限速策略"><i class="fas fa-angle-left fa-fw"></i>高并发系统下的限速策略</a></div>
+</div>
+<div id="comments"><div id="gitalk" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://github.com/gitalk/gitalk"></a>Gitalk</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.84.4">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"gitalk":{"admin":["betterfor"],"clientID":"fba15d94f073857ee898","clientSecret":"90083900b5dd077594528a709f18fe4b16b2a1a2","id":"2021-07-01T15:44:20+08:00","owner":"betterfor","repo":"betterfor.github.io","title":"Go定时器源码分析"}},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
