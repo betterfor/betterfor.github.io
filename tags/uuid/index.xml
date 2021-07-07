@@ -1,14 +1,14 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>uuid - 标签 - 月霜天的小站</title>
-        <link>https://betterfor.github.io/tags/uuid/</link>
+        <link>https://blog.betterformile.ml/tags/uuid/</link>
         <description>uuid - 标签 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 08 Feb 2021 14:16:15 &#43;0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/uuid/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 08 Feb 2021 14:16:15 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/uuid/" rel="self" type="application/rss+xml" /><item>
     <title>生成uuid的几种方式</title>
-    <link>https://betterfor.github.io/2021/02/uuid/</link>
+    <link>https://blog.betterformile.ml/2021/02/uuid/</link>
     <pubDate>Mon, 08 Feb 2021 14:16:15 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://betterfor.github.io/2021/02/uuid/</guid>
+    <guid>https://blog.betterformile.ml/2021/02/uuid/</guid>
     <description><![CDATA[背景 在复杂的分布式系统中，往往需要对大量的数据和消息进行唯一标识。数据日益增长，对数据库需要进行切分，而水平切分数据库需要一个唯一ID来标识]]></description>
 </item></channel>
 </rss>

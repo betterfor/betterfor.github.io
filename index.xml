@@ -1,79 +1,79 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>月霜天的小站</title>
-        <link>https://betterfor.github.io/</link>
+        <link>https://blog.betterformile.ml/</link>
         <description>月霜天的小站</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 07 Jul 2021 09:35:33 &#43;0800</lastBuildDate>
-            <atom:link href="https://betterfor.github.io/index.xml" rel="self" type="application/rss+xml" />
+            <atom:link href="https://blog.betterformile.ml/index.xml" rel="self" type="application/rss+xml" />
         <item>
     <title>幂等性</title>
-    <link>https://betterfor.github.io/2021/07/%E5%B9%82%E7%AD%89%E6%80%A7/</link>
+    <link>https://blog.betterformile.ml/2021/07/%E5%B9%82%E7%AD%89%E6%80%A7/</link>
     <pubDate>Wed, 07 Jul 2021 09:35:33 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://betterfor.github.io/2021/07/%E5%B9%82%E7%AD%89%E6%80%A7/</guid>
+    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%82%E7%AD%89%E6%80%A7/</guid>
     <description><![CDATA[一、什么是幂等？ 幂等（idempotent、idempotence）是一个数学与计算机学概念，常见于抽象代数中。 在编程中一个幂等操作的特点是]]></description>
 </item><item>
     <title>Errgroup的实际应用</title>
-    <link>https://betterfor.github.io/2021/07/errgroup%E7%9A%84%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8/</link>
+    <link>https://blog.betterformile.ml/2021/07/errgroup%E7%9A%84%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8/</link>
     <pubDate>Mon, 05 Jul 2021 10:00:08 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://betterfor.github.io/2021/07/errgroup%E7%9A%84%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8/</guid>
+    <guid>https://blog.betterformile.ml/2021/07/errgroup%E7%9A%84%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8/</guid>
     <description><![CDATA[在标准库中有个sync/errgroup，实现对多goroutine进行错误处理。 接下来我们看一下源码： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18]]></description>
 </item><item>
     <title>Go定时器源码分析</title>
-    <link>https://betterfor.github.io/2021/07/go%E5%AE%9A%E6%97%B6%E5%99%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+    <link>https://blog.betterformile.ml/2021/07/go%E5%AE%9A%E6%97%B6%E5%99%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
     <pubDate>Thu, 01 Jul 2021 15:44:20 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://betterfor.github.io/2021/07/go%E5%AE%9A%E6%97%B6%E5%99%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+    <guid>https://blog.betterformile.ml/2021/07/go%E5%AE%9A%E6%97%B6%E5%99%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
     <description><![CDATA[虽然golang的定时器经过几版的改进优化，但是仍然是性能的大杀手。 golang1.13和1.14的区别 golang在1.10版本之前是由一]]></description>
 </item><item>
     <title>Redis知识图谱</title>
-    <link>https://betterfor.github.io/2021/07/redis%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/</link>
+    <link>https://blog.betterformile.ml/2021/07/redis%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/</link>
     <pubDate>Thu, 01 Jul 2021 11:21:22 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://betterfor.github.io/2021/07/redis%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/</guid>
+    <guid>https://blog.betterformile.ml/2021/07/redis%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/</guid>
     <description><![CDATA[零、前言 redis的主要知识点 一、基础 1、redis是什么？ Redis是一个数据库，不过与传统RDBM(关系型数据库)不同，Redis属于N]]></description>
 </item><item>
     <title>高并发系统下的限速策略</title>
-    <link>https://betterfor.github.io/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/</link>
+    <link>https://blog.betterformile.ml/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/</link>
     <pubDate>Mon, 28 Jun 2021 14:07:33 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://betterfor.github.io/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/</guid>
+    <guid>https://blog.betterformile.ml/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/</guid>
     <description><![CDATA[限流又称为流量控制，是限制到达系统的并发请求数，当达到限制条件时可以拒绝请求，可以起到保护下游服务，熔断流量的作用。常用的限流策略有漏桶算法]]></description>
 </item><item>
     <title>并发编程之原子操作</title>
-    <link>https://betterfor.github.io/2021/06/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/</link>
+    <link>https://blog.betterformile.ml/2021/06/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/</link>
     <pubDate>Thu, 03 Jun 2021 09:59:51 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://betterfor.github.io/2021/06/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/</guid>
+    <guid>https://blog.betterformile.ml/2021/06/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/</guid>
     <description><![CDATA[原子操作 我们先给原子操作下一个定义： 原子(atom)：在化学反应中不可再分的基本微粒。 原子操作(atomic operation)：不会被线程]]></description>
 </item><item>
     <title>Pod升级与回滚</title>
-    <link>https://betterfor.github.io/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</link>
+    <link>https://blog.betterformile.ml/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</link>
     <pubDate>Wed, 24 Mar 2021 22:51:40 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://betterfor.github.io/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</guid>
+    <guid>https://blog.betterformile.ml/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</guid>
     <description><![CDATA[一、简介 当集群中的某个服务需要升级时，我们需要停止目前与该服务的相关的所有pod，然后下载新版本镜像并创建新的pod。如果集群规模比较大，则]]></description>
 </item><item>
     <title>Pod调度</title>
-    <link>https://betterfor.github.io/2021/03/pod%E8%B0%83%E5%BA%A6/</link>
+    <link>https://blog.betterformile.ml/2021/03/pod%E8%B0%83%E5%BA%A6/</link>
     <pubDate>Tue, 23 Mar 2021 22:32:36 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://betterfor.github.io/2021/03/pod%E8%B0%83%E5%BA%A6/</guid>
+    <guid>https://blog.betterformile.ml/2021/03/pod%E8%B0%83%E5%BA%A6/</guid>
     <description><![CDATA[一、简介 在大多数情况下，我们不关心pod会被调度到哪个节点，只关心pod是否被成功调度到集群的一个可用节点。但是，在真实生产环境中存在一种需]]></description>
 </item><item>
     <title>Pod的基础</title>
-    <link>https://betterfor.github.io/2021/03/pod%E5%9F%BA%E7%A1%80/</link>
+    <link>https://blog.betterformile.ml/2021/03/pod%E5%9F%BA%E7%A1%80/</link>
     <pubDate>Mon, 22 Mar 2021 21:55:59 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://betterfor.github.io/2021/03/pod%E5%9F%BA%E7%A1%80/</guid>
+    <guid>https://blog.betterformile.ml/2021/03/pod%E5%9F%BA%E7%A1%80/</guid>
     <description><![CDATA[一、简介 pod在整个生命周期中被系统定义为各种状态，熟悉pod的各种状态对于理解如何设置pod的调度策略、重启策略都是很有必要的。 二、pod]]></description>
 </item><item>
     <title>Mutex的源码解析</title>
-    <link>https://betterfor.github.io/2021/02/mutex/</link>
+    <link>https://blog.betterformile.ml/2021/02/mutex/</link>
     <pubDate>Fri, 26 Feb 2021 14:46:05 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://betterfor.github.io/2021/02/mutex/</guid>
+    <guid>https://blog.betterformile.ml/2021/02/mutex/</guid>
     <description><![CDATA[我们来看一下sync包下有哪些常见的使用：cond.go map.go mutex.go once.go pool.go rwmutex.go waitgroup.go 什么是sync？ Package sync provides basic synchronization primitives such as mutual exclusion locks. Other than the Once and WaitGroup types, most are intended for use by low-level library routines. Higher-level]]></description>
 </item></channel>
 </rss>

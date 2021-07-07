@@ -1,21 +1,21 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>prometheus - 标签 - 月霜天的小站</title>
-        <link>https://betterfor.github.io/tags/prometheus/</link>
+        <link>https://blog.betterformile.ml/tags/prometheus/</link>
         <description>prometheus - 标签 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 20 Nov 2020 15:45:29 &#43;0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/prometheus/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 20 Nov 2020 15:45:29 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/prometheus/" rel="self" type="application/rss+xml" /><item>
     <title>Golang exporter的使用方法</title>
-    <link>https://betterfor.github.io/2020/11/exporter/</link>
+    <link>https://blog.betterformile.ml/2020/11/exporter/</link>
     <pubDate>Fri, 20 Nov 2020 15:45:29 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://betterfor.github.io/2020/11/exporter/</guid>
+    <guid>https://blog.betterformile.ml/2020/11/exporter/</guid>
     <description><![CDATA[前言 在开始监控你的服务之前，你需要通过添加prometheus客户端来添加监控。 可以找 第三方exporter 监控你的服务，也可以自己编写ex]]></description>
 </item><item>
     <title>5分钟学会搭建Prometheus</title>
-    <link>https://betterfor.github.io/2020/11/prometheus/</link>
+    <link>https://blog.betterformile.ml/2020/11/prometheus/</link>
     <pubDate>Thu, 19 Nov 2020 18:03:03 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://betterfor.github.io/2020/11/prometheus/</guid>
+    <guid>https://blog.betterformile.ml/2020/11/prometheus/</guid>
     <description><![CDATA[简介 prometheus是一个开源的系统监控和警报工具包，最初由SoundCloud开发。自2012年始，许多公司和组织已经采用了prome]]></description>
 </item></channel>
 </rss>

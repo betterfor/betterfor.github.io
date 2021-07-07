@@ -1,14 +1,14 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>map - 标签 - 月霜天的小站</title>
-        <link>https://betterfor.github.io/tags/map/</link>
+        <link>https://blog.betterformile.ml/tags/map/</link>
         <description>map - 标签 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Dec 2020 11:09:14 &#43;0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/map/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Dec 2020 11:09:14 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/map/" rel="self" type="application/rss+xml" /><item>
     <title>常见的数据结构--map</title>
-    <link>https://betterfor.github.io/2020/12/map/</link>
+    <link>https://blog.betterformile.ml/2020/12/map/</link>
     <pubDate>Mon, 07 Dec 2020 11:09:14 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://betterfor.github.io/2020/12/map/</guid>
+    <guid>https://blog.betterformile.ml/2020/12/map/</guid>
     <description><![CDATA[很多的业务场景都会用到map，在其他语言可能成为set/集合等，主要就是key:value格式。 1 2 3 4 5 6 7 8 9 10 11 12 13 // A map is just a hash table. The]]></description>
 </item></channel>
 </rss>

@@ -1,14 +1,14 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>rocketmq - 标签 - 月霜天的小站</title>
-        <link>https://betterfor.github.io/tags/rocketmq/</link>
+        <link>https://blog.betterformile.ml/tags/rocketmq/</link>
         <description>rocketmq - 标签 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 07 Jan 2021 16:50:55 &#43;0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/rocketmq/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 07 Jan 2021 16:50:55 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/rocketmq/" rel="self" type="application/rss+xml" /><item>
     <title>docker安装部署Rocketmq</title>
-    <link>https://betterfor.github.io/2021/01/rocketmq/</link>
+    <link>https://blog.betterformile.ml/2021/01/rocketmq/</link>
     <pubDate>Thu, 07 Jan 2021 16:50:55 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://betterfor.github.io/2021/01/rocketmq/</guid>
+    <guid>https://blog.betterformile.ml/2021/01/rocketmq/</guid>
     <description><![CDATA[RocketMQ 消息队列作为高并发系统的组件之一，能够帮助业务系统解构提高开发效率和系统稳定性。 优势： 削峰填谷：解决瞬时写压力导致的消息丢失、系统崩溃等问]]></description>
 </item></channel>
 </rss>

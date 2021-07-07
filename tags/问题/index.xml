@@ -1,14 +1,14 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>问题 - 标签 - 月霜天的小站</title>
-        <link>https://betterfor.github.io/tags/%E9%97%AE%E9%A2%98/</link>
+        <link>https://blog.betterformile.ml/tags/%E9%97%AE%E9%A2%98/</link>
         <description>问题 - 标签 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 18 Jan 2021 14:04:32 &#43;0800</lastBuildDate><atom:link href="https://betterfor.github.io/tags/%E9%97%AE%E9%A2%98/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 18 Jan 2021 14:04:32 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/%E9%97%AE%E9%A2%98/" rel="self" type="application/rss+xml" /><item>
     <title>使用Navicate连接Oracle失败 ORA-25847:connection to server failed,probable Orable Net admin error</title>
-    <link>https://betterfor.github.io/2021/01/oracle_connect/</link>
+    <link>https://blog.betterformile.ml/2021/01/oracle_connect/</link>
     <pubDate>Mon, 18 Jan 2021 14:04:32 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://betterfor.github.io/2021/01/oracle_connect/</guid>
+    <guid>https://blog.betterformile.ml/2021/01/oracle_connect/</guid>
     <description><![CDATA[使用Navicate 15连接Oracle数据库出现如下错误 通过查询可知是oci.dll版本太低，使用的11.2版本。因为Navicate是通]]></description>
 </item></channel>
 </rss>
