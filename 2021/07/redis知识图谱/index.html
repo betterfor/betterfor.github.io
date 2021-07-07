@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Redis知识图谱 - 月霜天的小站</title><meta name="Description" content="月霜天的小站"><meta property="og:title" content="Redis知识图谱" />
+<meta property="og:description" content="零、前言 redis的主要知识点 一、基础 1、redis是什么？ Redis是一个数据库，不过与传统RDBM(关系型数据库)不同，Redis属于N" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://betterfor.github.io/2021/07/redis%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-01T11:21:22+08:00" />
+<meta property="article:modified_time" content="2021-07-01T11:21:22+08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"/>
+
+<meta name="twitter:title" content="Redis知识图谱"/>
+<meta name="twitter:description" content="零、前言 redis的主要知识点 一、基础 1、redis是什么？ Redis是一个数据库，不过与传统RDBM(关系型数据库)不同，Redis属于N"/>
+<meta name="application-name" content="月霜天">
+<meta name="apple-mobile-web-app-title" content="月霜天"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://betterfor.github.io/2021/07/redis%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/" /><link rel="prev" href="https://betterfor.github.io/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/" /><link rel="next" href="https://betterfor.github.io/2021/07/go%E5%AE%9A%E6%97%B6%E5%99%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Redis知识图谱",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/betterfor.github.io\/2021\/07\/redis%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1\/"
+        },"genre": "posts","keywords": "linux, develop","wordcount":  5587 ,
+        "url": "https:\/\/betterfor.github.io\/2021\/07\/redis%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1\/","datePublished": "2021-07-01T11:21:22+08:00","dateModified": "2021-07-01T11:21:22+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "月霜天"},"author": {
+                "@type": "Person",
+                "name": "月霜天"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico" /></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico" /></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Redis知识图谱</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E9%9A%8F%E7%AC%94/"><i class="far fa-folder fa-fw"></i>月霜天的小随笔</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-07-01">2021-07-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 5587 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 12 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#零前言">零、前言</a></li>
+    <li><a href="#一基础">一、基础</a>
+      <ul>
+        <li><a href="#1redis是什么">1、redis是什么？</a></li>
+        <li><a href="#2nosql的base理论">2、NoSQL的BASE理论</a></li>
+        <li><a href="#3常用的redis命令">3、常用的redis命令</a></li>
+        <li><a href="#4redis的过期键清除策略">4、Redis的过期键清除策略</a></li>
+        <li><a href="#5如果过期键没有被访问而周期性删除又跟不上新键产生的速度内存不就慢慢耗尽了吗">5、如果过期键没有被访问，而周期性删除又跟不上新键产生的速度，内存不就慢慢耗尽了吗？</a></li>
+        <li><a href="#6内存淘汰用到的是lru算法">6、内存淘汰用到的是LRU算法？</a></li>
+      </ul>
+    </li>
+    <li><a href="#二数据结构">二、数据结构</a>
+      <ul>
+        <li><a href="#1redis的数据结构">1、redis的数据结构</a></li>
+        <li><a href="#2redis字符串的特点">2、Redis字符串的特点</a></li>
+        <li><a href="#3hash扩容过程">3、hash扩容过程</a></li>
+        <li><a href="#4rehash过程">4、rehash过程</a></li>
+        <li><a href="#5如果字典正在rehash此时有请求过来redis会怎么处理">5、如果字典正在Rehash，此时有请求过来，Redis会怎么处理？</a></li>
+        <li><a href="#6跳表的实现">6、跳表的实现</a></li>
+        <li><a href="#7每个节点有多少层">7、每个节点有多少层？</a></li>
+        <li><a href="#8redis的zset为什么同时需要字典和跳表来实现">8、Redis的Zset为什么同时需要字典和跳表来实现</a></li>
+      </ul>
+    </li>
+    <li><a href="#三系统容灾">三、系统容灾</a>
+      <ul>
+        <li><a href="#1redis是基于内存的存储如果服务重启数据不就丢失了吗">1、Redis是基于内存的存储，如果服务重启，数据不就丢失了吗？</a></li>
+        <li><a href="#2这样看起来aof文件会越来越大最后磁盘都装不下">2、这样看起来，AOF文件会越来越大，最后磁盘都装不下</a></li>
+        <li><a href="#3redis机器挂掉怎么办">3、Redis机器挂掉怎么办？</a></li>
+        <li><a href="#4主从可以自动切换吗">4、主从可以自动切换吗？</a></li>
+        <li><a href="#5如果master挂掉会选择哪个slave呢">5、如果Master挂掉，会选择哪个Slave呢？</a></li>
+        <li><a href="#6哨兵leader那它是怎么来的呢">6、哨兵Leader，那它是怎么来的呢？</a></li>
+      </ul>
+    </li>
+    <li><a href="#四性能优化">四、性能优化</a>
+      <ul>
+        <li><a href="#1redis性能">1、redis性能</a></li>
+        <li><a href="#2redis性能这么高那它是协程模型还是多线程模型">2、Redis性能这么高，那它是协程模型，还是多线程模型</a></li>
+        <li><a href="#360版本发布的多线程功能">3、6.0版本发布的多线程功能</a></li>
+        <li><a href="#4如果数据太大redis存不下了怎么办">4、如果数据太大，Redis存不下了怎么办</a></li>
+        <li><a href="#5一致性hash">5、一致性Hash</a></li>
+      </ul>
+    </li>
+    <li><a href="#五应用场景">五、应用场景</a>
+      <ul>
+        <li><a href="#1redis经常用作缓存那数据一致性怎么保证">1、Redis经常用作缓存，那数据一致性怎么保证？</a></li>
+        <li><a href="#2哪种模式更好">2、哪种模式更好</a></li>
+        <li><a href="#3如果数据发生变化如何更新缓存">3、如果数据发生变化，如何更新缓存</a></li>
+        <li><a href="#4缓存雪崩">4、缓存雪崩</a></li>
+        <li><a href="#5缓存穿透">5、缓存穿透</a></li>
+        <li><a href="#6布隆过滤器的实现">6、布隆过滤器的实现</a></li>
+        <li><a href="#7缓存击穿">7、缓存击穿</a></li>
+        <li><a href="#8redis消息队列">8、redis消息队列</a></li>
+        <li><a href="#9redis在秒杀场景的应用">9、redis在秒杀场景的应用</a></li>
+        <li><a href="#10redis分布式锁">10、redis分布式锁</a></li>
+        <li><a href="#11redis限流">11、redis限流</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="零前言">零、前言</h2>
+<p>redis的主要知识点</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/redis.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/redis.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/redis.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/redis.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/redis.png"
+        title="redis知识图谱" /></p>
+<h2 id="一基础">一、基础</h2>
+<h3 id="1redis是什么">1、redis是什么？</h3>
+<p>Redis是一个数据库，不过与传统RDBM(关系型数据库)不同，Redis属于NoSQL，也就是非关系型数据库，它的存储结构是Key-Value。Redis的数据直接存在内存中，读写速度非常快，因此 Redis被广泛应用于缓存方向。</p>
+<h3 id="2nosql的base理论">2、NoSQL的BASE理论</h3>
+<p>BASE理论是CAP中一致性的妥协。和传统事务的ACID截然不同，BASE不追求强一致性，而是允许数据在一段时间内是不一致的，但最终达到一致状态，从而获得更高的可用性和性能。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/base.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/base.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/base.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/base.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/base.png"
+        title="base" /></p>
+<h3 id="3常用的redis命令">3、常用的redis命令</h3>
+<p>读操作是get a，表示获取a对应的数据</p>
+<p>写操作是setex a t b，表示将a的数据设置为b，并且在t秒后过期。</p>
+<h3 id="4redis的过期键清除策略">4、Redis的过期键清除策略</h3>
+<p>过期键清除策略有三种，分别是定时删除、定期删除和惰性删除。</p>
+<ul>
+<li>定时删除，是在设置键的过期时间的同时，创建一个定时器，让定时器在键的过期时间来临时，立即执行对键的删除操作</li>
+<li>定期删除，每隔一段时间，程序就对数据库进行一次检查，删除里面的过期键</li>
+<li>惰性删除，是指使用的时候，发现Key过期了，此时再进行删除</li>
+</ul>
+<p><strong>Redis过期键采用的是定期删除+惰性删除二者结合</strong>的方式进行删除的。</p>
+<h3 id="5如果过期键没有被访问而周期性删除又跟不上新键产生的速度内存不就慢慢耗尽了吗">5、如果过期键没有被访问，而周期性删除又跟不上新键产生的速度，内存不就慢慢耗尽了吗？</h3>
+<p>Redis支持内存淘汰，配置参数maxmemory_policy决定了内存淘汰策略的策略。这个参数一共有8个枚举值。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/maxmemory_policy.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/maxmemory_policy.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/maxmemory_policy.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/maxmemory_policy.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/maxmemory_policy.png"
+        title="maxmemory_policy" /></p>
+<h3 id="6内存淘汰用到的是lru算法">6、内存淘汰用到的是LRU算法？</h3>
+<p>Redis用的是<strong>近似LRU算法</strong>，LRU算法需要一个双向链表来记录数据的最近被访问顺序，但是出于节省内存的考虑，Redis的LRU算法并非完整的实现。</p>
+<p>Redis通过对少量键进行取样，然后和目前维持的淘汰池综合比较，回收其中的最久未被访问的键。通过调整每次回收时的采样数量maxmemory-samples，可以实现调整算法的精度。</p>
+<h2 id="二数据结构">二、数据结构</h2>
+<h3 id="1redis的数据结构">1、redis的数据结构</h3>
+<p>对外暴露5种Redis对象，分别是String、List、Hash、Set、Zset。底层实现依托于sds、ziplist、skiplist、dict等更基础数据结构。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/redis_data.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/redis_data.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/redis_data.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/redis_data.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/redis_data.png"
+        title="redis_data" /></p>
+<h3 id="2redis字符串的特点">2、Redis字符串的特点</h3>
+<p>Redis的字符串如果保存的对象是整数类型，那么就用int存储。如果不能用整数表示，就用SDS来表示，SDS通过记录长度，和预分配空间，可以高效计算长度，进行append操作。</p>
+<h3 id="3hash扩容过程">3、hash扩容过程</h3>
+<p>两张Hash表，平常起作用的都是0号表，当装载因子超过阈值时就会进行Rehash，将0号每上每一个bucket慢慢移动到1号表，所以叫<strong>渐进式Rehash</strong>，这种方式可以减少迁移系统的影响。</p>
+<h3 id="4rehash过程">4、rehash过程</h3>
+<p>当周期函数发现为装载因子超过阈值时就会进行Rehash。Rehash的流程大概分成三步。</p>
+<p>首先，生成新Hash表ht[1]，为 ht[1] 分配空间。此时字典同时持有ht[0]和ht[1]两个哈希表。字典的偏移索引从静默状态-1，设置为0，表示Rehash 工作正式开始。</p>
+<p>然后，迁移ht[0]数据到ht[1]。在 Rehash进行期间，每次对字典执行增删查改操作，程序会顺带迁移一个ht[0]上的数据，并更新偏移索引。与此同时，周期函数也会定时迁移一批。</p>
+<p>最后，ht[1]和ht[0]指针对象交换。随着字典操作的不断执行， 最终在某个时间点上，ht[0]的所有键值对都会被Rehash至 ht[1]，此时再将ht[1]和ht[0]指针对象互换，同时把偏移索引的值设为-1，表示Rehash操作已完成。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/rehash.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/rehash.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/rehash.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/rehash.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/rehash.png"
+        title="rehash" /></p>
+<h3 id="5如果字典正在rehash此时有请求过来redis会怎么处理">5、如果字典正在Rehash，此时有请求过来，Redis会怎么处理？</h3>
+<p>针对新增Key，是往ht[1]里面插入。针对读请求，先从ht[0]读，没找到再去ht[1]找。至于删除和更新，其实本质是先找到位置，再进行操作，所以和读请求一样，先找ht[0]，再找ht[1]，找到之后再进行操作。</p>
+<h3 id="6跳表的实现">6、跳表的实现</h3>
+<p>跳表本质上是对链表的一种优化，通过逐层跳步采样的方式构建索引，以加快查找速度。如果只用普通链表，只能一个一个往后找。跳表就不一样了，可以高层索引，一次跳跃多个节点，如果找过头了，就用更下层的索引。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/%E8%B7%B3%E8%A1%A8.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/%E8%B7%B3%E8%A1%A8.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/%E8%B7%B3%E8%A1%A8.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/%E8%B7%B3%E8%A1%A8.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/%E8%B7%B3%E8%A1%A8.png"
+        title="跳表" /></p>
+<h3 id="7每个节点有多少层">7、每个节点有多少层？</h3>
+<p>使用概率均衡的思路，确定新插入节点的层数。Redis使用随机函数决定层数。直观上来说，默认1层，和丢硬币一样，如果是正面就继续往上，这样持续迭代，最大层数32层。</p>
+<p>50%的概率被分配到第一层，25%的概率被分配到第二层，12.5%的概率被分配到第三层。这种方式保证了越上层数量越少，自然跨越起来越方便。</p>
+<h3 id="8redis的zset为什么同时需要字典和跳表来实现">8、Redis的Zset为什么同时需要字典和跳表来实现</h3>
+<p>Zset是一个有序列表，字典和跳表分别对应两种查询场景，**字典用来支持按成员查询数据，跳表则用以实现高效的范围查询，**这样两个场景，性能都做到了极致。</p>
+<h2 id="三系统容灾">三、系统容灾</h2>
+<h3 id="1redis是基于内存的存储如果服务重启数据不就丢失了吗">1、Redis是基于内存的存储，如果服务重启，数据不就丢失了吗？</h3>
+<p>可以通<strong>过持久化机制，备份数据</strong>。</p>
+<p>有两种方式，一种是开启RDB，RDB是Redis的二进制快照文件，优点是文件紧凑，占用空间小，恢复速度比较快。同时，由于是子进程Fork的模式，对Redis本身读写性能的影响很小。</p>
+<p>另一种方式是AOF，AOF中记录了Redis的操作命令，可以重放请求恢复现场，AOF的文件会比RDB大很多。</p>
+<p>出于性能考虑，如果开启了AOF，会将命令先记录在AOF缓冲，之后再刷入磁盘。数据刷入磁盘的 时机根据参数决定，有三种模式：<strong>1.关闭时刷入；2.每秒定期刷入；3.执行命令后立刻触发。</strong></p>
+<p>AOF的优点是故障情况下，丢失的数据会比RDB更少。如果是执行命令后立马刷入，AOF会拖累执行速度，所以一般都是配置为每秒定期刷入，这样对性能影响不会很大。</p>
+<h3 id="2这样看起来aof文件会越来越大最后磁盘都装不下">2、这样看起来，AOF文件会越来越大，最后磁盘都装不下</h3>
+<p>不会的，Redis可以在AOF文件体积变得过大时，自动地在后台Fork一个子进程，专门对AOF进行<strong>重写</strong>。说白了，就是针对相同Key的操作，进行合并，比如同一个Key的set操作，那就是后面覆盖前面。</p>
+<p>在重写过程中，Redis不但将新的操作记录在原有的AOF缓冲区，而且还会记录在AOF重写缓冲区。一旦新AOF文件创建完毕，Redis 就会将重写缓冲区内容，追加到新的AOF文件，再用新AOF文件替换原来的AOF文件。</p>
+<h3 id="3redis机器挂掉怎么办">3、Redis机器挂掉怎么办？</h3>
+<p>可以用主从模式部署，即有一个或多个备用机器，备用机会作为Slave同步Master的数据，在Redis出现问题的时候，把Slave升级为Master。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/master_slave.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/master_slave.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/master_slave.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/master_slave.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/master_slave.png"
+        title="master_slave" /></p>
+<h3 id="4主从可以自动切换吗">4、主从可以自动切换吗？</h3>
+<p>本身是不能，但可以写脚本实现，只是需要考虑的问题比较多。Redis已经有了现成的解决方案：<strong>哨兵模式</strong>。哨兵来监测Redis服务是否正常，异常情况下，由哨兵代理切换。为避免哨兵成为单点，哨兵也需要多机部署</p>
+<h3 id="5如果master挂掉会选择哪个slave呢">5、如果Master挂掉，会选择哪个Slave呢？</h3>
+<p>当哨兵集群选举出哨兵Leader后，由哨兵Leader从Redis从节点中选择一个Redis节点作为主节点：</p>
+<p>1、过滤故障的节点；</p>
+<p>2、选择优先级slave-priority最大的从节点作为主节点，如不存在，则继续</p>
+<p>3、选择复制偏移量最大的从节点作为主节点，如果都一样，则继续。这里解释下，数据偏移量记录写了多少数据，主服务器会把偏移量同步给从服务器，当主从的偏移量一致，则数据是完全同步</p>
+<p>4、选择runid最小的从节点作为主节点。Redis每次启动的时候生成随机的runid作为Redis的标识</p>
+<h3 id="6哨兵leader那它是怎么来的呢">6、哨兵Leader，那它是怎么来的呢？</h3>
+<p>每一个哨兵节点都可以成为Leader，当一个哨兵节点确认Redis集群的主节点主观下线后，会请求其他哨兵节点要求将自己选举为Leader。被请求的哨兵节点如果没有同意过其他哨兵节点的选举请求，则同意该请求，也就是选举票数+1，否则不同意。</p>
+<p>如果一个哨兵节点获得的选举票数<strong>超过</strong>节点数的一半，且大于quorum配置的值，则该哨兵节点选举为Leader；否则重新进行选举。</p>
+<h2 id="四性能优化">四、性能优化</h2>
+<h3 id="1redis性能">1、redis性能</h3>
+<p>只能说在十万级。使用之前，要跑BenchMark，实际情况下会受带宽、负载、单个数据大小、是否开启多线程等因素影响，脱开具体场景谈性能，就没有意义。</p>
+<h3 id="2redis性能这么高那它是协程模型还是多线程模型">2、Redis性能这么高，那它是协程模型，还是多线程模型</h3>
+<p>Redis是单线程Reactor模型，通过高效的IO复用以及内存处理实现高性能。如果是6.0之前我会毫不犹豫说是单线程，6.0之后，我还是会说单线程，但会补充一句，IO解包通过多线程进行了优化，而处理逻辑，还是单线程。</p>
+<p>另外，如果考虑到RDB的Fork，一些定时任务的处理，那么Redis也可以说多进程，这没有问题。但是Redis对数据的处理，至始至终，都是单线程。</p>
+<h3 id="360版本发布的多线程功能">3、6.0版本发布的多线程功能</h3>
+<p>多线程功能，主要用于提高解包的效率。和传统的Multi Reactor多线程模型不同，Redis的多线程只负责处理网络IO的解包和协议转换，一方面是因为Redis的单线程处理足够快，另一方面也是为了兼容性做考虑。</p>
+<h3 id="4如果数据太大redis存不下了怎么办">4、如果数据太大，Redis存不下了怎么办</h3>
+<p><strong>使用集群模式</strong>。也就是将数据分片，不同的Key根据Hash路由到不同的节点。集群索引是通过一致性Hash算法来完成，这种算法可以解决服务器数量发生改变时，所有的服务器缓存在同一时间失效的问题。</p>
+<p>同时，基于Gossip协议，集群状态变化时，如新节点加入、节点宕机、Slave提升为新Master，这些变化都能传播到整个集群的所有节点并达成一致。</p>
+<h3 id="5一致性hash">5、一致性Hash</h3>
+<p>传统的Hash分片，可以将某个Key，落到某个节点。但有一个问题，当节点扩容或者缩容，路由会被完全打乱。如果是缓存场景，很容易造成缓存雪崩问题。</p>
+<p>为了优化这种情况，一致性Hash就应运而生了。一致性Hash是说将数据和服务器，以相同的Hash函数，映射到同一个Hash环上，针对一个对象，在哈希环上顺时针查找距其最近的机器，这个机器就负责处理该对象的相关请求。</p>
+<p>这种情况下，增加节点，只会分流后面一个节点的数据。减少节点，那么请求会由后一个节点继承。也就是说，节点变化操作，最多只会影响后面一个节点的数据。</p>
+<h2 id="五应用场景">五、应用场景</h2>
+<h3 id="1redis经常用作缓存那数据一致性怎么保证">1、Redis经常用作缓存，那数据一致性怎么保证？</h3>
+<p>从设计思路来说，有Cache Aside和Read/Write Through两种模式，前者是把缓存责任交给应用层，后者是将缓存的责任，放置到服务提供方。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/data_concurrcy.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/data_concurrcy.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/data_concurrcy.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/data_concurrcy.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/data_concurrcy.png"
+        title="data_concurrcy" /></p>
+<h3 id="2哪种模式更好">2、哪种模式更好</h3>
+<p>两种模式各有优缺点，从透明性考虑，服务方比较合适；如果从性能极致来说，业务方会更有优势，毕竟可以减去服务RPC的损耗。</p>
+<h3 id="3如果数据发生变化如何更新缓存">3、如果数据发生变化，如何更新缓存</h3>
+<p>更新方式的话，大概有四种：</p>
+<p>1、数据存到数据库中，成功后，再让缓存失效，等到读缓存不命中的时候，再加载进去；</p>
+<p>2、通过消息队列更新缓存</p>
+<p>3、先更新缓存，再更新服务，这种情况相当于把Cache也做Buffer用</p>
+<p>4、起一个同步服务，作为MySQL一个从节点，通过解析binlog同步重要缓存</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/data_change.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/data_change.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/data_change.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/data_change.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/data_change.png"
+        title="data_change" /></p>
+<h3 id="4缓存雪崩">4、缓存雪崩</h3>
+<p><strong>缓存雪崩</strong>表示在某一时间段，缓存集中失效，导致请求全部走数据库，有可能搞垮数据库，使整个服务瘫痪。雪崩原因一般是由于缓存过期时间设置得相同造成的。</p>
+<p>针对这种情况，可以借鉴ETCD中Raft选举的优化，让过期时间随机化，避免同一批请求，在同一时间过期。另一方面，还可以业务层面容灾，为热点数据使用双缓存。</p>
+<h3 id="5缓存穿透">5、缓存穿透</h3>
+<p>缓存穿透指请求数据库里面根本没有的数据，高频请求不存在的Key，有可能是正常的业务逻辑，但更可能的，是黑客的攻击。</p>
+<p>可以用布隆过滤器来应对，布隆过滤器是一种比较巧妙的概率型数据结构，特点是高效地插入和查询，可以用来告诉我们 <strong>某样东西一定不存在或者可能存在</strong>。</p>
+<h3 id="6布隆过滤器的实现">6、布隆过滤器的实现</h3>
+<p>布隆过滤器底层是一个64位的整型，将字符串用多个Hash函数映射不同的二进制位置，将整型中对应位置设置为1。</p>
+<p>在查询的时候，如果一个字符串所有Hash函数映射的值都存在，那么数据可能存在。为什么说可能呢，就是因为其他字符可能占据该值，提前点亮。</p>
+<p>可以看到，布隆过滤器优缺点都很明显，优点是空间、时间消耗都很小，缺点是结果不是完全准确。</p>
+<h3 id="7缓存击穿">7、缓存击穿</h3>
+<p>指某一热键，被超高的并发访问，在失效的一瞬间，还没来得及重新产生，就有海量数据，直达数据库。</p>
+<p>这种情况和缓存雪崩的不同之处，在于雪崩是大量缓存赶巧儿一起过期，击穿只是单个超热键失效。</p>
+<p>这种超高频Key，可以让它不过期，再单独实现数据同步逻辑，来维护数据的一致性。当然，无论如何，对后端肯定是需要限频的，不然如果Redis数据丢失，数据库还是会被打崩。限频方式可以是分布式锁或分布式令牌桶。</p>
+<h3 id="8redis消息队列">8、redis消息队列</h3>
+<p>Redis本身没有支持AMQP规范，消息可靠性不强。</p>
+<h3 id="9redis在秒杀场景的应用">9、redis在秒杀场景的应用</h3>
+<p>Redis主要是起到<strong>选拔流量</strong>的作用，记录商品总数，还有就是已下单数，等达到总数之后拦截所有请求。可以多放些请求进来，然后塞入消息队列。</p>
+<p>蚂蚁金服的云Redis提到消息队列可以用Redis来实现，但我觉得更好的方式是用Kafka这种标准消息队列组件。</p>
+<h3 id="10redis分布式锁">10、redis分布式锁</h3>
+<p>锁是计算机领域一个非常常见的概念，分布式锁也依赖存储组件，针对请求量的不同，可以选择Etcd、MySQL、Redis等。前两者可靠性更强，Redis性能更高。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/redis_mutex.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/redis_mutex.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/redis_mutex.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/redis_mutex.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/01/redis_mutex.png"
+        title="redis_mutex" /></p>
+<h3 id="11redis限流">11、redis限流</h3>
+<p>在微服务架构下，限频器也需要分布式化。无论是哪种算法，都可以结合Redis来实现。这里我比较熟悉的是基于Redis的分布式令牌桶。</p>
+<p>很显然，Redis负责管理令牌，微服务需要进行函数操作，就向Redis申请令牌，如果Redis当前还有令牌，就发放给它。拿到令牌，才能进行下一步操作。</p>
+<p>另一方面，令牌不光要消耗，还需要补充，出于性能考虑，可以使用懒生成的方式：使用令牌时，顺便生成令牌。这样子还有个好处：令牌的获取，和令牌的生成，都可以在一个Lua脚本中，保证了原子性。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2021-07-01</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2021/07/redis%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/linux/">linux</a>,&nbsp;<a href="/tags/develop/">develop</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/" class="prev" rel="prev" title="高并发系统下的限速策略"><i class="fas fa-angle-left fa-fw"></i>高并发系统下的限速策略</a>
+            <a href="/2021/07/go%E5%AE%9A%E6%97%B6%E5%99%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="next" rel="next" title="Go定时器源码分析">Go定时器源码分析<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="gitalk" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://github.com/gitalk/gitalk"></a>Gitalk</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.85.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"gitalk":{"admin":["betterfor"],"clientID":"fba15d94f073857ee898","clientSecret":"90083900b5dd077594528a709f18fe4b16b2a1a2","id":"2021-07-01T11:21:22+08:00","owner":"betterfor","repo":"betterfor.github.io","title":"Redis知识图谱"}},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
