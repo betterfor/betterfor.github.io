@@ -3,7 +3,7 @@ title: "Redis知识图谱"
 date: 2021-07-01T11:21:22+08:00
 draft: false
 
-tags: ['linux','develop']
+tags: ['redis','总结']
 categories: ["月霜天的小随笔"]
 comment: true
 toc: true
