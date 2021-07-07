@@ -3,9 +3,16 @@
         <title>月霜天的小站</title>
         <link>https://betterfor.github.io/</link>
         <description>月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 05 Jul 2021 10:00:08 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 07 Jul 2021 09:35:33 &#43;0800</lastBuildDate>
             <atom:link href="https://betterfor.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>幂等性</title>
+    <link>https://betterfor.github.io/2021/07/%E5%B9%82%E7%AD%89%E6%80%A7/</link>
+    <pubDate>Wed, 07 Jul 2021 09:35:33 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://betterfor.github.io/2021/07/%E5%B9%82%E7%AD%89%E6%80%A7/</guid>
+    <description><![CDATA[一、什么是幂等？ 幂等（idempotent、idempotence）是一个数学与计算机学概念，常见于抽象代数中。 在编程中一个幂等操作的特点是]]></description>
+</item><item>
     <title>Errgroup的实际应用</title>
     <link>https://betterfor.github.io/2021/07/errgroup%E7%9A%84%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8/</link>
     <pubDate>Mon, 05 Jul 2021 10:00:08 &#43;0800</pubDate>
@@ -68,12 +75,5 @@
     <author>作者</author>
     <guid>https://betterfor.github.io/2021/02/golang_retract/</guid>
     <description><![CDATA[一般来说，模块作者需要使用一种方法来只是不应该使用某个已发布的模块。 出现一个严重的安全漏洞 不闲不兼容或bug 版本发布错误 出现过模块最新版本为]]></description>
-</item><item>
-    <title>Docker命令大全</title>
-    <link>https://betterfor.github.io/2021/02/docker_command/</link>
-    <pubDate>Fri, 12 Feb 2021 19:26:01 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://betterfor.github.io/2021/02/docker_command/</guid>
-    <description><![CDATA[Docker是一个虚拟环境容器，可以将你的开发环境、代码、配置文件等一并打包到这个容器中，并发布和应用到任意平台中。所以你需要知道一点doc]]></description>
 </item></channel>
 </rss>

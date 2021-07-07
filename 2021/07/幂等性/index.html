@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>幂等性 - 月霜天的小站</title><meta name="Description" content="月霜天的小站"><meta property="og:title" content="幂等性" />
+<meta property="og:description" content="一、什么是幂等？ 幂等（idempotent、idempotence）是一个数学与计算机学概念，常见于抽象代数中。 在编程中一个幂等操作的特点是" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://betterfor.github.io/2021/07/%E5%B9%82%E7%AD%89%E6%80%A7/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-07T09:35:33+08:00" />
+<meta property="article:modified_time" content="2021-07-07T09:35:33+08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"/>
+
+<meta name="twitter:title" content="幂等性"/>
+<meta name="twitter:description" content="一、什么是幂等？ 幂等（idempotent、idempotence）是一个数学与计算机学概念，常见于抽象代数中。 在编程中一个幂等操作的特点是"/>
+<meta name="application-name" content="月霜天">
+<meta name="apple-mobile-web-app-title" content="月霜天"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://betterfor.github.io/2021/07/%E5%B9%82%E7%AD%89%E6%80%A7/" /><link rel="prev" href="https://betterfor.github.io/2021/07/errgroup%E7%9A%84%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "幂等性",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/betterfor.github.io\/2021\/07\/%E5%B9%82%E7%AD%89%E6%80%A7\/"
+        },"genre": "posts","keywords": "api","wordcount":  1326 ,
+        "url": "https:\/\/betterfor.github.io\/2021\/07\/%E5%B9%82%E7%AD%89%E6%80%A7\/","datePublished": "2021-07-07T09:35:33+08:00","dateModified": "2021-07-07T09:35:33+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "月霜天"},"author": {
+                "@type": "Person",
+                "name": "月霜天"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico" /></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico" /></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">幂等性</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw"></i>月霜天的小笔记</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-07-07">2021-07-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1326 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一什么是幂等">一、什么是幂等？</a></li>
+    <li><a href="#二使用场景">二、使用场景</a>
+      <ul>
+        <li><a href="#1前端重复提交">1、前端重复提交</a></li>
+        <li><a href="#2接口超时重试">2、接口超时重试</a></li>
+        <li><a href="#3消息重复消费">3、消息重复消费</a></li>
+      </ul>
+    </li>
+    <li><a href="#三解决方案">三、解决方案</a>
+      <ul>
+        <li><a href="#1token机制">1、token机制</a></li>
+        <li><a href="#2mysql锁">2、mysql锁</a></li>
+        <li><a href="#3redis锁">3、redis锁</a></li>
+      </ul>
+    </li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="一什么是幂等">一、什么是幂等？</h2>
+<p>幂等（idempotent、idempotence）是一个数学与计算机学概念，常见于<a href="https://baike.baidu.com/item/%e6%8a%bd%e8%b1%a1%e4%bb%a3%e6%95%b0/1537111" target="_blank" rel="noopener noreffer">抽象代数</a>中。</p>
+<p>在编程中一个幂等操作的特点是其任意多次执行所产生的影响均与一次执行的影响相同。幂等函数，或幂等方法，是指可以使用相同参数重复执行，并能获得相同结果的函数。这些<a href="https://baike.baidu.com/item/%e5%87%bd%e6%95%b0/301912" target="_blank" rel="noopener noreffer">函数</a>不会影响系统状态，也不用担心重复执行会对系统造成改变。例如，“setTrue()”函数就是一个幂等函数,无论多次执行，其结果都是一样的.更复杂的操作幂等保证是利用唯一交易号(流水号)实现。</p>
+<p>幂等性：就是用户对于同一操作发起的一次请求或者多次请求的结果是一致的，不会因为多次点击而产生了副作用。</p>
+<h2 id="二使用场景">二、使用场景</h2>
+<h3 id="1前端重复提交">1、前端重复提交</h3>
+<p>用户注册，用户创建商品等操作，前端都会提交一些数据给后台服务，后台需要根据用户提交的数据在数据库中创建记录。如果用户不小心多点了几次，后端收到了好几次提交，这时就会在数据库中重复创建了多条记录。这就是接口没有幂等性带来的 bug。</p>
+<h3 id="2接口超时重试">2、接口超时重试</h3>
+<p>对于给第三方调用的接口，有可能会因为网络原因而调用失败，这时，一般在设计的时候会对接口调用加上失败重试的机制。如果第一次调用已经执行了一半时，发生了网络异常。这时再次调用时就会因为脏数据的存在而出现调用异常。</p>
+<h3 id="3消息重复消费">3、消息重复消费</h3>
+<p>在使用消息中间件来处理消息队列，且手动 ack 确认消息被正常消费时。如果消费者突然断开连接，那么已经执行了一半的消息会重新放回队列。</p>
+<p>当消息被其他消费者重新消费时，如果没有幂等性，就会导致消息重复消费时结果异常，如数据库重复数据，数据库数据冲突，资源重复等。</p>
+<h2 id="三解决方案">三、解决方案</h2>
+<h3 id="1token机制">1、token机制</h3>
+<p>通过token 机制实现接口的幂等性,这是一种比较通用性的实现方法。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/2056765809.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/2056765809.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/2056765809.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/2056765809.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/2056765809.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/2056765809.png" /></p>
+<p>流程：</p>
+<p>1、客户端会先发送一个请求去获取 token，服务端会生成一个全局唯一的 ID 作为 token 保存在 redis 中，同时把这个 ID 返回给客户端</p>
+<p>2、客户端第二次调用业务请求的时候必须携带这个 token</p>
+<p>3、服务端会校验这个 token，如果校验成功，则执行业务，并删除 redis 中的 token</p>
+<p>4、如果校验失败，说明 redis 中已经没有对应的 token，则表示重复操作，直接返回指定的结果给客户端</p>
+<h3 id="2mysql锁">2、mysql锁</h3>
+<p>这种实现方式是利用 mysql 唯一索引的特性</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/3238177408.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/3238177408.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/3238177408.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/3238177408.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/3238177408.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/3238177408.png" /></p>
+<p>流程：</p>
+<p>1、建立一张去重表，其中某个字段需要建立唯一索引</p>
+<p>2、客户端去请求服务端，服务端会将这次请求的一些信息插入这张去重表中</p>
+<p>3、因为表中某个字段带有唯一索引，如果插入成功，证明表中没有这次请求的信息，则执行后续的业务逻辑</p>
+<p>4、如果插入失败，则代表已经执行过当前请求，直接返回</p>
+<h3 id="3redis锁">3、redis锁</h3>
+<p>这种实现方式是基于 SETNX 命令实现的</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/910987620.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/910987620.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/910987620.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/910987620.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/910987620.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/07/910987620.png" /></p>
+<p>流程：</p>
+<p>1、客户端先请求服务端，会拿到一个能代表这次请求业务的唯一字段</p>
+<p>2、将该字段以 SETNX 的方式存入 redis 中，并根据业务设置相应的超时时间</p>
+<p>3、如果设置成功，证明这是第一次请求，则执行后续的业务逻辑</p>
+<p>4、如果设置失败，则代表已经执行过当前请求，直接返回</p>
+<h2 id="总结">总结</h2>
+<p>这几种实现幂等的方式其实都是大同小异的，类似的还有使用状态机、悲观锁、乐观锁的方式来实现，都是比较简单的。</p>
+<p>类似于分布锁：</p>
+<ul>
+<li>数据库锁，一个表中包含方法名等字段，并在方法名字段上创建唯一索引</li>
+<li>redis锁，setnx为锁添加一个超时时间</li>
+<li>zookeeper锁：创建目录，在目录下创建临时顺序节点，获取最小顺序节点号</li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2021-07-07</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2021/07/%E5%B9%82%E7%AD%89%E6%80%A7/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/api/">api</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2021/07/errgroup%E7%9A%84%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8/" class="prev" rel="prev" title="Errgroup的实际应用"><i class="fas fa-angle-left fa-fw"></i>Errgroup的实际应用</a></div>
+</div>
+<div id="comments"><div id="gitalk" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://github.com/gitalk/gitalk"></a>Gitalk</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.85.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"gitalk":{"admin":["betterfor"],"clientID":"fba15d94f073857ee898","clientSecret":"90083900b5dd077594528a709f18fe4b16b2a1a2","id":"2021-07-07T09:35:33+08:00","owner":"betterfor","repo":"betterfor.github.io","title":"幂等性"}},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
