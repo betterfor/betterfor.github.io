@@ -402,6 +402,7 @@ enableEmoji = true
     #  评论系统设置
     [params.comment]
       enable = true
+	  
       [params.comment.gitalk]
         enable = false
         owner = "betterfor"
@@ -409,20 +410,20 @@ enableEmoji = true
         clientId = "fba15d94f073857ee898"
         clientSecret = "90083900b5dd077594528a709f18fe4b16b2a1a2"
 		
-	# Utterances comment 评论系统设置 (https://utteranc.es/)
-    [params.page.comment.utterances]
-      enable = true
-      # owner/repo
-      repo = "betterfor/betterfor.github.io"
-      issueTerm = "pathname"
-      label = ""
-      lightTheme = "github-light"
-      darkTheme = "github-dark"
+	  # Utterances comment 评论系统设置 (https://utteranc.es/)
+      [params.comment.utterances]
+        enable = true
+        # owner/repo
+        repo = "betterfor/betterfor.github.io"
+        issueTerm = "pathname"
+        label = "评论系统"
+        lightTheme = "github-light"
+        darkTheme = "github-dark"
 
   #  TypeIt 配置
   [params.typeit]
     # 每一步的打字速度 (单位是毫秒)
-    speed = 100
+    speed = 200
     # 光标的闪烁速度 (单位是毫秒)
     cursorSpeed = 1000
     # 光标的字符 (支持 HTML 格式)
