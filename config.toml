@@ -175,7 +175,7 @@ enableEmoji = true
   #  日期格式
   dateFormat = "2006-01-02"
   # 网站图片, 用于 Open Graph 和 Twitter Cards
-  images = ["https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/645153620.png"]
+  images = ["https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/%E9%80%9F%E6%8A%A0%E5%9B%BE.png"]
 
   #  应用图标配置
   [params.app]
@@ -223,7 +223,8 @@ enableEmoji = true
     #  页面头部导航栏标题配置
     [params.header.title]
       # LOGO 的 URL
-      logo = "https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/645153620.png"
+	  logo = "https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/%E9%80%9F%E6%8A%A0%E5%9B%BE.png"
+      # logo = "https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/645153620.png"
       # 标题名称
       name = ""
       # 你可以在名称 (允许 HTML 格式) 之前添加其他信息, 例如图标
