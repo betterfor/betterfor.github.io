@@ -132,11 +132,11 @@ enableEmoji = true
           # Gravatar 邮箱，用于优先在主页显示的头像
           gravatarEmail = ""
           # 主页显示头像的 URL
-          avatarURL = "https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/dd.jpg"
+          avatarURL = "https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/3869504793.png"
           # 主页显示的网站标题 (支持 HTML 格式)
           title = "月霜天"
           # 主页显示的网站副标题
-          subtitle = ""
+          subtitle = "长江go浪推前浪"
           # 是否为副标题显示打字机动画
           typeit = true
           # 是否显示社交账号
@@ -151,66 +151,8 @@ enableEmoji = true
       # 主页的社交信息设置
       [languages.zh-cn.params.social]
         GitHub = "xxxx"
-        Linkedin = ""
-        Twitter = ""
-        Instagram = ""
-        Facebook = ""
-        Telegram = ""
-        Medium = ""
-        Gitlab = ""
-        Youtubelegacy = ""
-        Youtubecustom = ""
-        Youtubechannel = ""
-        Tumblr = ""
-        Quora = ""
-        Keybase = ""
-        Pinterest = ""
-        Reddit = ""
-        Codepen = ""
-        FreeCodeCamp = ""
-        Bitbucket = ""
-        Stackoverflow = ""
-        Weibo = "xxxx"
-        Odnoklassniki = ""
-        VK = ""
-        Flickr = ""
-        Xing = ""
-        Snapchat = ""
-        Soundcloud = ""
-        Spotify = ""
-        Bandcamp = ""
-        Paypal = ""
-        Fivehundredpx = ""
-        Mix = ""
-        Goodreads = ""
-        Lastfm = ""
-        Foursquare = ""
-        Hackernews = ""
-        Kickstarter = ""
-        Patreon = ""
-        Steam = "xxxx"
-        Twitch = ""
-        Strava = ""
-        Skype = ""
-        Whatsapp = ""
         Zhihu = "xxxx"
         Douban = "xxxx"
-        Angellist = ""
-        Slidershare = ""
-        Jsfiddle = ""
-        Deviantart = ""
-        Behance = ""
-        Dribbble = ""
-        Wordpress = ""
-        Vine = ""
-        Googlescholar = ""
-        Researchgate = ""
-        Mastodon = ""
-        Thingiverse = ""
-        Devto = "xxxx"
-        Gitea = ""
-        XMPP = ""
-        Matrix = ""
         Bilibili = "xxxx"
         Email = "xxxx@xxxx.com"
         RSS = true
@@ -233,7 +175,7 @@ enableEmoji = true
   #  日期格式
   dateFormat = "2006-01-02"
   # 网站图片, 用于 Open Graph 和 Twitter Cards
-  images = ["https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"]
+  images = ["https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/645153620.png"]
 
   #  应用图标配置
   [params.app]
@@ -281,7 +223,7 @@ enableEmoji = true
     #  页面头部导航栏标题配置
     [params.header.title]
       # LOGO 的 URL
-      logo = "https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/021/05/17/yun.ico"
+      logo = "https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/645153620.png"
       # 标题名称
       name = ""
       # 你可以在名称 (允许 HTML 格式) 之前添加其他信息, 例如图标
@@ -360,66 +302,6 @@ enableEmoji = true
   # 作者的社交信息设置
   [params.social]
     GitHub = "github.com/betterfor"
-    Linkedin = ""
-    Twitter = "xxxx"
-    Instagram = "xxxx"
-    Facebook = "xxxx"
-    Telegram = "xxxx"
-    Medium = ""
-    Gitlab = ""
-    Youtubelegacy = ""
-    Youtubecustom = ""
-    Youtubechannel = ""
-    Tumblr = ""
-    Quora = ""
-    Keybase = ""
-    Pinterest = ""
-    Reddit = ""
-    Codepen = ""
-    FreeCodeCamp = ""
-    Bitbucket = ""
-    Stackoverflow = ""
-    Weibo = ""
-    Odnoklassniki = ""
-    VK = ""
-    Flickr = ""
-    Xing = ""
-    Snapchat = ""
-    Soundcloud = ""
-    Spotify = ""
-    Bandcamp = ""
-    Paypal = ""
-    Fivehundredpx = ""
-    Mix = ""
-    Goodreads = ""
-    Lastfm = ""
-    Foursquare = ""
-    Hackernews = ""
-    Kickstarter = ""
-    Patreon = ""
-    Steam = ""
-    Twitch = ""
-    Strava = ""
-    Skype = ""
-    Whatsapp = ""
-    Zhihu = ""
-    Douban = ""
-    Angellist = ""
-    Slidershare = ""
-    Jsfiddle = ""
-    Deviantart = ""
-    Behance = ""
-    Dribbble = ""
-    Wordpress = ""
-    Vine = ""
-    Googlescholar = ""
-    Researchgate = ""
-    Mastodon = ""
-    Thingiverse = ""
-    Devto = ""
-    Gitea = ""
-    XMPP = ""
-    Matrix = ""
     Bilibili = ""
     Email = "xxxx@xxxx.com"
     RSS = true # 
@@ -435,7 +317,7 @@ enableEmoji = true
     # 是否使用 lightgallery
     lightgallery = false
     #  是否使用 ruby 扩展语法
-    ruby = true
+    ruby = false
     #  是否使用 fraction 扩展语法
     fraction = true
     #  是否使用 fontawesome 扩展语法
@@ -519,13 +401,23 @@ enableEmoji = true
       Mix = false
     #  评论系统设置
     [params.comment]
-      enable = true
+      enable = false
       [params.comment.gitalk]
         enable = true
         owner = "betterfor"
         repo = "betterfor.github.io"
         clientId = "fba15d94f073857ee898"
         clientSecret = "90083900b5dd077594528a709f18fe4b16b2a1a2"
+		
+	# Utterances comment 评论系统设置 (https://utteranc.es/)
+    [params.page.comment.utterances]
+      enable = true
+      # owner/repo
+      repo = "betterfor/betterfor.github.io"
+      issueTerm = "pathname"
+      label = ""
+      lightTheme = "github-light"
+      darkTheme = "github-dark"
 
   #  TypeIt 配置
   [params.typeit]
