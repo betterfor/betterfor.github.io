@@ -401,9 +401,9 @@ enableEmoji = true
       Mix = false
     #  评论系统设置
     [params.comment]
-      enable = false
+      enable = true
       [params.comment.gitalk]
-        enable = true
+        enable = false
         owner = "betterfor"
         repo = "betterfor.github.io"
         clientId = "fba15d94f073857ee898"
