@@ -3,14 +3,7 @@
         <title>golang - 标签 - 月霜天的小站</title>
         <link>https://blog.betterformile.ml/tags/golang/</link>
         <description>golang - 标签 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 01 Jul 2021 15:44:20 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/golang/" rel="self" type="application/rss+xml" /><item>
-    <title>Go定时器源码分析</title>
-    <link>https://blog.betterformile.ml/2021/07/go%E5%AE%9A%E6%97%B6%E5%99%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
-    <pubDate>Thu, 01 Jul 2021 15:44:20 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/go%E5%AE%9A%E6%97%B6%E5%99%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
-    <description><![CDATA[虽然golang的定时器经过几版的改进优化，但是仍然是性能的大杀手。 golang1.13和1.14的区别 golang在1.10版本之前是由一]]></description>
-</item><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 28 Jun 2021 14:07:33 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/golang/" rel="self" type="application/rss+xml" /><item>
     <title>高并发系统下的限速策略</title>
     <link>https://blog.betterformile.ml/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/</link>
     <pubDate>Mon, 28 Jun 2021 14:07:33 &#43;0800</pubDate>
@@ -73,5 +66,12 @@
     <author>作者</author>
     <guid>https://blog.betterformile.ml/2020/12/map/</guid>
     <description><![CDATA[很多的业务场景都会用到map，在其他语言可能成为set/集合等，主要就是key:value格式。 1 2 3 4 5 6 7 8 9 10 11 12 13 // A map is just a hash table. The]]></description>
+</item><item>
+    <title>常见的数据结构--切片</title>
+    <link>https://blog.betterformile.ml/2020/12/slice/</link>
+    <pubDate>Mon, 07 Dec 2020 09:18:56 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2020/12/slice/</guid>
+    <description><![CDATA[在使用过程中，我们经常会用到数组这一数据结构，而在golang中，提供了数组和切片两种，数组是固定长度的且长度为定值，而切片是可以扩张的数组]]></description>
 </item></channel>
 </rss>

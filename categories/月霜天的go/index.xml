@@ -3,7 +3,14 @@
         <title>月霜天的GO - 分类 - 月霜天的小站</title>
         <link>https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/</link>
         <description>月霜天的GO - 分类 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 05 Jul 2021 10:00:08 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 14 Jul 2021 09:34:50 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/" rel="self" type="application/rss+xml" /><item>
+    <title>深入理解Golang Map</title>
+    <link>https://blog.betterformile.ml/2021/07/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3golang_map/</link>
+    <pubDate>Wed, 14 Jul 2021 09:34:50 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2021/07/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3golang_map/</guid>
+    <description><![CDATA[前言 Map是一种常用的数据结构，通常用于存储无序的键值对。但是，Map在Golang中是如何实现的？ 如果判断Map中是否包含某个key？ Ma]]></description>
+</item><item>
     <title>Errgroup的实际应用</title>
     <link>https://blog.betterformile.ml/2021/07/errgroup%E7%9A%84%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8/</link>
     <pubDate>Mon, 05 Jul 2021 10:00:08 &#43;0800</pubDate>
@@ -66,12 +73,5 @@
     <author>作者</author>
     <guid>https://blog.betterformile.ml/2021/02/uuid/</guid>
     <description><![CDATA[背景 在复杂的分布式系统中，往往需要对大量的数据和消息进行唯一标识。数据日益增长，对数据库需要进行切分，而水平切分数据库需要一个唯一ID来标识]]></description>
-</item><item>
-    <title>二维数组按行和按列遍历的效率</title>
-    <link>https://blog.betterformile.ml/2021/02/%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E9%81%8D%E5%8E%86%E6%95%88%E7%8E%87/</link>
-    <pubDate>Mon, 08 Feb 2021 10:14:18 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/02/%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E9%81%8D%E5%8E%86%E6%95%88%E7%8E%87/</guid>
-    <description><![CDATA[二维数组的排列顺序 数组在内存中是按行存储的，按行遍历时可以由指向数组的第一个数的指针一直向后遍历，由于二维数组的内存地址是连续的，当前行的尾]]></description>
 </item></channel>
 </rss>
