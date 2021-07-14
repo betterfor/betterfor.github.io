@@ -3,7 +3,7 @@ title: "Go定时器源码分析"
 date: 2021-07-01T15:44:20+08:00
 draft: false
 
-tags: ['golang','time']
+tags: ['源码解析','time']
 categories: ["月霜天的GO"]
 comment: true
 toc: true
