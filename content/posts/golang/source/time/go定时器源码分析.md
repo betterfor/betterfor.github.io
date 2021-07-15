@@ -7,7 +7,7 @@ tags: ['源码解析','time']
 categories: ["月霜天的GO"]
 comment: true
 toc: true
-autoCollapseToc: false
+autoCollapseToc: true
 ---
 
 虽然golang的定时器经过几版的改进优化，但是仍然是性能的大杀手。
