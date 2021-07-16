@@ -349,8 +349,7 @@ type bmap struct {
 }
 ```
 
-```
-​```go
+```go
 // bmap makes the map bucket type given the type of the map.
 func bmap(t *types.Type) *types.Type {
    ...
@@ -388,7 +387,6 @@ func bmap(t *types.Type) *types.Type {
    bucket.StructType().Map = t
    return bucket
 }
-​```
 ```
 
 编译期间还会生成`maptype`结构体，定义在[runtime/type.go](https://github.com/golang/go/blob/c6d89dbf9954b101589e2db8e170b84167782109/src/runtime/type.go#L365)文件中：
