@@ -20,7 +20,7 @@
 <meta name="application-name" content="月霜天">
 <meta name="apple-mobile-web-app-title" content="月霜天"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.betterformile.ml/2021/07/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3golang_map/" /><link rel="prev" href="https://blog.betterformile.ml/2021/07/%E5%B9%82%E7%AD%89%E6%80%A7/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.betterformile.ml/2021/07/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3golang_map/" /><link rel="prev" href="https://blog.betterformile.ml/2021/07/%E5%B9%82%E7%AD%89%E6%80%A7/" /><link rel="next" href="https://blog.betterformile.ml/2021/07/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3channel/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -29,7 +29,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/blog.betterformile.ml\/2021\/07\/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3golang_map\/"
-        },"genre": "posts","keywords": "源码分析, map","wordcount":  14742 ,
+        },"genre": "posts","keywords": "源码分析, map","wordcount":  14730 ,
         "url": "https:\/\/blog.betterformile.ml\/2021\/07\/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3golang_map\/","datePublished": "2021-07-14T09:34:50+08:00","dateModified": "2021-07-14T09:34:50+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "月霜天"},"author": {
@@ -93,7 +93,7 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">深入理解Golang Map</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/"><i class="far fa-folder fa-fw"></i>月霜天的GO</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-07-14">2021-07-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 14742 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-07-14">2021-07-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 14730 字&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 30 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  kept="">
                 <div class="details-summary toc-title">
@@ -632,49 +632,45 @@ runtime/hash32.go</p>
 </span><span class="lnt">35
 </span><span class="lnt">36
 </span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">​```go
-// bmap makes the map bucket type given the type of the map.
-func bmap(t *types.Type) *types.Type {
-   ...
-   field := make([]*types.Field, 0, 5)
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// bmap makes the map bucket type given the type of the map.
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">bmap</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Type</span><span class="p">)</span> <span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Type</span> <span class="p">{</span>
+   <span class="o">...</span>
+   <span class="nx">field</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="o">*</span><span class="nx">types</span><span class="p">.</span><span class="nx">Field</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 
-   // The first field is: uint8 topbits[BUCKETSIZE].
-   arr := types.NewArray(types.Types[TUINT8], BUCKETSIZE)
-   field = append(field, makefield(&#34;topbits&#34;, arr))
+   <span class="c1">// The first field is: uint8 topbits[BUCKETSIZE].
+</span><span class="c1"></span>   <span class="nx">arr</span> <span class="o">:=</span> <span class="nx">types</span><span class="p">.</span><span class="nf">NewArray</span><span class="p">(</span><span class="nx">types</span><span class="p">.</span><span class="nx">Types</span><span class="p">[</span><span class="nx">TUINT8</span><span class="p">],</span> <span class="nx">BUCKETSIZE</span><span class="p">)</span>
+   <span class="nx">field</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">field</span><span class="p">,</span> <span class="nf">makefield</span><span class="p">(</span><span class="s">&#34;topbits&#34;</span><span class="p">,</span> <span class="nx">arr</span><span class="p">))</span>
 
-   arr = types.NewArray(keytype, BUCKETSIZE)
-   arr.SetNoalg(true)
-   keys := makefield(&#34;keys&#34;, arr)
-   field = append(field, keys)
+   <span class="nx">arr</span> <span class="p">=</span> <span class="nx">types</span><span class="p">.</span><span class="nf">NewArray</span><span class="p">(</span><span class="nx">keytype</span><span class="p">,</span> <span class="nx">BUCKETSIZE</span><span class="p">)</span>
+   <span class="nx">arr</span><span class="p">.</span><span class="nf">SetNoalg</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+   <span class="nx">keys</span> <span class="o">:=</span> <span class="nf">makefield</span><span class="p">(</span><span class="s">&#34;keys&#34;</span><span class="p">,</span> <span class="nx">arr</span><span class="p">)</span>
+   <span class="nx">field</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">field</span><span class="p">,</span> <span class="nx">keys</span><span class="p">)</span>
 
-   arr = types.NewArray(elemtype, BUCKETSIZE)
-   arr.SetNoalg(true)
-   elems := makefield(&#34;elems&#34;, arr)
-   field = append(field, elems)
+   <span class="nx">arr</span> <span class="p">=</span> <span class="nx">types</span><span class="p">.</span><span class="nf">NewArray</span><span class="p">(</span><span class="nx">elemtype</span><span class="p">,</span> <span class="nx">BUCKETSIZE</span><span class="p">)</span>
+   <span class="nx">arr</span><span class="p">.</span><span class="nf">SetNoalg</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+   <span class="nx">elems</span> <span class="o">:=</span> <span class="nf">makefield</span><span class="p">(</span><span class="s">&#34;elems&#34;</span><span class="p">,</span> <span class="nx">arr</span><span class="p">)</span>
+   <span class="nx">field</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">field</span><span class="p">,</span> <span class="nx">elems</span><span class="p">)</span>
 
-   // If keys and elems have no pointers, the map implementation
-   // can keep a list of overflow pointers on the side so that
-   // buckets can be marked as having no pointers.
-   // Arrange for the bucket to have no pointers by changing
-   // the type of the overflow field to uintptr in this case.
-   // See comment on hmap.overflow in runtime/map.go.
-   otyp := types.NewPtr(bucket)
-   if !types.Haspointers(elemtype) &amp;&amp; !types.Haspointers(keytype) {
-      otyp = types.Types[TUINTPTR]
-   }
-   overflow := makefield(&#34;overflow&#34;, otyp)
-   field = append(field, overflow)
+   <span class="c1">// If keys and elems have no pointers, the map implementation
+</span><span class="c1"></span>   <span class="c1">// can keep a list of overflow pointers on the side so that
+</span><span class="c1"></span>   <span class="c1">// buckets can be marked as having no pointers.
+</span><span class="c1"></span>   <span class="c1">// Arrange for the bucket to have no pointers by changing
+</span><span class="c1"></span>   <span class="c1">// the type of the overflow field to uintptr in this case.
+</span><span class="c1"></span>   <span class="c1">// See comment on hmap.overflow in runtime/map.go.
+</span><span class="c1"></span>   <span class="nx">otyp</span> <span class="o">:=</span> <span class="nx">types</span><span class="p">.</span><span class="nf">NewPtr</span><span class="p">(</span><span class="nx">bucket</span><span class="p">)</span>
+   <span class="k">if</span> <span class="p">!</span><span class="nx">types</span><span class="p">.</span><span class="nf">Haspointers</span><span class="p">(</span><span class="nx">elemtype</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">!</span><span class="nx">types</span><span class="p">.</span><span class="nf">Haspointers</span><span class="p">(</span><span class="nx">keytype</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">otyp</span> <span class="p">=</span> <span class="nx">types</span><span class="p">.</span><span class="nx">Types</span><span class="p">[</span><span class="nx">TUINTPTR</span><span class="p">]</span>
+   <span class="p">}</span>
+   <span class="nx">overflow</span> <span class="o">:=</span> <span class="nf">makefield</span><span class="p">(</span><span class="s">&#34;overflow&#34;</span><span class="p">,</span> <span class="nx">otyp</span><span class="p">)</span>
+   <span class="nx">field</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">field</span><span class="p">,</span> <span class="nx">overflow</span><span class="p">)</span>
 
-   t.MapType().Bucket = bucket
+   <span class="nx">t</span><span class="p">.</span><span class="nf">MapType</span><span class="p">().</span><span class="nx">Bucket</span> <span class="p">=</span> <span class="nx">bucket</span>
 
-   bucket.StructType().Map = t
-   return bucket
-}
-​```
+   <span class="nx">bucket</span><span class="p">.</span><span class="nf">StructType</span><span class="p">().</span><span class="nx">Map</span> <span class="p">=</span> <span class="nx">t</span>
+   <span class="k">return</span> <span class="nx">bucket</span>
+<span class="p">}</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>编译期间还会生成<code>maptype</code>结构体，定义在<a href="https://github.com/golang/go/blob/c6d89dbf9954b101589e2db8e170b84167782109/src/runtime/type.go#L365" target="_blank" rel="noopener noreffer">runtime/type.go</a>文件中：</p>
@@ -2235,7 +2231,8 @@ go为了保证遍历map的结果是无序的，做了以下事情：map在遍历
         </section>
     </div>
 
-    <div class="post-nav"><a href="/2021/07/%E5%B9%82%E7%AD%89%E6%80%A7/" class="prev" rel="prev" title="幂等性"><i class="fas fa-angle-left fa-fw"></i>幂等性</a></div>
+    <div class="post-nav"><a href="/2021/07/%E5%B9%82%E7%AD%89%E6%80%A7/" class="prev" rel="prev" title="幂等性"><i class="fas fa-angle-left fa-fw"></i>幂等性</a>
+            <a href="/2021/07/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3channel/" class="next" rel="next" title="深入理解channel">深入理解channel<i class="fas fa-angle-right fa-fw"></i></a></div>
 </div>
 <div id="comments"><div id="utterances"></div><noscript>
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
