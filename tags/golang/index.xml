@@ -3,20 +3,20 @@
         <title>golang - 标签 - 月霜天的小站</title>
         <link>https://blog.betterformile.ml/tags/golang/</link>
         <description>golang - 标签 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 28 Jun 2021 14:07:33 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/golang/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 19 Jul 2021 14:44:23 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/golang/" rel="self" type="application/rss+xml" /><item>
+    <title>no copy机制</title>
+    <link>https://blog.betterformile.ml/2021/07/nocopy%E6%9C%BA%E5%88%B6/</link>
+    <pubDate>Mon, 19 Jul 2021 14:44:23 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2021/07/nocopy%E6%9C%BA%E5%88%B6/</guid>
+    <description><![CDATA[在sync包下面经常出现&quot;XXX must not be copied after first use.&quot;，然后下面就有一个noCopy。 什么是noCopy ? 如果结构体对象]]></description>
+</item><item>
     <title>高并发系统下的限速策略</title>
     <link>https://blog.betterformile.ml/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/</link>
     <pubDate>Mon, 28 Jun 2021 14:07:33 &#43;0800</pubDate>
     <author>作者</author>
     <guid>https://blog.betterformile.ml/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/</guid>
     <description><![CDATA[限流又称为流量控制，是限制到达系统的并发请求数，当达到限制条件时可以拒绝请求，可以起到保护下游服务，熔断流量的作用。常用的限流策略有漏桶算法]]></description>
-</item><item>
-    <title>并发编程之原子操作</title>
-    <link>https://blog.betterformile.ml/2021/06/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/</link>
-    <pubDate>Thu, 03 Jun 2021 09:59:51 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/06/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/</guid>
-    <description><![CDATA[原子操作 我们先给原子操作下一个定义： 原子(atom)：在化学反应中不可再分的基本微粒。 原子操作(atomic operation)：不会被线程]]></description>
 </item><item>
     <title>Mutex的源码解析</title>
     <link>https://blog.betterformile.ml/2021/02/mutex/</link>

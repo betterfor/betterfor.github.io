@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>并发编程之Map - 月霜天的小站</title><meta name="Description" content="月霜天的小站"><meta property="og:title" content="并发编程之Map" />
+<meta property="og:description" content="golang原生的map是不支持并发，而在sync/map是线程安全的，可以并发读写，适用于读多写少的场景。 sync.Map是Go map[i" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.map/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-16T10:53:02+08:00" />
+<meta property="article:modified_time" content="2021-07-16T10:53:02+08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/>
+
+<meta name="twitter:title" content="并发编程之Map"/>
+<meta name="twitter:description" content="golang原生的map是不支持并发，而在sync/map是线程安全的，可以并发读写，适用于读多写少的场景。 sync.Map是Go map[i"/>
+<meta name="application-name" content="月霜天">
+<meta name="apple-mobile-web-app-title" content="月霜天"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.map/" /><link rel="prev" href="https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%AF%BB%E5%86%99%E9%94%81/" /><link rel="next" href="https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.pool/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "并发编程之Map",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog.betterformile.ml\/2021\/07\/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.map\/"
+        },"genre": "posts","keywords": "源码解析, sync","wordcount":  2909 ,
+        "url": "https:\/\/blog.betterformile.ml\/2021\/07\/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.map\/","datePublished": "2021-07-16T10:53:02+08:00","dateModified": "2021-07-16T10:53:02+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "月霜天"},"author": {
+                "@type": "Person",
+                "name": "月霜天"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png" /></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png" /></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">并发编程之Map</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/"><i class="far fa-folder fa-fw"></i>月霜天的GO</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-07-16">2021-07-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2909 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 6 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#基本的数据结构">基本的数据结构</a></li>
+    <li><a href="#查找load">查找Load</a></li>
+    <li><a href="#新增和更新store">新增和更新Store</a></li>
+    <li><a href="#删除delete">删除Delete</a></li>
+    <li><a href="#其他">其他</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>golang原生的<code>map</code>是不支持并发，而在<code>sync/map</code>是线程安全的，可以并发读写，适用于读多写少的场景。</p>
+<p><code>sync.Map</code>是Go <code>map[interface{}]interface{}</code>，它对两种常用的场景进行了优化：</p>
+<p>1、entry只写一次，但读很多次，比如在只增长的缓存中</p>
+<p>2、多个goroutine读写、更新entry互不干扰</p>
+<p>在这两种情况下，使用<code>sync.Map</code>比<code>map</code>加互斥锁性能要更好。</p>
+<h2 id="基本的数据结构">基本的数据结构</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Map</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="c1">// 当涉及到脏数据（dirty）操作时，需要用锁
+</span><span class="c1"></span>	<span class="nx">mu</span> <span class="nx">Mutex</span>
+
+	<span class="nx">read</span> <span class="nx">atomic</span><span class="p">.</span><span class="nx">Value</span> <span class="c1">// readOnly
+</span><span class="c1"></span>
+	<span class="c1">// dirty 包含部分map键值对，如果需要操作需要mutex获取锁
+</span><span class="c1"></span>	<span class="c1">// 最后 dirty 中的元素会被全部提升到read里的map去
+</span><span class="c1"></span>	<span class="nx">dirty</span> <span class="kd">map</span><span class="p">[</span><span class="kd">interface</span><span class="p">{}]</span><span class="o">*</span><span class="nx">entry</span>
+
+	<span class="c1">// 计数器，用于记录read中没有的而在dirty中有的数据的数量。
+</span><span class="c1"></span>	<span class="c1">// 也就是说如果read不包含这个数据，会从dirty中读取，misses+1
+</span><span class="c1"></span>	<span class="c1">// 当misses的数量等于dirty的长度，就会将dirty中的数据迁移到read中
+</span><span class="c1"></span>	<span class="nx">misses</span> <span class="kt">int</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>read</code>包含了map内容中对并发访问是安全的部分（不管有没有mu）。读取字段本身总是安全的，但必须和mu一起存储。存储在read中的Entries可以在没有锁的情况下并发更新，但是更新之前删除的entry需要将entry复制到dirty，并且保证不被删除</li>
+<li><code>dirty</code> 包含部分map键值对，如果需要操作需要mutex获取锁，最后 dirty 中的元素会被全部提升到read里的map去</li>
+<li><code>misses</code>计数器，用于记录read中没有的而在dirty中有的数据的数量。也就是说如果read不包含这个数据，会从dirty中读取，misses+1，当misses的数量等于dirty的长度，就会将dirty中的数据迁移到read中</li>
+</ul>
+<p>来看看<code>dirty</code>，是一个map类型的数据，键类型是<code>interface{}</code>，而值的类型是<code>entry</code>，其结构如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">entry</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">p</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span> <span class="c1">// *interface{}
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>p指针指向entry的interface{}值</p>
+<ul>
+<li>nil:entry已经被删除，并且m.dirty为空</li>
+<li>expunged:entry已经被删除，但m.dirty不为空，也不在m.dirty</li>
+<li>其他:entry是有效的，是个正常值，并记录在m.read.m[key],并且m.dirty != nil, 在 m.dirty[key].</li>
+</ul>
+<p>而<code>read</code>实际上指向<code>readonly</code>结构，相比于<code>dirty</code>多了个<code>amended</code>属性，用来表示是否存在key不存在于<code>readonly</code>，而存在于<code>dirty</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">readOnly</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">m</span> <span class="kd">map</span><span class="p">[</span><span class="kd">interface</span><span class="p">{}]</span><span class="o">*</span><span class="nx">entry</span>
+	<span class="nx">amended</span> <span class="kt">bool</span> <span class="c1">// true if the dirty map contains some key not in m.
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>而操作这个<code>sync.Map</code>的方法有<code>Load</code>，<code>Store</code>，<code>LoadOrStore</code>，<code>Delete</code>，<code>Range</code>这几个方法。</p>
+<h2 id="查找load">查找Load</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="o">*</span><span class="nx">Map</span><span class="p">)</span> <span class="nf">Load</span><span class="p">(</span><span class="nx">key</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">(</span><span class="nx">value</span> <span class="kd">interface</span><span class="p">{},</span> <span class="nx">ok</span> <span class="kt">bool</span><span class="p">)</span> <span class="p">{</span>
+	<span class="c1">// 从read的map中查找
+</span><span class="c1"></span>	<span class="nx">read</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">read</span><span class="p">.</span><span class="nf">Load</span><span class="p">().(</span><span class="nx">readOnly</span><span class="p">)</span>
+	<span class="nx">e</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">read</span><span class="p">.</span><span class="nx">m</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
+	<span class="c1">// 如果没有找到，并且read.amended=true，说明dirty中有新数据，从dirty中查找，需要加锁
+</span><span class="c1"></span>	<span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="o">&amp;&amp;</span> <span class="nx">read</span><span class="p">.</span><span class="nx">amended</span> <span class="p">{</span>
+		<span class="nx">m</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+		<span class="c1">// 在read中再检查一遍，防止加锁的时候dirty已经迁移到read中（二次检查）
+</span><span class="c1"></span>		<span class="nx">read</span><span class="p">,</span> <span class="nx">_</span> <span class="p">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">read</span><span class="p">.</span><span class="nf">Load</span><span class="p">().(</span><span class="nx">readOnly</span><span class="p">)</span>
+		<span class="nx">e</span><span class="p">,</span> <span class="nx">ok</span> <span class="p">=</span> <span class="nx">read</span><span class="p">.</span><span class="nx">m</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
+		<span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="o">&amp;&amp;</span> <span class="nx">read</span><span class="p">.</span><span class="nx">amended</span> <span class="p">{</span>
+			<span class="nx">e</span><span class="p">,</span> <span class="nx">ok</span> <span class="p">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">dirty</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
+			<span class="c1">// 不管是否存在，记录misses+1，满足条件后将dirty中数据迁移到read中
+</span><span class="c1"></span>			<span class="nx">m</span><span class="p">.</span><span class="nf">missLocked</span><span class="p">()</span>
+		<span class="p">}</span>
+		<span class="nx">m</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="kc">false</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">e</span><span class="p">.</span><span class="nf">load</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">e</span> <span class="o">*</span><span class="nx">entry</span><span class="p">)</span> <span class="nf">load</span><span class="p">()</span> <span class="p">(</span><span class="nx">value</span> <span class="kd">interface</span><span class="p">{},</span> <span class="nx">ok</span> <span class="kt">bool</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">p</span> <span class="o">:=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">LoadPointer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">e</span><span class="p">.</span><span class="nx">p</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">p</span> <span class="o">==</span> <span class="kc">nil</span> <span class="o">||</span> <span class="nx">p</span> <span class="o">==</span> <span class="nx">expunged</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="kc">false</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="kd">interface</span><span class="p">{})(</span><span class="nx">p</span><span class="p">),</span> <span class="kc">true</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="o">*</span><span class="nx">Map</span><span class="p">)</span> <span class="nf">missLocked</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">m</span><span class="p">.</span><span class="nx">misses</span><span class="o">++</span>
+	<span class="k">if</span> <span class="nx">m</span><span class="p">.</span><span class="nx">misses</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">m</span><span class="p">.</span><span class="nx">dirty</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// misses小于dirty的长度，就不迁移数据
+</span><span class="c1"></span>		<span class="k">return</span>
+	<span class="p">}</span>
+	<span class="nx">m</span><span class="p">.</span><span class="nx">read</span><span class="p">.</span><span class="nf">Store</span><span class="p">(</span><span class="nx">readOnly</span><span class="p">{</span><span class="nx">m</span><span class="p">:</span> <span class="nx">m</span><span class="p">.</span><span class="nx">dirty</span><span class="p">})</span>
+	<span class="nx">m</span><span class="p">.</span><span class="nx">dirty</span> <span class="p">=</span> <span class="kc">nil</span>
+	<span class="nx">m</span><span class="p">.</span><span class="nx">misses</span> <span class="p">=</span> <span class="mi">0</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>读取的时候先从<code>read</code>中读取，如果<code>read</code>中不存在，则加锁从<code>dirty</code>中读取，并且使用<code>missLocked</code>使得<code>misses</code>+1。</p>
+<p>如果计数器<code>misses</code>的数量大于<code>dirty</code>的长度，则把<code>dirty</code>的数据更新到<code>read</code>中。</p>
+<h2 id="新增和更新store">新增和更新Store</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="o">*</span><span class="nx">Map</span><span class="p">)</span> <span class="nf">Store</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
+	<span class="c1">// 从read map中如果能找到key，update
+</span><span class="c1"></span>	<span class="nx">read</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">read</span><span class="p">.</span><span class="nf">Load</span><span class="p">().(</span><span class="nx">readOnly</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">read</span><span class="p">.</span><span class="nx">m</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span> <span class="nx">ok</span> <span class="o">&amp;&amp;</span> <span class="nx">e</span><span class="p">.</span><span class="nf">tryStore</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+
+	<span class="c1">// 上锁之后重新check一下read map的内容(二次读写)
+</span><span class="c1"></span>	<span class="nx">m</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="nx">read</span><span class="p">,</span> <span class="nx">_</span> <span class="p">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">read</span><span class="p">.</span><span class="nf">Load</span><span class="p">().(</span><span class="nx">readOnly</span><span class="p">)</span>
+	<span class="c1">// 场景一：如果在read中，而key对应的value标识是已删除（需要先在dirty中添加），更新这个值
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">read</span><span class="p">.</span><span class="nx">m</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span> <span class="nx">ok</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="nx">e</span><span class="p">.</span><span class="nf">unexpungeLocked</span><span class="p">()</span> <span class="p">{</span>
+			<span class="c1">// The entry was previously expunged, which implies that there is a
+</span><span class="c1"></span>			<span class="c1">// non-nil dirty map and this entry is not in it.
+</span><span class="c1"></span>			<span class="nx">m</span><span class="p">.</span><span class="nx">dirty</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="p">=</span> <span class="nx">e</span>
+		<span class="p">}</span>
+		<span class="nx">e</span><span class="p">.</span><span class="nf">storeLocked</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">value</span><span class="p">)</span>
+		<span class="c1">// 场景二：如果不在read中，在dirty中，直接更新值
+</span><span class="c1"></span>	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">dirty</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span> <span class="nx">ok</span> <span class="p">{</span>
+		<span class="nx">e</span><span class="p">.</span><span class="nf">storeLocked</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">value</span><span class="p">)</span>
+		<span class="c1">// 场景三：都不存在，那么把数据存在dirty中，并且修改read中的标识
+</span><span class="c1"></span>	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">!</span><span class="nx">read</span><span class="p">.</span><span class="nx">amended</span> <span class="p">{</span> <span class="c1">// dirty没有新数据
+</span><span class="c1"></span>			<span class="c1">// We&#39;re adding the first new key to the dirty map.
+</span><span class="c1"></span>			<span class="c1">// Make sure it is allocated and mark the read-only map as incomplete.
+</span><span class="c1"></span>			<span class="c1">// 从read中复制未删除的数据
+</span><span class="c1"></span>			<span class="nx">m</span><span class="p">.</span><span class="nf">dirtyLocked</span><span class="p">()</span>
+			<span class="c1">// 更改状态
+</span><span class="c1"></span>			<span class="nx">m</span><span class="p">.</span><span class="nx">read</span><span class="p">.</span><span class="nf">Store</span><span class="p">(</span><span class="nx">readOnly</span><span class="p">{</span><span class="nx">m</span><span class="p">:</span> <span class="nx">read</span><span class="p">.</span><span class="nx">m</span><span class="p">,</span> <span class="nx">amended</span><span class="p">:</span> <span class="kc">true</span><span class="p">})</span>
+		<span class="p">}</span>
+		<span class="nx">m</span><span class="p">.</span><span class="nx">dirty</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="p">=</span> <span class="nf">newEntry</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="c1">// 加入dirty中
+</span><span class="c1"></span>	<span class="p">}</span>
+	<span class="nx">m</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>map</code>的并发读写容易出问题，是因为存值、删除、取值的过程中存在扩容的过程。如果不对<code>map</code>进行修改就能提高执行效率。</p>
+<p>所以<code>read</code>和<code>dirty</code>使用的<code>map</code>类型就是<code>map[interface{}]*entry</code>，值是一个指针，通过对指针的操作来改变值的状态，而不是直接删除或赋值。</p>
+<p>而<code>Stroe</code>第一步，如果<code>key</code>在<code>read</code>中存在，那么通过<code>tryStore</code>方法来修改值</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">e</span> <span class="o">*</span><span class="nx">entry</span><span class="p">)</span> <span class="nf">tryStore</span><span class="p">(</span><span class="nx">i</span> <span class="o">*</span><span class="kd">interface</span><span class="p">{})</span> <span class="kt">bool</span> <span class="p">{</span>
+	<span class="k">for</span> <span class="p">{</span>
+		<span class="nx">p</span> <span class="o">:=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">LoadPointer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">e</span><span class="p">.</span><span class="nx">p</span><span class="p">)</span>
+		<span class="k">if</span> <span class="nx">p</span> <span class="o">==</span> <span class="nx">expunged</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="kc">false</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">CompareAndSwapPointer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">e</span><span class="p">.</span><span class="nx">p</span><span class="p">,</span> <span class="nx">p</span><span class="p">,</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="nx">i</span><span class="p">))</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="kc">true</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这里使用了<code>CAS</code>，乐观锁。相当于对<code>map</code>中每个已经存在的值的修改使用乐观锁，相比于对整个<code>map</code>使用锁来说，提高了效率。</p>
+<p><code>Store</code>第二步，如果没有更新成功或不在<code>read</code>中，则按照逻辑继续往下走。</p>
+<ul>
+<li>在<code>read</code>中，没有更新成功，是因为值类型被标记为已删除，那么就在<code>dirty</code>中添加这个键值对</li>
+<li>如果不在<code>dirty</code>，那么在<code>dirty</code>中更新值</li>
+<li>如果不在<code>dirty</code>中，那么在<code>dirty</code>中存储键值对，如果<code>dirty</code>相比于<code>read</code>没有新的数据，那么<code>dirtyLocked</code>方法将<code>read</code>中的数据保存进<code>dirty</code>中，并且修改<code>read</code>中的状态<code>amended</code></li>
+</ul>
+<blockquote>
+<p>由于<code>map[interface{}]*entry</code>是一个指针，对<code>read</code>里的值修改时，<code>dirty</code>中的值也会被修改，因为两个指向的是同一个对象。</p>
+</blockquote>
+<h2 id="删除delete">删除Delete</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="o">*</span><span class="nx">Map</span><span class="p">)</span> <span class="nf">Delete</span><span class="p">(</span><span class="nx">key</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
+	<span class="nx">read</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">read</span><span class="p">.</span><span class="nf">Load</span><span class="p">().(</span><span class="nx">readOnly</span><span class="p">)</span>
+	<span class="nx">e</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">read</span><span class="p">.</span><span class="nx">m</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
+	<span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="o">&amp;&amp;</span> <span class="nx">read</span><span class="p">.</span><span class="nx">amended</span> <span class="p">{</span> <span class="c1">// 不存在read中，并且dirty有新数据
+</span><span class="c1"></span>		<span class="nx">m</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+		<span class="nx">read</span><span class="p">,</span> <span class="nx">_</span> <span class="p">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">read</span><span class="p">.</span><span class="nf">Load</span><span class="p">().(</span><span class="nx">readOnly</span><span class="p">)</span>
+		<span class="nx">e</span><span class="p">,</span> <span class="nx">ok</span> <span class="p">=</span> <span class="nx">read</span><span class="p">.</span><span class="nx">m</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>
+		<span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="o">&amp;&amp;</span> <span class="nx">read</span><span class="p">.</span><span class="nx">amended</span> <span class="p">{</span>
+			<span class="nb">delete</span><span class="p">(</span><span class="nx">m</span><span class="p">.</span><span class="nx">dirty</span><span class="p">,</span> <span class="nx">key</span><span class="p">)</span> <span class="c1">// 加锁删除dirty的数据
+</span><span class="c1"></span>		<span class="p">}</span>
+		<span class="nx">m</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">ok</span> <span class="p">{</span>
+		<span class="c1">// 在read中存在key
+</span><span class="c1"></span>		<span class="nx">e</span><span class="p">.</span><span class="nb">delete</span><span class="p">()</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>删除操作比较简单</p>
+<ul>
+<li>如果在<code>read</code>中，直接删除</li>
+<li>如果不在<code>read</code>中，并且<code>dirty</code>没有新数据，直接返回</li>
+<li>如果不在<code>read</code>中，并且<code>dirty</code>有新数据，那么就去<code>dirty</code>中删除</li>
+</ul>
+<h2 id="其他">其他</h2>
+<p><code>LoadOrStore</code>和<code>Range</code>这两个方法的逻辑大体和<code>Load</code>和<code>Stroe</code>类似。</p>
+<h2 id="总结">总结</h2>
+<p>1、空间换时间：通过两个冗余的数据结构（read、write），减小锁对性能的影响。</p>
+<p>2、读操作使用<code>read</code>，写操作使用<code>dirty</code>，避免读写冲突。</p>
+<p>3、动态调整：通过misses值，避免dirty数据过多。</p>
+<p>4、双检查机制：避免在非原子操作时产生数据错误。</p>
+<p>5、延迟删除机制：删除一个键值只是先打标记，只有等提升dirty（复制到read中，并清空自身）时才清理删除的数据。</p>
+<p>6、优先从read中读、改和删除，因为对read的操作不用加锁，大大提升性能。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2021-07-16</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.map/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">源码解析</a>,&nbsp;<a href="/tags/sync/">sync</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%AF%BB%E5%86%99%E9%94%81/" class="prev" rel="prev" title="并发编程之读写锁"><i class="fas fa-angle-left fa-fw"></i>并发编程之读写锁</a>
+            <a href="/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.pool/" class="next" rel="next" title="并发编程之sync.Pool">并发编程之sync.Pool<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="utterances"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.85.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"评论系统","lightTheme":"github-light","repo":"betterfor/betterfor.github.io"}},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

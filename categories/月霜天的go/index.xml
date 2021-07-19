@@ -3,7 +3,63 @@
         <title>月霜天的GO - 分类 - 月霜天的小站</title>
         <link>https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/</link>
         <description>月霜天的GO - 分类 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 15 Jul 2021 15:00:10 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 19 Jul 2021 14:44:23 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/" rel="self" type="application/rss+xml" /><item>
+    <title>no copy机制</title>
+    <link>https://blog.betterformile.ml/2021/07/nocopy%E6%9C%BA%E5%88%B6/</link>
+    <pubDate>Mon, 19 Jul 2021 14:44:23 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2021/07/nocopy%E6%9C%BA%E5%88%B6/</guid>
+    <description><![CDATA[在sync包下面经常出现&quot;XXX must not be copied after first use.&quot;，然后下面就有一个noCopy。 什么是noCopy ? 如果结构体对象]]></description>
+</item><item>
+    <title>并发编程之sync.Pool</title>
+    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.pool/</link>
+    <pubDate>Fri, 16 Jul 2021 10:53:06 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.pool/</guid>
+    <description><![CDATA[我们通常用golang来构建高并发场景下的应用，但是由于golang内建的GC机制会影响应用的性能，为了减少GC，golang提供了对象重用]]></description>
+</item><item>
+    <title>并发编程之Map</title>
+    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.map/</link>
+    <pubDate>Fri, 16 Jul 2021 10:53:02 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.map/</guid>
+    <description><![CDATA[golang原生的map是不支持并发，而在sync/map是线程安全的，可以并发读写，适用于读多写少的场景。 sync.Map是Go map[i]]></description>
+</item><item>
+    <title>并发编程之读写锁</title>
+    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%AF%BB%E5%86%99%E9%94%81/</link>
+    <pubDate>Fri, 16 Jul 2021 10:52:34 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%AF%BB%E5%86%99%E9%94%81/</guid>
+    <description><![CDATA[读写锁是基于互斥锁Mutex实现的读写互斥锁，一个goroutine可以持有多个读锁或一个写锁，同一时刻只能同时持有读锁或写锁。 RWMute]]></description>
+</item><item>
+    <title>并发编程之互斥锁</title>
+    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.mutex/</link>
+    <pubDate>Fri, 16 Jul 2021 10:52:20 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.mutex/</guid>
+    <description><![CDATA[并发必然会带来对于资源的竞争，这时需要使用go提供的sync.Mutex这把互斥锁来保证临界资源的访问互斥了。 锁的性质 在代码注释开篇就有一大]]></description>
+</item><item>
+    <title>并发编程之条件变量Cond</title>
+    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.cond/</link>
+    <pubDate>Fri, 16 Jul 2021 10:52:14 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.cond/</guid>
+    <description><![CDATA[sync.Cond字面意思就是同步条件变量，它实现的是一种监视器(Monitor)模式。 对于Cond而言，它实现一个条件变量，是gorout]]></description>
+</item><item>
+    <title>并发编程之WaitGroup</title>
+    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.waitgroup/</link>
+    <pubDate>Fri, 16 Jul 2021 10:52:06 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.waitgroup/</guid>
+    <description><![CDATA[waitgroup的使用场景： 一个waitgroup对象可以等到一组协程结束，也就是等待一组goroutine返回。 首先我们来看看sync.]]></description>
+</item><item>
+    <title>并发编程之sync.Once</title>
+    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.once%E7%9A%84%E5%AE%9E%E7%8E%B0/</link>
+    <pubDate>Fri, 16 Jul 2021 10:50:32 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.once%E7%9A%84%E5%AE%9E%E7%8E%B0/</guid>
+    <description><![CDATA[Go语言标准库中的sync.Once可以保证go程序在运行期间的某段代码只执行一次。 而我们来看看sync.Once的源码，发现是比较少的。 去]]></description>
+</item><item>
     <title>深入理解channel</title>
     <link>https://blog.betterformile.ml/2021/07/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3channel/</link>
     <pubDate>Thu, 15 Jul 2021 15:00:10 &#43;0800</pubDate>
@@ -17,61 +73,5 @@
     <author>作者</author>
     <guid>https://blog.betterformile.ml/2021/07/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3golang_map/</guid>
     <description><![CDATA[前言 Map是一种常用的数据结构，通常用于存储无序的键值对。但是，Map在Golang中是如何实现的？ 如果判断Map中是否包含某个key？ Ma]]></description>
-</item><item>
-    <title>Errgroup的实际应用</title>
-    <link>https://blog.betterformile.ml/2021/07/errgroup%E7%9A%84%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8/</link>
-    <pubDate>Mon, 05 Jul 2021 10:00:08 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/errgroup%E7%9A%84%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8/</guid>
-    <description><![CDATA[在标准库中有个sync/errgroup，实现对多goroutine进行错误处理。 接下来我们看一下源码： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18]]></description>
-</item><item>
-    <title>Go定时器源码分析</title>
-    <link>https://blog.betterformile.ml/2021/07/go%E5%AE%9A%E6%97%B6%E5%99%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
-    <pubDate>Thu, 01 Jul 2021 15:44:20 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/go%E5%AE%9A%E6%97%B6%E5%99%A8%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
-    <description><![CDATA[虽然golang的定时器经过几版的改进优化，但是仍然是性能的大杀手。 golang1.13和1.14的区别 golang在1.10版本之前是由一]]></description>
-</item><item>
-    <title>高并发系统下的限速策略</title>
-    <link>https://blog.betterformile.ml/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/</link>
-    <pubDate>Mon, 28 Jun 2021 14:07:33 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/</guid>
-    <description><![CDATA[限流又称为流量控制，是限制到达系统的并发请求数，当达到限制条件时可以拒绝请求，可以起到保护下游服务，熔断流量的作用。常用的限流策略有漏桶算法]]></description>
-</item><item>
-    <title>并发编程之原子操作</title>
-    <link>https://blog.betterformile.ml/2021/06/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/</link>
-    <pubDate>Thu, 03 Jun 2021 09:59:51 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/06/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/</guid>
-    <description><![CDATA[原子操作 我们先给原子操作下一个定义： 原子(atom)：在化学反应中不可再分的基本微粒。 原子操作(atomic operation)：不会被线程]]></description>
-</item><item>
-    <title>Mutex的源码解析</title>
-    <link>https://blog.betterformile.ml/2021/02/mutex/</link>
-    <pubDate>Fri, 26 Feb 2021 14:46:05 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/02/mutex/</guid>
-    <description><![CDATA[我们来看一下sync包下有哪些常见的使用：cond.go map.go mutex.go once.go pool.go rwmutex.go waitgroup.go 什么是sync？ Package sync provides basic synchronization primitives such as mutual exclusion locks. Other than the Once and WaitGroup types, most are intended for use by low-level library routines. Higher-level]]></description>
-</item><item>
-    <title>Golang 1.16版本新特性 =&gt; 撤回版本(retract)</title>
-    <link>https://blog.betterformile.ml/2021/02/golang_retract/</link>
-    <pubDate>Thu, 25 Feb 2021 15:15:36 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/02/golang_retract/</guid>
-    <description><![CDATA[一般来说，模块作者需要使用一种方法来只是不应该使用某个已发布的模块。 出现一个严重的安全漏洞 不闲不兼容或bug 版本发布错误 出现过模块最新版本为]]></description>
-</item><item>
-    <title>Defer的使用方法</title>
-    <link>https://blog.betterformile.ml/2021/02/defer/</link>
-    <pubDate>Thu, 11 Feb 2021 10:31:33 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/02/defer/</guid>
-    <description><![CDATA[什么是defer？ defer是go语言提供的一种用于注册延迟调用的机制，让函数或语句可以在当前函数执行完毕后（包括通过return正常结束或]]></description>
-</item><item>
-    <title>Iota的使用方法</title>
-    <link>https://blog.betterformile.ml/2021/02/itoa/</link>
-    <pubDate>Wed, 10 Feb 2021 20:14:57 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/02/itoa/</guid>
-    <description><![CDATA[iota是golang语言的常数计量器，只能在常量的表达式中使用。 iota在const关键字出现时被重置为0(const内部的第一行之前)。]]></description>
 </item></channel>
 </rss>
