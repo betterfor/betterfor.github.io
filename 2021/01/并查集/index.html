@@ -126,24 +126,24 @@
 一开始，我们先将它们的父节点设为自己。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">fa</span> <span class="p">=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span><span class="nx">n</span><span class="p">)</span>
-<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
-    <span class="nx">fa</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">i</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">fa</span> <span class="p">=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span><span class="nx">n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fa</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">i</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>2、查询
 我们用递归的写法实现对代表元素的查询：一层一层访问父节点，直至根节点（根节点的标志就是父节点是本身）。
 要判断两个元素是否属于同一个集合，只需要看它们的根节点是否相同即可。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -151,18 +151,18 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">find</span> <span class="p">=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">x</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="nx">x</span> <span class="o">==</span> <span class="nx">fa</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="nx">x</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="nf">find</span><span class="p">(</span><span class="nx">fa</span><span class="p">[</span><span class="nx">x</span><span class="p">])</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">find</span> <span class="p">=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">x</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">x</span> <span class="o">==</span> <span class="nx">fa</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">x</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nf">find</span><span class="p">(</span><span class="nx">fa</span><span class="p">[</span><span class="nx">x</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>路径压缩方法</strong></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -170,32 +170,32 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">find</span> <span class="p">=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">x</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="nx">x</span> <span class="o">!=</span> <span class="nx">fa</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span> <span class="p">{</span>
-        <span class="nx">fa</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span> <span class="p">=</span> <span class="nf">find</span><span class="p">(</span><span class="nx">fa</span><span class="p">[</span><span class="nx">x</span><span class="p">])</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="nx">fa</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">find</span> <span class="p">=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">x</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">x</span> <span class="o">!=</span> <span class="nx">fa</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">fa</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span> <span class="p">=</span> <span class="nf">find</span><span class="p">(</span><span class="nx">fa</span><span class="p">[</span><span class="nx">x</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">fa</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>3、合并
 合并操作也是很简单的，先找到两个集合的代表元素，然后将前者的父节点设为后者即可。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">merge</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="nx">j</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">fa</span><span class="p">[</span><span class="nf">find</span><span class="p">(</span><span class="nx">i</span><span class="p">)]</span> <span class="p">=</span> <span class="nf">find</span><span class="p">(</span><span class="nx">j</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">merge</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="nx">j</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fa</span><span class="p">[</span><span class="nf">find</span><span class="p">(</span><span class="nx">i</span><span class="p">)]</span> <span class="p">=</span> <span class="nf">find</span><span class="p">(</span><span class="nx">j</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>按秩合并</strong></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -212,22 +212,22 @@
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">merge</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="nx">j</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">xFa</span><span class="p">,</span><span class="nx">yFa</span> <span class="o">:=</span> <span class="nf">find</span><span class="p">(</span><span class="nx">i</span><span class="p">),</span><span class="nf">find</span><span class="p">(</span><span class="nx">j</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nx">xFa</span><span class="o">==</span><span class="nx">yFa</span> <span class="p">{</span>
-        <span class="k">return</span>
-    <span class="p">}</span>
-    <span class="c1">// x和y不在同一个集合中，合并它们
-</span><span class="c1"></span>    <span class="k">if</span> <span class="nx">xFa</span><span class="p">&lt;</span><span class="nx">yFa</span> <span class="p">{</span>
-        <span class="nx">fa</span><span class="p">[</span><span class="nx">xFa</span><span class="p">]=</span><span class="nx">yFa</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">xFa</span> <span class="p">&gt;</span> <span class="nx">yFa</span> <span class="p">{</span>
-        <span class="nx">fa</span><span class="p">[</span><span class="nx">yFa</span><span class="p">]=</span><span class="nx">xFa</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">fa</span><span class="p">[</span><span class="nx">yFa</span><span class="p">]=</span><span class="nx">xFa</span>
-        <span class="nx">rank</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span><span class="o">++</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">merge</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="nx">j</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">xFa</span><span class="p">,</span><span class="nx">yFa</span> <span class="o">:=</span> <span class="nf">find</span><span class="p">(</span><span class="nx">i</span><span class="p">),</span><span class="nf">find</span><span class="p">(</span><span class="nx">j</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">xFa</span><span class="o">==</span><span class="nx">yFa</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// x和y不在同一个集合中，合并它们
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="nx">xFa</span><span class="p">&lt;</span><span class="nx">yFa</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">fa</span><span class="p">[</span><span class="nx">xFa</span><span class="p">]=</span><span class="nx">yFa</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">xFa</span> <span class="p">&gt;</span> <span class="nx">yFa</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">fa</span><span class="p">[</span><span class="nx">yFa</span><span class="p">]=</span><span class="nx">xFa</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">fa</span><span class="p">[</span><span class="nx">yFa</span><span class="p">]=</span><span class="nx">xFa</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">rank</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>同时使用路径压缩、按秩（rank）合并优化的程序每个操作的平均时间仅为 O(alpha (n))，
 其中 alpha (n) 是 { n=f(x)=A(x,x)} 的反函数，A 是急速增加的阿克曼函数。
@@ -265,7 +265,7 @@
 <p>题解:</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -298,38 +298,38 @@
 </span><span class="lnt">31
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">findCircleNum</span><span class="p">(</span><span class="nx">isConnected</span> <span class="p">[][]</span><span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="nx">ans</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
-	<span class="nx">n</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">isConnected</span><span class="p">)</span>
-	<span class="nx">parent</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span><span class="nx">n</span><span class="p">)</span>
-	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">parent</span> <span class="p">{</span>
-		<span class="nx">parent</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">i</span>
-	<span class="p">}</span>
-
-	<span class="kd">var</span> <span class="nx">find</span> <span class="kd">func</span><span class="p">(</span><span class="nx">x</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span>
-	<span class="nx">find</span> <span class="p">=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">x</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
-		<span class="k">if</span> <span class="nx">parent</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span> <span class="o">!=</span> <span class="nx">x</span> <span class="p">{</span>
-			<span class="nx">parent</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span> <span class="p">=</span> <span class="nf">find</span><span class="p">(</span><span class="nx">parent</span><span class="p">[</span><span class="nx">x</span><span class="p">])</span>
-		<span class="p">}</span>
-		<span class="k">return</span> <span class="nx">parent</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span>
-	<span class="p">}</span>
-	<span class="nx">merge</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span><span class="nx">to</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">parent</span><span class="p">[</span><span class="nf">find</span><span class="p">(</span><span class="nx">from</span><span class="p">)]</span> <span class="p">=</span> <span class="nf">find</span><span class="p">(</span><span class="nx">to</span><span class="p">)</span>
-	<span class="p">}</span>
-	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
-		<span class="k">for</span> <span class="nx">j</span> <span class="o">:=</span> <span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span> <span class="nx">j</span> <span class="p">&lt;</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span> <span class="p">{</span>
-			<span class="k">if</span> <span class="nx">isConnected</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
-				<span class="nf">merge</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="nx">j</span><span class="p">)</span>
-			<span class="p">}</span>
-		<span class="p">}</span>
-	<span class="p">}</span>
-	<span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">p</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">parent</span> <span class="p">{</span>
-		<span class="k">if</span> <span class="nx">i</span> <span class="o">==</span> <span class="nx">p</span> <span class="p">{</span>
-			<span class="nx">ans</span><span class="o">++</span>
-		<span class="p">}</span>
-	<span class="p">}</span>
-	<span class="k">return</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">findCircleNum</span><span class="p">(</span><span class="nx">isConnected</span> <span class="p">[][]</span><span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="nx">ans</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">n</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">isConnected</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">parent</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span><span class="nx">n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">parent</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">parent</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">i</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">find</span> <span class="kd">func</span><span class="p">(</span><span class="nx">x</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">find</span> <span class="p">=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">x</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">parent</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span> <span class="o">!=</span> <span class="nx">x</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">parent</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span> <span class="p">=</span> <span class="nf">find</span><span class="p">(</span><span class="nx">parent</span><span class="p">[</span><span class="nx">x</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">parent</span><span class="p">[</span><span class="nx">x</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">merge</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span><span class="nx">to</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">parent</span><span class="p">[</span><span class="nf">find</span><span class="p">(</span><span class="nx">from</span><span class="p">)]</span> <span class="p">=</span> <span class="nf">find</span><span class="p">(</span><span class="nx">to</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="nx">j</span> <span class="o">:=</span> <span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span> <span class="nx">j</span> <span class="p">&lt;</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">isConnected</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nf">merge</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="nx">j</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">p</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">parent</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">i</span> <span class="o">==</span> <span class="nx">p</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">ans</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div></div><div class="post-footer" id="post-footer">
     <div class="post-info">
@@ -363,8 +363,8 @@
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.85.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
-                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 

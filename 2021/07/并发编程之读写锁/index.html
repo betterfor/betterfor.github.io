@@ -114,7 +114,7 @@
 <h2 id="rwmutex结构体">RWMutex结构体</h2>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -128,24 +128,24 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">RWMutex</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">w</span> <span class="nx">Mutex</span> <span class="c1">// held if there are pending writers	// 互斥锁
-</span><span class="c1"></span>	<span class="c1">// 写和读锁信号
-</span><span class="c1"></span>	<span class="nx">writerSem</span> <span class="kt">uint32</span> <span class="c1">// semaphore for writers to wait for completing readers
-</span><span class="c1"></span>	<span class="nx">readerSem</span> <span class="kt">uint32</span> <span class="c1">// semaphore for readers to wait for completing writers
-</span><span class="c1"></span>	<span class="c1">// 读锁计数器
-</span><span class="c1"></span>	<span class="nx">readerCount</span> <span class="kt">int32</span> <span class="c1">// number of pending readers
-</span><span class="c1"></span>	<span class="c1">// 获取写锁是需要等待的读锁释放数量
-</span><span class="c1"></span>	<span class="nx">readerWait</span> <span class="kt">int32</span> <span class="c1">// number of departing readers
-</span><span class="c1"></span><span class="p">}</span>
-
-<span class="kd">const</span> <span class="nx">rwmutexMaxReaders</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">30</span> <span class="c1">// 最多支持2^30个锁
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">RWMutex</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">w</span> <span class="nx">Mutex</span> <span class="c1">// held if there are pending writers	// 互斥锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 写和读锁信号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">writerSem</span> <span class="kt">uint32</span> <span class="c1">// semaphore for writers to wait for completing readers
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">readerSem</span> <span class="kt">uint32</span> <span class="c1">// semaphore for readers to wait for completing writers
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 读锁计数器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">readerCount</span> <span class="kt">int32</span> <span class="c1">// number of pending readers
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 获取写锁是需要等待的读锁释放数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">readerWait</span> <span class="kt">int32</span> <span class="c1">// number of departing readers
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="nx">rwmutexMaxReaders</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">30</span> <span class="c1">// 最多支持2^30个锁
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="读加锁rlock">读加锁RLock</h2>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -157,23 +157,23 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// 读加锁，不应该用于递归读锁定
-</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">rw</span> <span class="o">*</span><span class="nx">RWMutex</span><span class="p">)</span> <span class="nf">RLock</span><span class="p">()</span> <span class="p">{</span>
-	<span class="c1">// 每次goroutine获取读锁时，readerCount+1
-</span><span class="c1"></span>	<span class="c1">// 如果写锁已经被获取，那么readerCount在[-rwmutexMaxReaders,0)，这时挂起读锁的goroutine
-</span><span class="c1"></span>	<span class="c1">// 如果写锁没有被获取，那么readerCount&gt;=0,获取读锁，不阻塞
-</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">readerCount</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
-		<span class="c1">// 将goroutine排到队列尾部，挂起goroutine，监听readerSem信号量
-</span><span class="c1"></span>		<span class="nf">runtime_SemacquireMutex</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">readerSem</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 读加锁，不应该用于递归读锁定
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">rw</span> <span class="o">*</span><span class="nx">RWMutex</span><span class="p">)</span> <span class="nf">RLock</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 每次goroutine获取读锁时，readerCount+1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 如果写锁已经被获取，那么readerCount在[-rwmutexMaxReaders,0)，这时挂起读锁的goroutine
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 如果写锁没有被获取，那么readerCount&gt;=0,获取读锁，不阻塞
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">readerCount</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 将goroutine排到队列尾部，挂起goroutine，监听readerSem信号量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nf">runtime_SemacquireMutex</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">readerSem</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>读加锁时并没有用到互斥锁，而是<code>readerCount</code>+1，而小于0的情况是因为写加锁了</p>
 <h2 id="读解锁runlock">读解锁RUnlock</h2>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -200,32 +200,32 @@
 </span><span class="lnt">25
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// 读解锁，只会撤销对应的RLock调用，不会影响其他读锁
-</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">rw</span> <span class="o">*</span><span class="nx">RWMutex</span><span class="p">)</span> <span class="nf">RUnlock</span><span class="p">()</span> <span class="p">{</span>
-	<span class="c1">// 读计数器readerCount-1
-</span><span class="c1"></span>	<span class="c1">// 场景一：有读锁，没有写锁被挂起 r=readerCount-1&gt;=0
-</span><span class="c1"></span>	<span class="c1">// 场景二：有读锁，有写锁被挂起 r&lt;0
-</span><span class="c1"></span>	<span class="c1">// 场景三：没有读锁，没有写锁被挂起 r=-1
-</span><span class="c1"></span>	<span class="c1">// 场景四：没有读锁，有写锁被挂起 r=-(1&lt;&lt;30)-1&lt;0
-</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">r</span> <span class="o">:=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">readerCount</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span> <span class="nx">r</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
-		<span class="c1">// Outlined slow-path to allow the fast-path to be inlined
-</span><span class="c1"></span>		<span class="nx">rw</span><span class="p">.</span><span class="nf">rUnlockSlow</span><span class="p">(</span><span class="nx">r</span><span class="p">)</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="p">(</span><span class="nx">rw</span> <span class="o">*</span><span class="nx">RWMutex</span><span class="p">)</span> <span class="nf">rUnlockSlow</span><span class="p">(</span><span class="nx">r</span> <span class="kt">int32</span><span class="p">)</span> <span class="p">{</span>
-	<span class="c1">// 场景三和场景四是异常情况
-</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">r</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">r</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="o">-</span><span class="nx">rwmutexMaxReaders</span> <span class="p">{</span>
-		<span class="nx">race</span><span class="p">.</span><span class="nf">Enable</span><span class="p">()</span>
-		<span class="nf">throw</span><span class="p">(</span><span class="s">&#34;sync: RUnlock of unlocked RWMutex&#34;</span><span class="p">)</span>
-	<span class="p">}</span>
-	<span class="c1">// 如果写锁的goroutine被阻塞，需要将读锁的goroutine全部释放，才会唤醒写锁
-</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">readerWait</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
-		<span class="c1">// The last reader unblocks the writer.
-</span><span class="c1"></span>		<span class="nf">runtime_Semrelease</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">writerSem</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 读解锁，只会撤销对应的RLock调用，不会影响其他读锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">rw</span> <span class="o">*</span><span class="nx">RWMutex</span><span class="p">)</span> <span class="nf">RUnlock</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 读计数器readerCount-1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 场景一：有读锁，没有写锁被挂起 r=readerCount-1&gt;=0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 场景二：有读锁，有写锁被挂起 r&lt;0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 场景三：没有读锁，没有写锁被挂起 r=-1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 场景四：没有读锁，有写锁被挂起 r=-(1&lt;&lt;30)-1&lt;0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nx">r</span> <span class="o">:=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">readerCount</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span> <span class="nx">r</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Outlined slow-path to allow the fast-path to be inlined
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">rw</span><span class="p">.</span><span class="nf">rUnlockSlow</span><span class="p">(</span><span class="nx">r</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">rw</span> <span class="o">*</span><span class="nx">RWMutex</span><span class="p">)</span> <span class="nf">rUnlockSlow</span><span class="p">(</span><span class="nx">r</span> <span class="kt">int32</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 场景三和场景四是异常情况
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nx">r</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">r</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="o">-</span><span class="nx">rwmutexMaxReaders</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">race</span><span class="p">.</span><span class="nf">Enable</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">throw</span><span class="p">(</span><span class="s">&#34;sync: RUnlock of unlocked RWMutex&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 如果写锁的goroutine被阻塞，需要将读锁的goroutine全部释放，才会唤醒写锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">readerWait</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// The last reader unblocks the writer.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nf">runtime_Semrelease</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">writerSem</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>因为写加锁时是把<code>readerCount</code>+<code>-rwmutexMaxReaders</code>，所以在已经有写加锁时，<code>readerCount</code>一定是负数。</p>
 <p>而对没有读锁没有写锁这种异常情况，<code>readerCount</code>-1后为-1</p>
@@ -235,7 +235,7 @@
 <h2 id="写加锁lock">写加锁Lock</h2>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -248,25 +248,25 @@
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">rw</span> <span class="o">*</span><span class="nx">RWMutex</span><span class="p">)</span> <span class="nf">Lock</span><span class="p">()</span> <span class="p">{</span>
-	<span class="c1">// 首先，获取互斥锁，与其他来获取写锁的goroutine互斥
-</span><span class="c1"></span>	<span class="nx">rw</span><span class="p">.</span><span class="nx">w</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
-	<span class="c1">// 告诉其他来获取读锁的goroutine，现在已经有人获取了写锁
-</span><span class="c1"></span>	<span class="c1">// 减去最大读锁的数量，用负数来表示，写锁已经被获取
-</span><span class="c1"></span>	<span class="nx">r</span> <span class="o">:=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">readerCount</span><span class="p">,</span> <span class="o">-</span><span class="nx">rwmutexMaxReaders</span><span class="p">)</span> <span class="o">+</span> <span class="nx">rwmutexMaxReaders</span>
-	<span class="c1">// 设置需要等待释放的读锁数量，如果有挂起写锁
-</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">r</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">readerWait</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
-		<span class="nf">runtime_SemacquireMutex</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">writerSem</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">rw</span> <span class="o">*</span><span class="nx">RWMutex</span><span class="p">)</span> <span class="nf">Lock</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 首先，获取互斥锁，与其他来获取写锁的goroutine互斥
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">rw</span><span class="p">.</span><span class="nx">w</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 告诉其他来获取读锁的goroutine，现在已经有人获取了写锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 减去最大读锁的数量，用负数来表示，写锁已经被获取
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">r</span> <span class="o">:=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">readerCount</span><span class="p">,</span> <span class="o">-</span><span class="nx">rwmutexMaxReaders</span><span class="p">)</span> <span class="o">+</span> <span class="nx">rwmutexMaxReaders</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 设置需要等待释放的读锁数量，如果有挂起写锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nx">r</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">readerWait</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">runtime_SemacquireMutex</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">writerSem</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>这里先用互斥锁保护下面的操作：</p>
 <p>设置读等待的数量<code>readerWait</code>，如果不为0，就挂起写锁</p>
 <h2 id="写解锁unlock">写解锁Unlock</h2>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -282,21 +282,21 @@
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">rw</span> <span class="o">*</span><span class="nx">RWMutex</span><span class="p">)</span> <span class="nf">Unlock</span><span class="p">()</span> <span class="p">{</span>
-	<span class="c1">// 向读锁的goroutine发出通知，没有写锁了
-</span><span class="c1"></span>	<span class="c1">// 还原加锁时的readerCount
-</span><span class="c1"></span>	<span class="nx">r</span> <span class="o">:=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">readerCount</span><span class="p">,</span> <span class="nx">rwmutexMaxReaders</span><span class="p">)</span>
-	<span class="k">if</span> <span class="nx">r</span> <span class="o">&gt;=</span> <span class="nx">rwmutexMaxReaders</span> <span class="p">{</span>
-		<span class="nx">race</span><span class="p">.</span><span class="nf">Enable</span><span class="p">()</span>
-		<span class="nf">throw</span><span class="p">(</span><span class="s">&#34;sync: Unlock of unlocked RWMutex&#34;</span><span class="p">)</span>
-	<span class="p">}</span>
-	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nb">int</span><span class="p">(</span><span class="nx">r</span><span class="p">);</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
-		<span class="nf">runtime_Semrelease</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">readerSem</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-	<span class="p">}</span>
-	<span class="c1">// Allow other writers to proceed.
-</span><span class="c1"></span>	<span class="nx">rw</span><span class="p">.</span><span class="nx">w</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">rw</span> <span class="o">*</span><span class="nx">RWMutex</span><span class="p">)</span> <span class="nf">Unlock</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 向读锁的goroutine发出通知，没有写锁了
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 还原加锁时的readerCount
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">r</span> <span class="o">:=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">readerCount</span><span class="p">,</span> <span class="nx">rwmutexMaxReaders</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">r</span> <span class="o">&gt;=</span> <span class="nx">rwmutexMaxReaders</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">race</span><span class="p">.</span><span class="nf">Enable</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">throw</span><span class="p">(</span><span class="s">&#34;sync: Unlock of unlocked RWMutex&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nb">int</span><span class="p">(</span><span class="nx">r</span><span class="p">);</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">runtime_Semrelease</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">rw</span><span class="p">.</span><span class="nx">readerSem</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Allow other writers to proceed.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">rw</span><span class="p">.</span><span class="nx">w</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>写解锁时，首先将<code>readerCount</code>数量还原，然后去唤醒读锁</p>
 <h2 id="总结">总结</h2>
@@ -339,8 +339,8 @@
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.85.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
-                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 

@@ -138,7 +138,7 @@
 <h2 id="字段定义">字段定义</h2>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -156,23 +156,23 @@
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// A Mutex must not be copied after first use.
-</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Mutex</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">state</span> <span class="kt">int32</span>  <span class="c1">// 锁的当前状态
-</span><span class="c1"></span>	<span class="nx">sema</span>  <span class="kt">uint32</span> <span class="c1">// 信号量，用户唤醒goroutine
-</span><span class="c1"></span><span class="p">}</span>
-
-<span class="kd">const</span> <span class="p">(</span>
-	<span class="c1">// 是否加锁的标识
-</span><span class="c1"></span>	<span class="nx">mutexLocked</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span> <span class="c1">// mutex is locked
-</span><span class="c1"></span>	<span class="nx">mutexWoken</span>
-	<span class="nx">mutexStarving</span>
-	<span class="nx">mutexWaiterShift</span> <span class="p">=</span> <span class="kc">iota</span>
-
-	<span class="c1">// Mutex fairness.
-</span><span class="c1"></span>	<span class="nx">starvationThresholdNs</span> <span class="p">=</span> <span class="mf">1e6</span>
-<span class="p">)</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// A Mutex must not be copied after first use.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">Mutex</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">state</span> <span class="kt">int32</span>  <span class="c1">// 锁的当前状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">sema</span>  <span class="kt">uint32</span> <span class="c1">// 信号量，用户唤醒goroutine
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 是否加锁的标识
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">mutexLocked</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span> <span class="c1">// mutex is locked
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">mutexWoken</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">mutexStarving</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">mutexWaiterShift</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Mutex fairness.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">starvationThresholdNs</span> <span class="p">=</span> <span class="mf">1e6</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>state的状态：</p>
 <ul>
@@ -192,7 +192,7 @@
 <h2 id="lock">Lock</h2>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">  1
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
 </span><span class="lnt">  2
 </span><span class="lnt">  3
 </span><span class="lnt">  4
@@ -322,135 +322,135 @@
 </span><span class="lnt">128
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="o">*</span><span class="nx">Mutex</span><span class="p">)</span> <span class="nf">Lock</span><span class="p">()</span> <span class="p">{</span>
-	<span class="c1">// Fast path: grab unlocked mutex.
-</span><span class="c1"></span>	<span class="c1">// 判断是否可以加锁。
-</span><span class="c1"></span>	<span class="c1">// 第一个可以直接加锁返回
-</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">CompareAndSwapInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">mutexLocked</span><span class="p">)</span> <span class="p">{</span>
-		<span class="k">return</span>
-	<span class="p">}</span>
-	<span class="c1">// Slow path (outlined so that the fast path can be inlined)
-</span><span class="c1"></span>	<span class="nx">m</span><span class="p">.</span><span class="nf">lockSlow</span><span class="p">()</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="o">*</span><span class="nx">Mutex</span><span class="p">)</span> <span class="nf">lockSlow</span><span class="p">()</span> <span class="p">{</span>
-	<span class="kd">var</span> <span class="nx">waitStartTime</span> <span class="kt">int64</span>
-	<span class="c1">// 饥饿模式
-</span><span class="c1"></span>	<span class="nx">starving</span> <span class="o">:=</span> <span class="kc">false</span>
-	<span class="c1">// 协程唤醒
-</span><span class="c1"></span>	<span class="nx">awoke</span> <span class="o">:=</span> <span class="kc">false</span>
-	<span class="c1">// 循环次数
-</span><span class="c1"></span>	<span class="nx">iter</span> <span class="o">:=</span> <span class="mi">0</span>
-	<span class="c1">// 当前锁状态
-</span><span class="c1"></span>	<span class="nx">old</span> <span class="o">:=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">state</span>
-	<span class="k">for</span> <span class="p">{</span>
-		<span class="c1">// Don&#39;t spin in starvation mode, ownership is handed off to waiters
-</span><span class="c1"></span>		<span class="c1">// so we won&#39;t be able to acquire the mutex anyway.
-</span><span class="c1"></span>		<span class="c1">// 条件一：old被获取到锁，但不处于饥饿状态。如果处于饥饿状态，锁的所有权直接交给等待队列第一个
-</span><span class="c1"></span>		<span class="c1">// 条件二：可以自旋，多核、压力不大并且在一定次数内可以自旋。sync_runtime_canSpin的实现
-</span><span class="c1"></span>		<span class="k">if</span> <span class="nx">old</span><span class="o">&amp;</span><span class="p">(</span><span class="nx">mutexLocked</span><span class="p">|</span><span class="nx">mutexStarving</span><span class="p">)</span> <span class="o">==</span> <span class="nx">mutexLocked</span> <span class="o">&amp;&amp;</span> <span class="nf">runtime_canSpin</span><span class="p">(</span><span class="nx">iter</span><span class="p">)</span> <span class="p">{</span>
-			<span class="c1">// Active spinning makes sense.
-</span><span class="c1"></span>			<span class="c1">// Try to set mutexWoken flag to inform Unlock
-</span><span class="c1"></span>			<span class="c1">// to not wake other blocked goroutines.
-</span><span class="c1"></span>			<span class="c1">// 自旋过程中如果发现state没有设置唤醒标识，添加awoke标识，并标记自己已唤醒
-</span><span class="c1"></span>			<span class="k">if</span> <span class="p">!</span><span class="nx">awoke</span> <span class="o">&amp;&amp;</span> <span class="nx">old</span><span class="o">&amp;</span><span class="nx">mutexWoken</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">old</span><span class="o">&gt;&gt;</span><span class="nx">mutexWaiterShift</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span>
-				<span class="nx">atomic</span><span class="p">.</span><span class="nf">CompareAndSwapInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="nx">old</span><span class="p">,</span> <span class="nx">old</span><span class="p">|</span><span class="nx">mutexWoken</span><span class="p">)</span> <span class="p">{</span>
-				<span class="nx">awoke</span> <span class="p">=</span> <span class="kc">true</span>
-			<span class="p">}</span>
-			<span class="c1">// 主动自旋
-</span><span class="c1"></span>			<span class="nf">runtime_doSpin</span><span class="p">()</span>
-			<span class="nx">iter</span><span class="o">++</span>
-			<span class="nx">old</span> <span class="p">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">state</span>
-			<span class="k">continue</span>
-		<span class="p">}</span>
-		<span class="c1">// 到了这一步：state的状态可能是
-</span><span class="c1"></span>		<span class="c1">// 1、锁没有释放，锁处于正常状态（011）
-</span><span class="c1"></span>		<span class="c1">// 2、锁没有释放，锁处于饥饿状态（111）
-</span><span class="c1"></span>		<span class="c1">// 3、锁已经释放，锁处于正常状态（010）
-</span><span class="c1"></span>		<span class="c1">// 4、锁已经释放，锁处于饥饿状态（110）
-</span><span class="c1"></span>
-		<span class="c1">// 复制一个新的状态
-</span><span class="c1"></span>		<span class="nx">new</span> <span class="o">:=</span> <span class="nx">old</span>
-		<span class="c1">// Don&#39;t try to acquire starving mutex, new arriving goroutines must queue.
-</span><span class="c1"></span>		<span class="c1">// 如果不是饥饿状态，new设置锁，尝试获取锁
-</span><span class="c1"></span>		<span class="c1">// 如果处于饥饿状态，不设置状态
-</span><span class="c1"></span>		<span class="k">if</span> <span class="nx">old</span><span class="o">&amp;</span><span class="nx">mutexStarving</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
-			<span class="nx">new</span> <span class="o">|=</span> <span class="nx">mutexLocked</span> <span class="c1">// 标记为获取锁（实际上还没有获取到）
-</span><span class="c1"></span>		<span class="p">}</span>
-		<span class="c1">// 如果old锁处于被获取或饥饿状态，就把期望状态的等待队列的等待者数量+1
-</span><span class="c1"></span>		<span class="k">if</span> <span class="nx">old</span><span class="o">&amp;</span><span class="p">(</span><span class="nx">mutexLocked</span><span class="p">|</span><span class="nx">mutexStarving</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
-			<span class="nx">new</span> <span class="o">+=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="nx">mutexWaiterShift</span>
-		<span class="p">}</span>
-		<span class="c1">// The current goroutine switches mutex to starvation mode.
-</span><span class="c1"></span>		<span class="c1">// But if the mutex is currently unlocked, don&#39;t do the switch.
-</span><span class="c1"></span>		<span class="c1">// Unlock expects that starving mutex has waiters, which will not
-</span><span class="c1"></span>		<span class="c1">// be true in this case.
-</span><span class="c1"></span>		<span class="c1">// 如果处于饥饿状态，并且state已经被加锁，将new state标记为饥饿状态
-</span><span class="c1"></span>		<span class="k">if</span> <span class="nx">starving</span> <span class="o">&amp;&amp;</span> <span class="nx">old</span><span class="o">&amp;</span><span class="nx">mutexLocked</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
-			<span class="nx">new</span> <span class="o">|=</span> <span class="nx">mutexStarving</span>
-		<span class="p">}</span>
-		<span class="k">if</span> <span class="nx">awoke</span> <span class="p">{</span>
-			<span class="c1">// The goroutine has been woken from sleep,
-</span><span class="c1"></span>			<span class="c1">// so we need to reset the flag in either case.
-</span><span class="c1"></span>			<span class="c1">// goroutine已经被唤醒，因此需要reset
-</span><span class="c1"></span>			<span class="k">if</span> <span class="nx">new</span><span class="o">&amp;</span><span class="nx">mutexWoken</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
-				<span class="nf">throw</span><span class="p">(</span><span class="s">&#34;sync: inconsistent mutex state&#34;</span><span class="p">)</span>
-			<span class="p">}</span>
-			<span class="c1">// 设为未唤醒状态
-</span><span class="c1"></span>			<span class="nx">new</span> <span class="o">&amp;^=</span> <span class="nx">mutexWoken</span>
-		<span class="p">}</span>
-		<span class="c1">// 原子更新state
-</span><span class="c1"></span>		<span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">CompareAndSwapInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="nx">old</span><span class="p">,</span> <span class="nx">new</span><span class="p">)</span> <span class="p">{</span>
-			<span class="c1">// 如果old状态不是饥饿状态也不是被获取状态，代表当前goroutine已经获取了锁
-</span><span class="c1"></span>			<span class="k">if</span> <span class="nx">old</span><span class="o">&amp;</span><span class="p">(</span><span class="nx">mutexLocked</span><span class="p">|</span><span class="nx">mutexStarving</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
-				<span class="k">break</span> <span class="c1">// locked the mutex with CAS
-</span><span class="c1"></span>			<span class="p">}</span>
-			<span class="c1">// If we were already waiting before, queue at the front of the queue.
-</span><span class="c1"></span>			<span class="c1">// 如果之前在等待了，就排在队列前面
-</span><span class="c1"></span>			<span class="nx">queueLifo</span> <span class="o">:=</span> <span class="nx">waitStartTime</span> <span class="o">!=</span> <span class="mi">0</span>
-			<span class="c1">// 如果没有等待过，初始化等待时间
-</span><span class="c1"></span>			<span class="k">if</span> <span class="nx">waitStartTime</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
-				<span class="nx">waitStartTime</span> <span class="p">=</span> <span class="nf">runtime_nanotime</span><span class="p">()</span>
-			<span class="p">}</span>
-			<span class="c1">// 如果queueLifo为true，将等待服务方针等待队列队头，被阻塞
-</span><span class="c1"></span>			<span class="nf">runtime_SemacquireMutex</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">sema</span><span class="p">,</span> <span class="nx">queueLifo</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-			<span class="c1">// 阻塞被唤醒
-</span><span class="c1"></span>
-			<span class="c1">// 如果是饥饿状态或等待超过1ms，将当前goroutine状态设置为饥饿
-</span><span class="c1"></span>			<span class="nx">starving</span> <span class="p">=</span> <span class="nx">starving</span> <span class="o">||</span> <span class="nf">runtime_nanotime</span><span class="p">()</span><span class="o">-</span><span class="nx">waitStartTime</span> <span class="p">&gt;</span> <span class="nx">starvationThresholdNs</span>
-			<span class="nx">old</span> <span class="p">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">state</span>
-			<span class="c1">// 如果是饥饿状态
-</span><span class="c1"></span>			<span class="k">if</span> <span class="nx">old</span><span class="o">&amp;</span><span class="nx">mutexStarving</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
-				<span class="c1">// If this goroutine was woken and mutex is in starvation mode,
-</span><span class="c1"></span>				<span class="c1">// ownership was handed off to us but mutex is in somewhat
-</span><span class="c1"></span>				<span class="c1">// inconsistent state: mutexLocked is not set and we are still
-</span><span class="c1"></span>				<span class="c1">// accounted as waiter. Fix that.
-</span><span class="c1"></span>				<span class="k">if</span> <span class="nx">old</span><span class="o">&amp;</span><span class="p">(</span><span class="nx">mutexLocked</span><span class="p">|</span><span class="nx">mutexWoken</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">old</span><span class="o">&gt;&gt;</span><span class="nx">mutexWaiterShift</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
-					<span class="nf">throw</span><span class="p">(</span><span class="s">&#34;sync: inconsistent mutex state&#34;</span><span class="p">)</span>
-				<span class="p">}</span>
-				<span class="c1">// 当前的goroutine获取锁，waiter-1
-</span><span class="c1"></span>				<span class="nx">delta</span> <span class="o">:=</span> <span class="nb">int32</span><span class="p">(</span><span class="nx">mutexLocked</span> <span class="o">-</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="nx">mutexWaiterShift</span><span class="p">)</span>
-				<span class="c1">// 如果当前goroutine不是饥饿状态或当前goroutine是队列中最后一个，退出饥饿模式，状态设为正常
-</span><span class="c1"></span>				<span class="k">if</span> <span class="p">!</span><span class="nx">starving</span> <span class="o">||</span> <span class="nx">old</span><span class="o">&gt;&gt;</span><span class="nx">mutexWaiterShift</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
-					<span class="c1">// Exit starvation mode.
-</span><span class="c1"></span>					<span class="c1">// Critical to do it here and consider wait time.
-</span><span class="c1"></span>					<span class="c1">// Starvation mode is so inefficient, that two goroutines
-</span><span class="c1"></span>					<span class="c1">// can go lock-step infinitely once they switch mutex
-</span><span class="c1"></span>					<span class="c1">// to starvation mode.
-</span><span class="c1"></span>					<span class="nx">delta</span> <span class="o">-=</span> <span class="nx">mutexStarving</span>
-				<span class="p">}</span>
-				<span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="nx">delta</span><span class="p">)</span>
-				<span class="k">break</span>
-			<span class="p">}</span>
-			<span class="nx">awoke</span> <span class="p">=</span> <span class="kc">true</span>
-			<span class="nx">iter</span> <span class="p">=</span> <span class="mi">0</span>
-		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-			<span class="c1">// cas不成功，说明没有成功获取到锁，更新old
-</span><span class="c1"></span>			<span class="nx">old</span> <span class="p">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">state</span>
-		<span class="p">}</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="o">*</span><span class="nx">Mutex</span><span class="p">)</span> <span class="nf">Lock</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Fast path: grab unlocked mutex.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 判断是否可以加锁。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 第一个可以直接加锁返回
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">CompareAndSwapInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">mutexLocked</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Slow path (outlined so that the fast path can be inlined)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">m</span><span class="p">.</span><span class="nf">lockSlow</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="o">*</span><span class="nx">Mutex</span><span class="p">)</span> <span class="nf">lockSlow</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">waitStartTime</span> <span class="kt">int64</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 饥饿模式
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">starving</span> <span class="o">:=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 协程唤醒
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">awoke</span> <span class="o">:=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 循环次数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">iter</span> <span class="o">:=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 当前锁状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">old</span> <span class="o">:=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">state</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Don&#39;t spin in starvation mode, ownership is handed off to waiters
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// so we won&#39;t be able to acquire the mutex anyway.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// 条件一：old被获取到锁，但不处于饥饿状态。如果处于饥饿状态，锁的所有权直接交给等待队列第一个
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// 条件二：可以自旋，多核、压力不大并且在一定次数内可以自旋。sync_runtime_canSpin的实现
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">if</span> <span class="nx">old</span><span class="o">&amp;</span><span class="p">(</span><span class="nx">mutexLocked</span><span class="p">|</span><span class="nx">mutexStarving</span><span class="p">)</span> <span class="o">==</span> <span class="nx">mutexLocked</span> <span class="o">&amp;&amp;</span> <span class="nf">runtime_canSpin</span><span class="p">(</span><span class="nx">iter</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// Active spinning makes sense.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="c1">// Try to set mutexWoken flag to inform Unlock
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="c1">// to not wake other blocked goroutines.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="c1">// 自旋过程中如果发现state没有设置唤醒标识，添加awoke标识，并标记自己已唤醒
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="k">if</span> <span class="p">!</span><span class="nx">awoke</span> <span class="o">&amp;&amp;</span> <span class="nx">old</span><span class="o">&amp;</span><span class="nx">mutexWoken</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">old</span><span class="o">&gt;&gt;</span><span class="nx">mutexWaiterShift</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">atomic</span><span class="p">.</span><span class="nf">CompareAndSwapInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="nx">old</span><span class="p">,</span> <span class="nx">old</span><span class="p">|</span><span class="nx">mutexWoken</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">awoke</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// 主动自旋
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="nf">runtime_doSpin</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">iter</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">old</span> <span class="p">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">state</span>
+</span></span><span class="line"><span class="cl">			<span class="k">continue</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 到了这一步：state的状态可能是
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// 1、锁没有释放，锁处于正常状态（011）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// 2、锁没有释放，锁处于饥饿状态（111）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// 3、锁已经释放，锁处于正常状态（010）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// 4、锁已经释放，锁处于饥饿状态（110）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 复制一个新的状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">new</span> <span class="o">:=</span> <span class="nx">old</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Don&#39;t try to acquire starving mutex, new arriving goroutines must queue.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// 如果不是饥饿状态，new设置锁，尝试获取锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// 如果处于饥饿状态，不设置状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">if</span> <span class="nx">old</span><span class="o">&amp;</span><span class="nx">mutexStarving</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">new</span> <span class="o">|=</span> <span class="nx">mutexLocked</span> <span class="c1">// 标记为获取锁（实际上还没有获取到）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 如果old锁处于被获取或饥饿状态，就把期望状态的等待队列的等待者数量+1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">if</span> <span class="nx">old</span><span class="o">&amp;</span><span class="p">(</span><span class="nx">mutexLocked</span><span class="p">|</span><span class="nx">mutexStarving</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">new</span> <span class="o">+=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="nx">mutexWaiterShift</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// The current goroutine switches mutex to starvation mode.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// But if the mutex is currently unlocked, don&#39;t do the switch.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// Unlock expects that starving mutex has waiters, which will not
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// be true in this case.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// 如果处于饥饿状态，并且state已经被加锁，将new state标记为饥饿状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">if</span> <span class="nx">starving</span> <span class="o">&amp;&amp;</span> <span class="nx">old</span><span class="o">&amp;</span><span class="nx">mutexLocked</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">new</span> <span class="o">|=</span> <span class="nx">mutexStarving</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">awoke</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// The goroutine has been woken from sleep,
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="c1">// so we need to reset the flag in either case.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="c1">// goroutine已经被唤醒，因此需要reset
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="k">if</span> <span class="nx">new</span><span class="o">&amp;</span><span class="nx">mutexWoken</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nf">throw</span><span class="p">(</span><span class="s">&#34;sync: inconsistent mutex state&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// 设为未唤醒状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="nx">new</span> <span class="o">&amp;^=</span> <span class="nx">mutexWoken</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 原子更新state
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">CompareAndSwapInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="nx">old</span><span class="p">,</span> <span class="nx">new</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// 如果old状态不是饥饿状态也不是被获取状态，代表当前goroutine已经获取了锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="k">if</span> <span class="nx">old</span><span class="o">&amp;</span><span class="p">(</span><span class="nx">mutexLocked</span><span class="p">|</span><span class="nx">mutexStarving</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="k">break</span> <span class="c1">// locked the mutex with CAS
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// If we were already waiting before, queue at the front of the queue.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="c1">// 如果之前在等待了，就排在队列前面
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="nx">queueLifo</span> <span class="o">:=</span> <span class="nx">waitStartTime</span> <span class="o">!=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// 如果没有等待过，初始化等待时间
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="k">if</span> <span class="nx">waitStartTime</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">waitStartTime</span> <span class="p">=</span> <span class="nf">runtime_nanotime</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// 如果queueLifo为true，将等待服务方针等待队列队头，被阻塞
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="nf">runtime_SemacquireMutex</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">sema</span><span class="p">,</span> <span class="nx">queueLifo</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// 阻塞被唤醒
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// 如果是饥饿状态或等待超过1ms，将当前goroutine状态设置为饥饿
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="nx">starving</span> <span class="p">=</span> <span class="nx">starving</span> <span class="o">||</span> <span class="nf">runtime_nanotime</span><span class="p">()</span><span class="o">-</span><span class="nx">waitStartTime</span> <span class="p">&gt;</span> <span class="nx">starvationThresholdNs</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">old</span> <span class="p">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">state</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// 如果是饥饿状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="k">if</span> <span class="nx">old</span><span class="o">&amp;</span><span class="nx">mutexStarving</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="c1">// If this goroutine was woken and mutex is in starvation mode,
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="c1">// ownership was handed off to us but mutex is in somewhat
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="c1">// inconsistent state: mutexLocked is not set and we are still
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="c1">// accounted as waiter. Fix that.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="k">if</span> <span class="nx">old</span><span class="o">&amp;</span><span class="p">(</span><span class="nx">mutexLocked</span><span class="p">|</span><span class="nx">mutexWoken</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">old</span><span class="o">&gt;&gt;</span><span class="nx">mutexWaiterShift</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">					<span class="nf">throw</span><span class="p">(</span><span class="s">&#34;sync: inconsistent mutex state&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">				<span class="p">}</span>
+</span></span><span class="line"><span class="cl">				<span class="c1">// 当前的goroutine获取锁，waiter-1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="nx">delta</span> <span class="o">:=</span> <span class="nb">int32</span><span class="p">(</span><span class="nx">mutexLocked</span> <span class="o">-</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="nx">mutexWaiterShift</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">				<span class="c1">// 如果当前goroutine不是饥饿状态或当前goroutine是队列中最后一个，退出饥饿模式，状态设为正常
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>				<span class="k">if</span> <span class="p">!</span><span class="nx">starving</span> <span class="o">||</span> <span class="nx">old</span><span class="o">&gt;&gt;</span><span class="nx">mutexWaiterShift</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">					<span class="c1">// Exit starvation mode.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>					<span class="c1">// Critical to do it here and consider wait time.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>					<span class="c1">// Starvation mode is so inefficient, that two goroutines
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>					<span class="c1">// can go lock-step infinitely once they switch mutex
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>					<span class="c1">// to starvation mode.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>					<span class="nx">delta</span> <span class="o">-=</span> <span class="nx">mutexStarving</span>
+</span></span><span class="line"><span class="cl">				<span class="p">}</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="nx">delta</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">				<span class="k">break</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">awoke</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">iter</span> <span class="p">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// cas不成功，说明没有成功获取到锁，更新old
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="nx">old</span> <span class="p">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">state</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>加锁流程</strong></p>
 <p>1、原子判断是否可以加锁，如果当前锁没有被使用，当前goroutine获取锁，结束本次Lock操作</p>
@@ -483,7 +483,7 @@
 <h2 id="unlock">UnLock</h2>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -536,58 +536,58 @@
 </span><span class="lnt">51
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="o">*</span><span class="nx">Mutex</span><span class="p">)</span> <span class="nf">Unlock</span><span class="p">()</span> <span class="p">{</span>
-	<span class="k">if</span> <span class="nx">race</span><span class="p">.</span><span class="nx">Enabled</span> <span class="p">{</span>
-		<span class="nx">_</span> <span class="p">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">state</span>
-		<span class="nx">race</span><span class="p">.</span><span class="nf">Release</span><span class="p">(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="nx">m</span><span class="p">))</span>
-	<span class="p">}</span>
-
-	<span class="c1">// Fast path: drop lock bit.
-</span><span class="c1"></span>	<span class="c1">// 修改锁的状态
-</span><span class="c1"></span>	<span class="nx">new</span> <span class="o">:=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="o">-</span><span class="nx">mutexLocked</span><span class="p">)</span>
-	<span class="k">if</span> <span class="nx">new</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
-		<span class="c1">// 如果new=0，说明只有一个Lock并且被解开了
-</span><span class="c1"></span>		<span class="c1">// Outlined slow path to allow inlining the fast path.
-</span><span class="c1"></span>		<span class="c1">// To hide unlockSlow during tracing we skip one extra frame when tracing GoUnblock.
-</span><span class="c1"></span>		<span class="nx">m</span><span class="p">.</span><span class="nf">unlockSlow</span><span class="p">(</span><span class="nx">new</span><span class="p">)</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="o">*</span><span class="nx">Mutex</span><span class="p">)</span> <span class="nf">unlockSlow</span><span class="p">(</span><span class="nx">new</span> <span class="kt">int32</span><span class="p">)</span> <span class="p">{</span>
-	<span class="c1">// （new+1）&amp;1==0，new=-1，也就是上面已经Unlock后又调用一次Unlock会出现这种情况
-</span><span class="c1"></span>	<span class="k">if</span> <span class="p">(</span><span class="nx">new</span><span class="o">+</span><span class="nx">mutexLocked</span><span class="p">)</span><span class="o">&amp;</span><span class="nx">mutexLocked</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
-		<span class="nf">throw</span><span class="p">(</span><span class="s">&#34;sync: unlock of unlocked mutex&#34;</span><span class="p">)</span>
-	<span class="p">}</span>
-	<span class="k">if</span> <span class="nx">new</span><span class="o">&amp;</span><span class="nx">mutexStarving</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
-		<span class="c1">// 不是饥饿状态
-</span><span class="c1"></span>		<span class="nx">old</span> <span class="o">:=</span> <span class="nx">new</span>
-		<span class="k">for</span> <span class="p">{</span>
-			<span class="c1">// 如果锁没有等待拿锁的goroutine
-</span><span class="c1"></span>			<span class="c1">// 或锁被获取了（在循环过程中被其他goroutine获取了）
-</span><span class="c1"></span>			<span class="c1">// 或锁是被唤醒状态（表示有goroutine被唤醒，不需要再去尝试唤醒其他goroutine）
-</span><span class="c1"></span>			<span class="c1">// 或者锁是饥饿状态（会直接交给队列头的goroutine）
-</span><span class="c1"></span>			<span class="c1">// 那么直接返回
-</span><span class="c1"></span>			<span class="k">if</span> <span class="nx">old</span><span class="o">&gt;&gt;</span><span class="nx">mutexWaiterShift</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">old</span><span class="o">&amp;</span><span class="p">(</span><span class="nx">mutexLocked</span><span class="p">|</span><span class="nx">mutexWoken</span><span class="p">|</span><span class="nx">mutexStarving</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
-				<span class="k">return</span>
-			<span class="p">}</span>
-			<span class="c1">// Grab the right to wake someone.
-</span><span class="c1"></span>			<span class="c1">// 将等待队列-1，设置woken标识
-</span><span class="c1"></span>			<span class="nx">new</span> <span class="p">=</span> <span class="p">(</span><span class="nx">old</span> <span class="o">-</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="nx">mutexWaiterShift</span><span class="p">)</span> <span class="p">|</span> <span class="nx">mutexWoken</span>
-			<span class="c1">// 设置新的state，通过信号量会唤醒一个阻塞的goroutine去获取锁
-</span><span class="c1"></span>			<span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">CompareAndSwapInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="nx">old</span><span class="p">,</span> <span class="nx">new</span><span class="p">)</span> <span class="p">{</span>
-				<span class="nf">runtime_Semrelease</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">sema</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-				<span class="k">return</span>
-			<span class="p">}</span>
-			<span class="nx">old</span> <span class="p">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">state</span>
-		<span class="p">}</span>
-	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-		<span class="c1">// 饥饿模式下，直接将锁的所有权转给等待队列中的第一个。
-</span><span class="c1"></span>		<span class="c1">// 注意此时state的mutexLocked还没有设置，唤醒的goroutine会设置它。
-</span><span class="c1"></span>		<span class="c1">// 在此期间，如果有新的goroutine来请求锁，因为mutex处于饥饿状态，mutex还会被认为处于锁的状态，新来的goroutine不会抢占锁
-</span><span class="c1"></span>		<span class="nf">runtime_Semrelease</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">sema</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="o">*</span><span class="nx">Mutex</span><span class="p">)</span> <span class="nf">Unlock</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">race</span><span class="p">.</span><span class="nx">Enabled</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">_</span> <span class="p">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">state</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">race</span><span class="p">.</span><span class="nf">Release</span><span class="p">(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="nx">m</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Fast path: drop lock bit.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 修改锁的状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">new</span> <span class="o">:=</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="o">-</span><span class="nx">mutexLocked</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">new</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 如果new=0，说明只有一个Lock并且被解开了
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// Outlined slow path to allow inlining the fast path.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// To hide unlockSlow during tracing we skip one extra frame when tracing GoUnblock.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">m</span><span class="p">.</span><span class="nf">unlockSlow</span><span class="p">(</span><span class="nx">new</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">m</span> <span class="o">*</span><span class="nx">Mutex</span><span class="p">)</span> <span class="nf">unlockSlow</span><span class="p">(</span><span class="nx">new</span> <span class="kt">int32</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// （new+1）&amp;1==0，new=-1，也就是上面已经Unlock后又调用一次Unlock会出现这种情况
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="p">(</span><span class="nx">new</span><span class="o">+</span><span class="nx">mutexLocked</span><span class="p">)</span><span class="o">&amp;</span><span class="nx">mutexLocked</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">throw</span><span class="p">(</span><span class="s">&#34;sync: unlock of unlocked mutex&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">new</span><span class="o">&amp;</span><span class="nx">mutexStarving</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 不是饥饿状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">old</span> <span class="o">:=</span> <span class="nx">new</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// 如果锁没有等待拿锁的goroutine
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="c1">// 或锁被获取了（在循环过程中被其他goroutine获取了）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="c1">// 或锁是被唤醒状态（表示有goroutine被唤醒，不需要再去尝试唤醒其他goroutine）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="c1">// 或者锁是饥饿状态（会直接交给队列头的goroutine）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="c1">// 那么直接返回
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="k">if</span> <span class="nx">old</span><span class="o">&gt;&gt;</span><span class="nx">mutexWaiterShift</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">old</span><span class="o">&amp;</span><span class="p">(</span><span class="nx">mutexLocked</span><span class="p">|</span><span class="nx">mutexWoken</span><span class="p">|</span><span class="nx">mutexStarving</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="k">return</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// Grab the right to wake someone.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="c1">// 将等待队列-1，设置woken标识
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="nx">new</span> <span class="p">=</span> <span class="p">(</span><span class="nx">old</span> <span class="o">-</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="nx">mutexWaiterShift</span><span class="p">)</span> <span class="p">|</span> <span class="nx">mutexWoken</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// 设置新的state，通过信号量会唤醒一个阻塞的goroutine去获取锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">CompareAndSwapInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span> <span class="nx">old</span><span class="p">,</span> <span class="nx">new</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nf">runtime_Semrelease</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">sema</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">				<span class="k">return</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">old</span> <span class="p">=</span> <span class="nx">m</span><span class="p">.</span><span class="nx">state</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 饥饿模式下，直接将锁的所有权转给等待队列中的第一个。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// 注意此时state的mutexLocked还没有设置，唤醒的goroutine会设置它。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// 在此期间，如果有新的goroutine来请求锁，因为mutex处于饥饿状态，mutex还会被认为处于锁的状态，新来的goroutine不会抢占锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nf">runtime_Semrelease</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">m</span><span class="p">.</span><span class="nx">sema</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><strong>解锁流程</strong></p>
 <p>1、判断锁的状态，不能重复解锁</p>
@@ -648,8 +648,8 @@ Atomic operations are fast because they use an atomic CPU instruction, rather th
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.85.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
-                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 

@@ -10,7 +10,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.betterformile.ml/2020/11/exporter/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-11-20T15:45:29+08:00" />
-<meta property="article:modified_time" content="2021-07-19T17:45:05+08:00" />
+<meta property="article:modified_time" content="2020-11-20T15:45:29+08:00" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/>
@@ -20,7 +20,7 @@
 <meta name="application-name" content="月霜天">
 <meta name="apple-mobile-web-app-title" content="月霜天"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.betterformile.ml/2020/11/exporter/" /><link rel="prev" href="https://blog.betterformile.ml/2020/11/prometheus/" /><link rel="next" href="https://blog.betterformile.ml/2020/11/json_example/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.betterformile.ml/2020/11/exporter/" /><link rel="prev" href="https://blog.betterformile.ml/2020/11/prometheus/" /><link rel="next" href="https://blog.betterformile.ml/2020/11/json_unmarshal/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
@@ -30,7 +30,7 @@
             "@type": "WebPage",
             "@id": "https:\/\/blog.betterformile.ml\/2020\/11\/exporter\/"
         },"genre": "posts","keywords": "prometheus","wordcount":  1942 ,
-        "url": "https:\/\/blog.betterformile.ml\/2020\/11\/exporter\/","datePublished": "2020-11-20T15:45:29+08:00","dateModified": "2021-07-19T17:45:05+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+        "url": "https:\/\/blog.betterformile.ml\/2020\/11\/exporter\/","datePublished": "2020-11-20T15:45:29+08:00","dateModified": "2020-11-20T15:45:29+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "月霜天"},"author": {
                 "@type": "Person",
@@ -125,7 +125,7 @@
 <p>先写一个简单的http服务，在9095端口启动了一个能够为prometheus提供监控指标的HTTP服务。你可以在 http://localhost:9095/metrics 看到这些指标。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -141,21 +141,21 @@
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kn">import</span> <span class="p">(</span>
-	<span class="s">&#34;github.com/prometheus/client_golang/prometheus/promhttp&#34;</span>
-	<span class="s">&#34;net/http&#34;</span>
-<span class="p">)</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;hello world&#34;</span><span class="p">))</span>
-	<span class="p">})</span>
-	<span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/metrics&#34;</span><span class="p">,</span><span class="nx">promhttp</span><span class="p">.</span><span class="nf">Handler</span><span class="p">())</span>
-	<span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:9095&#34;</span><span class="p">,</span><span class="kc">nil</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/prometheus/client_golang/prometheus/promhttp&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;net/http&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;hello world&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="p">})</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/metrics&#34;</span><span class="p">,</span><span class="nx">promhttp</span><span class="p">.</span><span class="nf">Handler</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:9095&#34;</span><span class="p">,</span><span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><img
         class="lazyload"
@@ -168,7 +168,7 @@
 <p>虽然偶尔会手动访问/metrics页面查看指标数据，但是将指标数据导入prometheus才方便。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -180,17 +180,17 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">global</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">15s</span><span class="w"> </span><span class="c"># 默认抓取间隔，15s向目标抓取一次数据</span><span class="w">
-</span><span class="w">  </span><span class="nt">external_labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">monitor</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;prometheus-monitor&#39;</span><span class="w">
-</span><span class="w"></span><span class="c"># 抓取对象</span><span class="w">
-</span><span class="w"></span><span class="nt">scrape_configs</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;exporter&#39;</span><span class="w"> </span><span class="c"># 名称，会在每一条metrics添加标签{job_name:&#34;prometheus&#34;}</span><span class="w">
-</span><span class="w">    </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">5s</span><span class="w"> </span><span class="c"># 抓取时间</span><span class="w">
-</span><span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span><span class="w"> </span><span class="c"># 抓取对象</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9095&#39;</span><span class="p">]</span><span class="w">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">global</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">15s</span><span class="w"> </span><span class="c"># 默认抓取间隔，15s向目标抓取一次数据</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">external_labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">monitor</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;prometheus-monitor&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># 抓取对象</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">scrape_configs</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;exporter&#39;</span><span class="w"> </span><span class="c"># 名称，会在每一条metrics添加标签{job_name:&#34;prometheus&#34;}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">5s</span><span class="w"> </span><span class="c"># 抓取时间</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span><span class="w"> </span><span class="c"># 抓取对象</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9095&#39;</span><span class="p">]</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>那么在 http://localhost:9090/ 浏览器输入 PromQL 表达式 go_info,就会看到如图的结果
 <img
@@ -207,21 +207,21 @@
 <p>Counter主要有两个方法</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># 将counter加1
-Inc()
-# 增加指定值，如果&lt;0会panic
-Add(float64)
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># 将counter加1
+</span></span><span class="line"><span class="cl">Inc()
+</span></span><span class="line"><span class="cl"># 增加指定值，如果&lt;0会panic
+</span></span><span class="line"><span class="cl">Add(float64)
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -266,57 +266,57 @@ Add(float64)
 </span><span class="lnt">43
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kn">import</span> <span class="p">(</span>
-	<span class="s">&#34;github.com/prometheus/client_golang/prometheus&#34;</span>
-	<span class="s">&#34;github.com/prometheus/client_golang/prometheus/promauto&#34;</span>
-    <span class="s">&#34;github.com/prometheus/client_golang/prometheus/promhttp&#34;</span>
-	<span class="s">&#34;net/http&#34;</span>
-	<span class="s">&#34;time&#34;</span>
-<span class="p">)</span>
-
-<span class="kd">var</span> <span class="p">(</span>
-	<span class="nx">failures</span> <span class="p">=</span> <span class="nx">prometheus</span><span class="p">.</span><span class="nf">NewCounterVec</span><span class="p">(</span><span class="nx">prometheus</span><span class="p">.</span><span class="nx">CounterOpts</span><span class="p">{</span>
-		<span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;hq_failture_total&#34;</span><span class="p">,</span>
-		<span class="nx">Help</span><span class="p">:</span> <span class="s">&#34;failure counts&#34;</span><span class="p">,</span>
-	<span class="p">},[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;device&#34;</span><span class="p">})</span>
-    <span class="c1">// 可以使用promauto自动注册
-</span><span class="c1"></span>    <span class="nx">success</span> <span class="p">=</span> <span class="nx">promauto</span><span class="p">.</span><span class="nf">NewCounterVec</span><span class="p">(</span><span class="nx">prometheus</span><span class="p">.</span><span class="nx">CounterOpts</span><span class="p">{</span>
-    	<span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;hq_failture_total&#34;</span><span class="p">,</span>
-    	<span class="nx">Help</span><span class="p">:</span> <span class="s">&#34;failure counts&#34;</span><span class="p">,</span>
-    <span class="p">},[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;device&#34;</span><span class="p">})</span>
-<span class="p">)</span>
-
-<span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">prometheus</span><span class="p">.</span><span class="nf">MustRegister</span><span class="p">(</span><span class="nx">failures</span><span class="p">)</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sda&#34;</span><span class="p">).</span><span class="nf">Add</span><span class="p">(</span><span class="mf">3.2</span><span class="p">)</span>
-		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sda&#34;</span><span class="p">).</span><span class="nf">Inc</span><span class="p">()</span>
-		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sdb&#34;</span><span class="p">).</span><span class="nf">Inc</span><span class="p">()</span>
-		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sdb&#34;</span><span class="p">).</span><span class="nf">Add</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span>
-	<span class="p">}()</span>
-
-	<span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;hello world&#34;</span><span class="p">))</span>
-	<span class="p">})</span>
-	<span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/metrics&#34;</span><span class="p">,</span><span class="nx">promhttp</span><span class="p">.</span><span class="nf">Handler</span><span class="p">())</span>
-	<span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:9095&#34;</span><span class="p">,</span><span class="kc">nil</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/prometheus/client_golang/prometheus&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/prometheus/client_golang/prometheus/promauto&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;github.com/prometheus/client_golang/prometheus/promhttp&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;net/http&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;time&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">failures</span> <span class="p">=</span> <span class="nx">prometheus</span><span class="p">.</span><span class="nf">NewCounterVec</span><span class="p">(</span><span class="nx">prometheus</span><span class="p">.</span><span class="nx">CounterOpts</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;hq_failture_total&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Help</span><span class="p">:</span> <span class="s">&#34;failure counts&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">},[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;device&#34;</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 可以使用promauto自动注册
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">success</span> <span class="p">=</span> <span class="nx">promauto</span><span class="p">.</span><span class="nf">NewCounterVec</span><span class="p">(</span><span class="nx">prometheus</span><span class="p">.</span><span class="nx">CounterOpts</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    	<span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;hq_failture_total&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    	<span class="nx">Help</span><span class="p">:</span> <span class="s">&#34;failure counts&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;device&#34;</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">prometheus</span><span class="p">.</span><span class="nf">MustRegister</span><span class="p">(</span><span class="nx">failures</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sda&#34;</span><span class="p">).</span><span class="nf">Add</span><span class="p">(</span><span class="mf">3.2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sda&#34;</span><span class="p">).</span><span class="nf">Inc</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sdb&#34;</span><span class="p">).</span><span class="nf">Inc</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sdb&#34;</span><span class="p">).</span><span class="nf">Add</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;hello world&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="p">})</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/metrics&#34;</span><span class="p">,</span><span class="nx">promhttp</span><span class="p">.</span><span class="nf">Handler</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:9095&#34;</span><span class="p">,</span><span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="gauge仪表盘类型">Gauge(仪表盘类型)</h3>
 <p>Gauge是可增可减的指标类，更关注于数值本身。</p>
 <p>Gauge主要有几种方法</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -330,23 +330,23 @@ Add(float64)
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># 设置任意值
-Set(float64)
-# 加1
-Inc()
-# 减1
-Dec()
-# 加任意数，如果是负数，那么就会减去
-Add(float64)
-# 和当前值的差值
-Sub(float64)
-# 设置值为当前时间戳
-SetToCurrentTime()
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># 设置任意值
+</span></span><span class="line"><span class="cl">Set(float64)
+</span></span><span class="line"><span class="cl"># 加1
+</span></span><span class="line"><span class="cl">Inc()
+</span></span><span class="line"><span class="cl"># 减1
+</span></span><span class="line"><span class="cl">Dec()
+</span></span><span class="line"><span class="cl"># 加任意数，如果是负数，那么就会减去
+</span></span><span class="line"><span class="cl">Add(float64)
+</span></span><span class="line"><span class="cl"># 和当前值的差值
+</span></span><span class="line"><span class="cl">Sub(float64)
+</span></span><span class="line"><span class="cl"># 设置值为当前时间戳
+</span></span><span class="line"><span class="cl">SetToCurrentTime()
+</span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -394,64 +394,64 @@ SetToCurrentTime()
 </span><span class="lnt">46
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kn">import</span> <span class="p">(</span>
-	<span class="s">&#34;github.com/prometheus/client_golang/prometheus&#34;</span>
-	<span class="s">&#34;github.com/prometheus/client_golang/prometheus/promhttp&#34;</span>
-	<span class="s">&#34;net/http&#34;</span>
-	<span class="s">&#34;time&#34;</span>
-<span class="p">)</span>
-
-<span class="kd">var</span> <span class="p">(</span>
-	<span class="nx">failures</span> <span class="p">=</span> <span class="nx">prometheus</span><span class="p">.</span><span class="nf">NewGaugeVec</span><span class="p">(</span><span class="nx">prometheus</span><span class="p">.</span><span class="nx">GaugeOpts</span><span class="p">{</span>
-		<span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;hq_failture_total&#34;</span><span class="p">,</span>
-		<span class="nx">Help</span><span class="p">:</span> <span class="s">&#34;failure counts&#34;</span><span class="p">,</span>
-	<span class="p">},[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;device&#34;</span><span class="p">})</span>
-<span class="p">)</span>
-
-<span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">prometheus</span><span class="p">.</span><span class="nf">MustRegister</span><span class="p">(</span><span class="nx">failures</span><span class="p">)</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sda&#34;</span><span class="p">).</span><span class="nf">Add</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sdb&#34;</span><span class="p">).</span><span class="nf">Set</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span> <span class="o">*</span> <span class="mi">5</span><span class="p">)</span>
-		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sda&#34;</span><span class="p">).</span><span class="nf">Inc</span><span class="p">()</span>
-		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sdb&#34;</span><span class="p">).</span><span class="nf">Add</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span> <span class="o">*</span> <span class="mi">5</span><span class="p">)</span>
-		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sda&#34;</span><span class="p">).</span><span class="nf">Dec</span><span class="p">()</span>
-		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sdb&#34;</span><span class="p">).</span><span class="nf">SetToCurrentTime</span><span class="p">()</span>
-		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="o">*</span> <span class="mi">5</span><span class="p">)</span>
-		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sda&#34;</span><span class="p">).</span><span class="nf">Sub</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sdb&#34;</span><span class="p">).</span><span class="nf">Dec</span><span class="p">()</span>
-		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="o">*</span> <span class="mi">5</span><span class="p">)</span>
-
-
-		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-
-	<span class="p">}()</span>
-
-	<span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;hello world&#34;</span><span class="p">))</span>
-	<span class="p">})</span>
-	<span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/metrics&#34;</span><span class="p">,</span><span class="nx">promhttp</span><span class="p">.</span><span class="nf">Handler</span><span class="p">())</span>
-	<span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:9095&#34;</span><span class="p">,</span><span class="kc">nil</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/prometheus/client_golang/prometheus&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/prometheus/client_golang/prometheus/promhttp&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;net/http&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;time&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">failures</span> <span class="p">=</span> <span class="nx">prometheus</span><span class="p">.</span><span class="nf">NewGaugeVec</span><span class="p">(</span><span class="nx">prometheus</span><span class="p">.</span><span class="nx">GaugeOpts</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;hq_failture_total&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Help</span><span class="p">:</span> <span class="s">&#34;failure counts&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">},[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;device&#34;</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">prometheus</span><span class="p">.</span><span class="nf">MustRegister</span><span class="p">(</span><span class="nx">failures</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sda&#34;</span><span class="p">).</span><span class="nf">Add</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sdb&#34;</span><span class="p">).</span><span class="nf">Set</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span> <span class="o">*</span> <span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sda&#34;</span><span class="p">).</span><span class="nf">Inc</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sdb&#34;</span><span class="p">).</span><span class="nf">Add</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span> <span class="o">*</span> <span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sda&#34;</span><span class="p">).</span><span class="nf">Dec</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sdb&#34;</span><span class="p">).</span><span class="nf">SetToCurrentTime</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="o">*</span> <span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sda&#34;</span><span class="p">).</span><span class="nf">Sub</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sdb&#34;</span><span class="p">).</span><span class="nf">Dec</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="o">*</span> <span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="p">}()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;hello world&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="p">})</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/metrics&#34;</span><span class="p">,</span><span class="nx">promhttp</span><span class="p">.</span><span class="nf">Handler</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:9095&#34;</span><span class="p">,</span><span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="summary摘要类型">Summary(摘要类型)</h3>
 <p>表示一段时间数据采样结果，由<basename>_count,<basename>_sum构成</p>
 <p>Summary只有一种方法</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">Observe(float64)
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Observe(float64)
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>你可以访问 /metrics 可以看到hq_failture_total_sum和hq_failture_total_count</p>
 <p><img
@@ -466,7 +466,7 @@ SetToCurrentTime()
 <p>hq_failture_total_count代表观察到的条数</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -505,44 +505,44 @@ SetToCurrentTime()
 </span><span class="lnt">37
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kn">import</span> <span class="p">(</span>
-	<span class="s">&#34;github.com/prometheus/client_golang/prometheus&#34;</span>
-	<span class="s">&#34;github.com/prometheus/client_golang/prometheus/promhttp&#34;</span>
-	<span class="s">&#34;net/http&#34;</span>
-	<span class="s">&#34;time&#34;</span>
-<span class="p">)</span>
-
-<span class="kd">var</span> <span class="p">(</span>
-	<span class="nx">failures</span> <span class="p">=</span> <span class="nx">prometheus</span><span class="p">.</span><span class="nf">NewSummaryVec</span><span class="p">(</span><span class="nx">prometheus</span><span class="p">.</span><span class="nx">SummaryOpts</span><span class="p">{</span>
-		<span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;hq_failture_total&#34;</span><span class="p">,</span>
-		<span class="nx">Help</span><span class="p">:</span> <span class="s">&#34;failure counts&#34;</span><span class="p">,</span>
-	<span class="p">},[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;device&#34;</span><span class="p">})</span>
-<span class="p">)</span>
-
-<span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">prometheus</span><span class="p">.</span><span class="nf">MustRegister</span><span class="p">(</span><span class="nx">failures</span><span class="p">)</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="kd">var</span> <span class="nx">count</span> <span class="kt">float64</span>
-	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-		<span class="nx">t</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">NewTicker</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-		<span class="k">for</span>  <span class="p">{</span>
-			<span class="nx">count</span><span class="o">++</span>
-			<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sdc&#34;</span><span class="p">).</span><span class="nf">Observe</span><span class="p">(</span><span class="nx">count</span><span class="p">)</span>
-			<span class="o">&lt;-</span><span class="nx">t</span><span class="p">.</span><span class="nx">C</span>
-		<span class="p">}</span>
-	<span class="p">}()</span>
-
-	<span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;hello world&#34;</span><span class="p">))</span>
-	<span class="p">})</span>
-	<span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/metrics&#34;</span><span class="p">,</span><span class="nx">promhttp</span><span class="p">.</span><span class="nf">Handler</span><span class="p">())</span>
-	<span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:9095&#34;</span><span class="p">,</span><span class="kc">nil</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/prometheus/client_golang/prometheus&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/prometheus/client_golang/prometheus/promhttp&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;net/http&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;time&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">failures</span> <span class="p">=</span> <span class="nx">prometheus</span><span class="p">.</span><span class="nf">NewSummaryVec</span><span class="p">(</span><span class="nx">prometheus</span><span class="p">.</span><span class="nx">SummaryOpts</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;hq_failture_total&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Help</span><span class="p">:</span> <span class="s">&#34;failure counts&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">},[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;device&#34;</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">prometheus</span><span class="p">.</span><span class="nf">MustRegister</span><span class="p">(</span><span class="nx">failures</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">count</span> <span class="kt">float64</span>
+</span></span><span class="line"><span class="cl">	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">t</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">NewTicker</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span>  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">count</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sdc&#34;</span><span class="p">).</span><span class="nf">Observe</span><span class="p">(</span><span class="nx">count</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="o">&lt;-</span><span class="nx">t</span><span class="p">.</span><span class="nx">C</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;hello world&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="p">})</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/metrics&#34;</span><span class="p">,</span><span class="nx">promhttp</span><span class="p">.</span><span class="nf">Handler</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:9095&#34;</span><span class="p">,</span><span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="histogram直方图类型">Histogram(直方图类型)</h3>
 <p>summary可以提供平均延迟数据，但是如果你想要分位数呢？</p>
@@ -550,11 +550,11 @@ SetToCurrentTime()
 <p>Histogram只有一种方法</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">Observe(float64)
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Observe(float64)
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>你可以访问 /metrics 可以看到hq_failture_total_sum和hq_failture_total_count、hq_failture_total_bucket</p>
 <p><img
@@ -567,7 +567,7 @@ SetToCurrentTime()
         title="https://raw.githubusercontent.com/betterfor/cloudImage/master/images/2020-11-24/failure_bucket.png" /></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -605,43 +605,43 @@ SetToCurrentTime()
 </span><span class="lnt">36
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kn">import</span> <span class="p">(</span>
-	<span class="s">&#34;github.com/prometheus/client_golang/prometheus&#34;</span>
-	<span class="s">&#34;github.com/prometheus/client_golang/prometheus/promhttp&#34;</span>
-	<span class="s">&#34;math/rand&#34;</span>
-	<span class="s">&#34;net/http&#34;</span>
-	<span class="s">&#34;time&#34;</span>
-<span class="p">)</span>
-
-<span class="kd">var</span> <span class="p">(</span>
-	<span class="nx">failures</span> <span class="p">=</span> <span class="nx">prometheus</span><span class="p">.</span><span class="nf">NewHistogramVec</span><span class="p">(</span><span class="nx">prometheus</span><span class="p">.</span><span class="nx">HistogramOpts</span><span class="p">{</span>
-		<span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;hq_failture_total&#34;</span><span class="p">,</span>
-		<span class="nx">Help</span><span class="p">:</span> <span class="s">&#34;failure counts&#34;</span><span class="p">,</span>
-	<span class="p">},[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;device&#34;</span><span class="p">})</span>
-<span class="p">)</span>
-
-<span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">prometheus</span><span class="p">.</span><span class="nf">MustRegister</span><span class="p">(</span><span class="nx">failures</span><span class="p">)</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-		<span class="nx">t</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">NewTicker</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-		<span class="k">for</span>  <span class="p">{</span>
-			<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sdc&#34;</span><span class="p">).</span><span class="nf">Observe</span><span class="p">(</span><span class="nx">rand</span><span class="p">.</span><span class="nf">Float64</span><span class="p">())</span>
-			<span class="o">&lt;-</span><span class="nx">t</span><span class="p">.</span><span class="nx">C</span>
-		<span class="p">}</span>
-	<span class="p">}()</span>
-
-	<span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;hello world&#34;</span><span class="p">))</span>
-	<span class="p">})</span>
-	<span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/metrics&#34;</span><span class="p">,</span><span class="nx">promhttp</span><span class="p">.</span><span class="nf">Handler</span><span class="p">())</span>
-	<span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:9095&#34;</span><span class="p">,</span><span class="kc">nil</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/prometheus/client_golang/prometheus&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/prometheus/client_golang/prometheus/promhttp&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;math/rand&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;net/http&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;time&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">failures</span> <span class="p">=</span> <span class="nx">prometheus</span><span class="p">.</span><span class="nf">NewHistogramVec</span><span class="p">(</span><span class="nx">prometheus</span><span class="p">.</span><span class="nx">HistogramOpts</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;hq_failture_total&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Help</span><span class="p">:</span> <span class="s">&#34;failure counts&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">},[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;device&#34;</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">prometheus</span><span class="p">.</span><span class="nf">MustRegister</span><span class="p">(</span><span class="nx">failures</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">t</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">NewTicker</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span>  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">failures</span><span class="p">.</span><span class="nf">WithLabelValues</span><span class="p">(</span><span class="s">&#34;/dev/sdc&#34;</span><span class="p">).</span><span class="nf">Observe</span><span class="p">(</span><span class="nx">rand</span><span class="p">.</span><span class="nf">Float64</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">			<span class="o">&lt;-</span><span class="nx">t</span><span class="p">.</span><span class="nx">C</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;hello world&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="p">})</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/metrics&#34;</span><span class="p">,</span><span class="nx">promhttp</span><span class="p">.</span><span class="nf">Handler</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:9095&#34;</span><span class="p">,</span><span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>那么什么是bucket(桶)？桶记录小于监控指标的数量
 默认的buckets范围为{0.005，0.01，0.025，0.05，0.075，0.1，0.25，0.5，0.75，1，2.5，5，7.5，10}</p>
@@ -658,8 +658,7 @@ histogram_quantile(0.95,rate(hq_failture_total_bucket[1m]))</p>
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2021-07-19&nbsp;<a class="git-hash" href="https://betterfor.github.io/commit/1a7befd3bf6b110e0728d6541bf17494efe8f241" target="_blank" title="commit by betterfor(xiejian) 1a7befd3bf6b110e0728d6541bf17494efe8f241: 添加sync包的源码解析">
-                                    <i class="fas fa-hashtag fa-fw"></i>1a7befd</a></span>
+                <span>更新于 2020-11-20</span>
             </div>
             <div class="post-info-license"></div>
         </div>
@@ -681,14 +680,14 @@ histogram_quantile(0.95,rate(hq_failture_total_bucket[1m]))</p>
     </div>
 
     <div class="post-nav"><a href="/2020/11/prometheus/" class="prev" rel="prev" title="5分钟学会搭建Prometheus"><i class="fas fa-angle-left fa-fw"></i>5分钟学会搭建Prometheus</a>
-            <a href="/2020/11/json_example/" class="next" rel="next" title="如何自定义让json解析出自定义值">如何自定义让json解析出自定义值<i class="fas fa-angle-right fa-fw"></i></a></div>
+            <a href="/2020/11/json_unmarshal/" class="next" rel="next" title="如何自定义让json解析出自定义值">如何自定义让json解析出自定义值<i class="fas fa-angle-right fa-fw"></i></a></div>
 </div>
 <div id="comments"><div id="utterances"></div><noscript>
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.85.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
-                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 

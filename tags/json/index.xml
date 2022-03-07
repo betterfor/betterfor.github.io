@@ -5,10 +5,10 @@
         <description>json - 标签 - 月霜天的小站</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 25 Nov 2020 09:54:07 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/json/" rel="self" type="application/rss+xml" /><item>
     <title>如何自定义让json解析出自定义值</title>
-    <link>https://blog.betterformile.ml/2020/11/json_example/</link>
+    <link>https://blog.betterformile.ml/2020/11/json_unmarshal/</link>
     <pubDate>Wed, 25 Nov 2020 09:54:07 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2020/11/json_example/</guid>
+    <guid>https://blog.betterformile.ml/2020/11/json_unmarshal/</guid>
     <description><![CDATA[简介 先来看一下 json.Unmarshal 的注释 大意是 json 解析的时候会调用 Unmarshaler 的接口。那么我们就可以自定义解析数据了。 先看一个例子 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20]]></description>
 </item></channel>
 </rss>

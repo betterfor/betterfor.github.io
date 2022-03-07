@@ -10,7 +10,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.betterformile.ml/2021/01/rocketmq/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-01-07T16:50:55+08:00" />
-<meta property="article:modified_time" content="2021-07-19T17:45:05+08:00" />
+<meta property="article:modified_time" content="2021-01-07T16:50:55+08:00" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/>
@@ -29,8 +29,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/blog.betterformile.ml\/2021\/01\/rocketmq\/"
-        },"genre": "posts","keywords": "docker, rocketmq","wordcount":  1934 ,
-        "url": "https:\/\/blog.betterformile.ml\/2021\/01\/rocketmq\/","datePublished": "2021-01-07T16:50:55+08:00","dateModified": "2021-07-19T17:45:05+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+        },"genre": "posts","keywords": "docker, rocketmq","wordcount":  1932 ,
+        "url": "https:\/\/blog.betterformile.ml\/2021\/01\/rocketmq\/","datePublished": "2021-01-07T16:50:55+08:00","dateModified": "2021-01-07T16:50:55+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "月霜天"},"author": {
                 "@type": "Person",
@@ -93,7 +93,7 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">docker安装部署Rocketmq</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E6%95%99%E7%A8%8B/"><i class="far fa-folder fa-fw"></i>月霜天的小教程</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-01-07">2021-01-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1934 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-01-07">2021-01-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1932 字&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 4 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  kept="">
                 <div class="details-summary toc-title">
@@ -149,25 +149,23 @@
 <p><a href="https://github.com/apache/rocketmq-docker" target="_blank" rel="noopener noreffer">官方地址</a></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># git clone https://github.com/apache/rocketmq-docker.git</span>
-<span class="c1"># cd rocketmq-docker/</span>
-<span class="c1"># ls</span>
-CONTRIBUTING.md  image-build  LICENSE  NOTICE  product  README.md  stage.sh  templates
-<span class="c1"># cd image-build/</span>
-<span class="c1"># ls</span>
-build-image.sh  Dockerfile-alpine  Dockerfile-centos  scripts  update.sh
-
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># git clone https://github.com/apache/rocketmq-docker.git</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># cd rocketmq-docker/</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ls</span>
+</span></span><span class="line"><span class="cl">CONTRIBUTING.md  image-build  LICENSE  NOTICE  product  README.md  stage.sh  templates
+</span></span><span class="line"><span class="cl"><span class="c1"># cd image-build/</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ls</span>
+</span></span><span class="line"><span class="cl">build-image.sh  Dockerfile-alpine  Dockerfile-centos  scripts  update.sh
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="创建rocketmq镜像">创建RocketMQ镜像</h3>
 <p>sh build-image.sh RMQ-VERSION BASE-IMAGE</p>
@@ -179,29 +177,29 @@ build-image.sh  Dockerfile-alpine  Dockerfile-centos  scripts  update.sh
 <p>当构建完成之后会提示</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">Successfully built 128108c2e50d
-Successfully tagged apacherocketmq/rocketmq:4.7.1-alpine
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">Successfully built 128108c2e50d
+</span></span><span class="line"><span class="cl">Successfully tagged apacherocketmq/rocketmq:4.7.1-alpine
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>那么我们就能查询到镜像</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># docker images |grep mq</span>
-apacherocketmq/rocketmq  4.7.1-alpine   128108c2e50d     <span class="m">4</span>   <span class="m">9</span> seconds ago      145MB
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># docker images |grep mq</span>
+</span></span><span class="line"><span class="cl">apacherocketmq/rocketmq  4.7.1-alpine   128108c2e50d     <span class="m">4</span>   <span class="m">9</span> seconds ago      145MB
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="生成配置">生成配置</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -212,21 +210,21 @@ apacherocketmq/rocketmq  4.7.1-alpine   128108c2e50d     <span class="m">4</span
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># cd ..</span>
-<span class="c1"># ls</span>
-CONTRIBUTING.md  image-build  LICENSE  NOTICE  product  README.md  stage.sh  templates
-<span class="c1"># sh stage.sh 4.7.1 (这里的4.7.1对应之前的镜像版本)</span>
-Stage <span class="nv">version</span> <span class="o">=</span> 4.7.1
-mkdir /root/rocketmq/rocketmq-docker/stages/4.7.1
-staged templates into folder /root/rocketmq/rocketmq-docker/stages/4.7.1
-<span class="c1"># ls</span>
-CONTRIBUTING.md  image-build  LICENSE  NOTICE  product  README.md  stages  stage.sh  templates
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># cd ..</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ls</span>
+</span></span><span class="line"><span class="cl">CONTRIBUTING.md  image-build  LICENSE  NOTICE  product  README.md  stage.sh  templates
+</span></span><span class="line"><span class="cl"><span class="c1"># sh stage.sh 4.7.1 (这里的4.7.1对应之前的镜像版本)</span>
+</span></span><span class="line"><span class="cl">Stage <span class="nv">version</span> <span class="o">=</span> 4.7.1
+</span></span><span class="line"><span class="cl">mkdir /root/rocketmq/rocketmq-docker/stages/4.7.1
+</span></span><span class="line"><span class="cl">staged templates into folder /root/rocketmq/rocketmq-docker/stages/4.7.1
+</span></span><span class="line"><span class="cl"><span class="c1"># ls</span>
+</span></span><span class="line"><span class="cl">CONTRIBUTING.md  image-build  LICENSE  NOTICE  product  README.md  stages  stage.sh  templates
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>生成了stages目录，里面存放配置模板文件</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -238,120 +236,120 @@ CONTRIBUTING.md  image-build  LICENSE  NOTICE  product  README.md  stages  stage
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># cd stages/</span>
-<span class="c1"># ls</span>
-4.7.1
-<span class="c1"># cd 4.7.1/</span>
-<span class="c1"># ls</span>
-templates
-<span class="c1"># cd templates/</span>
-<span class="c1"># ls</span>
-data            kubernetes        play-docker-compose.sh  play-docker.sh      play-kubernetes.sh  ssl
-docker-compose  play-consumer.sh  play-docker-dledger.sh  play-docker-tls.sh  play-producer.sh
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># cd stages/</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ls</span>
+</span></span><span class="line"><span class="cl">4.7.1
+</span></span><span class="line"><span class="cl"><span class="c1"># cd 4.7.1/</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ls</span>
+</span></span><span class="line"><span class="cl">templates
+</span></span><span class="line"><span class="cl"><span class="c1"># cd templates/</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ls</span>
+</span></span><span class="line"><span class="cl">data            kubernetes        play-docker-compose.sh  play-docker.sh      play-kubernetes.sh  ssl
+</span></span><span class="line"><span class="cl">docker-compose  play-consumer.sh  play-docker-dledger.sh  play-docker-tls.sh  play-producer.sh
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="1单机">1、单机</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">./play-docker.sh alpine
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./play-docker.sh alpine
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="2docker-compose">2、docker-compose</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">./play-docker-compose.sh
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./play-docker-compose.sh
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="3kubernetes集群">3、kubernetes集群</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">./play-kubernetes.sh
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./play-kubernetes.sh
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="4cluster-of-dledger-storagerocketmq需要440版本以上">4、Cluster of Dledger storage(RocketMQ需要4.4.0版本以上)</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">./play-docker-dledger.sh
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./play-docker-dledger.sh
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="5tls">5、TLS</h4>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash">./play-docker-tls.sh
-./play-producer.sh
-./play-consumer.sh
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./play-docker-tls.sh
+</span></span><span class="line"><span class="cl">./play-producer.sh
+</span></span><span class="line"><span class="cl">./play-consumer.sh
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>我这里选择的是单机部署，可以看到生成了两个容器</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># docker ps |grep mq</span>
-5b557ea1e6be        apacherocketmq/rocketmq:4.7.1-alpine                         <span class="s2">&#34;sh mqbroker&#34;</span>            <span class="m">25</span> seconds ago                                                                                      Up <span class="m">24</span> seconds       0.0.0.0:10909-&gt;10909/tcp, 9876/tcp, 0.0.0.0:10911-10912-&gt;10911-10912/tcp   rmqbroker
-8b1318aee5d6        apacherocketmq/rocketmq:4.7.1-alpine                         <span class="s2">&#34;sh mqnamesrv&#34;</span>           <span class="m">26</span> seconds ago                                                                                      Up <span class="m">25</span> seconds       10909/tcp, 0.0.0.0:9876-&gt;9876/tcp, 10911-10912/tcp                         rmqnamesrv
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># docker ps |grep mq</span>
+</span></span><span class="line"><span class="cl">5b557ea1e6be        apacherocketmq/rocketmq:4.7.1-alpine                         <span class="s2">&#34;sh mqbroker&#34;</span>            <span class="m">25</span> seconds ago                                                                                      Up <span class="m">24</span> seconds       0.0.0.0:10909-&gt;10909/tcp, 9876/tcp, 0.0.0.0:10911-10912-&gt;10911-10912/tcp   rmqbroker
+</span></span><span class="line"><span class="cl">8b1318aee5d6        apacherocketmq/rocketmq:4.7.1-alpine                         <span class="s2">&#34;sh mqnamesrv&#34;</span>           <span class="m">26</span> seconds ago                                                                                      Up <span class="m">25</span> seconds       10909/tcp, 0.0.0.0:9876-&gt;9876/tcp, 10911-10912/tcp                         rmqnamesrv
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>验证RocketMQ启动成功</p>
 <p>1、使用命令 <code>docker ps|grep rmqbroker</code> 找到RocketMQ broker的容器id</p>
 <p>2、使用命令 <code>docker exec -it 5b557ea1e6be ./mqadmin clusterList -n {nameserver_ip}:9876</code> 验证RocketMQ broker工作正常</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># docker exec -it 5b557ea1e6be ./mqadmin clusterList -n {nameserver_ip}:9876</span>
-RocketMQLog:WARN No appenders could be found <span class="k">for</span> logger <span class="o">(</span>io.netty.util.internal.PlatformDependent0<span class="o">)</span>.
-RocketMQLog:WARN Please initialize the logger system properly.
-<span class="c1">#Cluster Name     #Broker Name            #BID  #Addr                  #Version                #InTPS(LOAD)       #OutTPS(LOAD) #PCWait(ms) #Hour #SPACE</span>
-DefaultCluster    5b557ea1e6be            <span class="m">0</span>     172.17.0.8:10911       V4_7_1                   0.00<span class="o">(</span>0,0ms<span class="o">)</span>         0.00<span class="o">(</span>0,0ms<span class="o">)</span>          <span class="m">0</span> 447225.46 -1.0000
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># docker exec -it 5b557ea1e6be ./mqadmin clusterList -n {nameserver_ip}:9876</span>
+</span></span><span class="line"><span class="cl">RocketMQLog:WARN No appenders could be found <span class="k">for</span> logger <span class="o">(</span>io.netty.util.internal.PlatformDependent0<span class="o">)</span>.
+</span></span><span class="line"><span class="cl">RocketMQLog:WARN Please initialize the logger system properly.
+</span></span><span class="line"><span class="cl"><span class="c1">#Cluster Name     #Broker Name            #BID  #Addr                  #Version                #InTPS(LOAD)       #OutTPS(LOAD) #PCWait(ms) #Hour #SPACE</span>
+</span></span><span class="line"><span class="cl">DefaultCluster    5b557ea1e6be            <span class="m">0</span>     172.17.0.8:10911       V4_7_1                   0.00<span class="o">(</span>0,0ms<span class="o">)</span>         0.00<span class="o">(</span>0,0ms<span class="o">)</span>          <span class="m">0</span> 447225.46 -1.0000
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="升级">升级</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">cd</span> image-build
-./update.sh
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> image-build
+</span></span><span class="line"><span class="cl">./update.sh
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="安装gui">安装GUI</h2>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># docker pull apacherocketmq/rocketmq-console:2.0.0</span>
-<span class="c1"># docker run -e &#34;JAVA_OPTS=-Drocketmq.namesrv.addr=192.168.150.70:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false&#34; -p 6881:8080 -t apacherocketmq/rocketmq-console:2.0.0</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># docker pull apacherocketmq/rocketmq-console:2.0.0</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># docker run -e &#34;JAVA_OPTS=-Drocketmq.namesrv.addr=192.168.150.70:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false&#34; -p 6881:8080 -t apacherocketmq/rocketmq-console:2.0.0</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><img
         class="lazyload"
@@ -365,7 +363,7 @@ DefaultCluster    5b557ea1e6be            <span class="m">0</span>     172.17.0.
 <p>由于使用的docker服务启动，broker的地址是内网地址，需要将地址修改为外网地址</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -373,13 +371,13 @@ DefaultCluster    5b557ea1e6be            <span class="m">0</span>     172.17.0.
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># docker ps |grep mq</span>
-8abb966542a3        apacherocketmq/rocketmq-console:2.0.0                        <span class="s2">&#34;sh -c &#39;java </span><span class="nv">$JAVA</span><span class="s2">...&#34;</span>   <span class="m">17</span> hours ago        Up <span class="m">17</span> hours         0.0.0.0:6881-&gt;8080/tcp                                                     dazzling_tesla
-5b557ea1e6be        apacherocketmq/rocketmq:4.7.1-alpine                         <span class="s2">&#34;sh mqbroker&#34;</span>            <span class="m">18</span> hours ago        Up <span class="m">18</span> hours         0.0.0.0:10909-&gt;10909/tcp, 9876/tcp, 0.0.0.0:10911-10912-&gt;10911-10912/tcp   rmqbroker
-8b1318aee5d6        apacherocketmq/rocketmq:4.7.1-alpine                         <span class="s2">&#34;sh mqnamesrv&#34;</span>           <span class="m">18</span> hours ago        Up <span class="m">18</span> hours         10909/tcp, 0.0.0.0:9876-&gt;9876/tcp, 10911-10912/tcp                         rmqnamesrv
-<span class="c1"># docker exec -it 5b557ea1e6be bash // 进入到容器内部修改配置</span>
-<span class="c1"># vi ../confbroker.conf</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># docker ps |grep mq</span>
+</span></span><span class="line"><span class="cl">8abb966542a3        apacherocketmq/rocketmq-console:2.0.0                        <span class="s2">&#34;sh -c &#39;java </span><span class="nv">$JAVA</span><span class="s2">...&#34;</span>   <span class="m">17</span> hours ago        Up <span class="m">17</span> hours         0.0.0.0:6881-&gt;8080/tcp                                                     dazzling_tesla
+</span></span><span class="line"><span class="cl">5b557ea1e6be        apacherocketmq/rocketmq:4.7.1-alpine                         <span class="s2">&#34;sh mqbroker&#34;</span>            <span class="m">18</span> hours ago        Up <span class="m">18</span> hours         0.0.0.0:10909-&gt;10909/tcp, 9876/tcp, 0.0.0.0:10911-10912-&gt;10911-10912/tcp   rmqbroker
+</span></span><span class="line"><span class="cl">8b1318aee5d6        apacherocketmq/rocketmq:4.7.1-alpine                         <span class="s2">&#34;sh mqnamesrv&#34;</span>           <span class="m">18</span> hours ago        Up <span class="m">18</span> hours         10909/tcp, 0.0.0.0:9876-&gt;9876/tcp, 10911-10912/tcp                         rmqnamesrv
+</span></span><span class="line"><span class="cl"><span class="c1"># docker exec -it 5b557ea1e6be bash // 进入到容器内部修改配置</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># vi ../confbroker.conf</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p><img
         class="lazyload"
@@ -404,19 +402,19 @@ DefaultCluster    5b557ea1e6be            <span class="m">0</span>     172.17.0.
 </blockquote>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># Start Broker</span>
-    docker run -d -v <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/data/broker/logs:/home/rocketmq/logs -v <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/data/broker/store:/home/rocketmq/store --name rmqbroker --link rmqnamesrv:namesrv -e <span class="s2">&#34;NAMESRV_ADDR=namesrv:9876&#34;</span> -p 10909:10909 -p 10911:10911 -p 10912:10912 apacherocketmq/rocketmq:4.7.1<span class="si">${</span><span class="nv">TAG_SUFFIX</span><span class="si">}</span> sh mqbroker -c ../conf/broker.conf
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Start Broker</span>
+</span></span><span class="line"><span class="cl">    docker run -d -v <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/data/broker/logs:/home/rocketmq/logs -v <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/data/broker/store:/home/rocketmq/store --name rmqbroker --link rmqnamesrv:namesrv -e <span class="s2">&#34;NAMESRV_ADDR=namesrv:9876&#34;</span> -p 10909:10909 -p 10911:10911 -p 10912:10912 apacherocketmq/rocketmq:4.7.1<span class="si">${</span><span class="nv">TAG_SUFFIX</span><span class="si">}</span> sh mqbroker -c ../conf/broker.conf
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>这样查看cluster会发现Address变成外网地址。</p>
 <h3 id="client-go-topic">client-go Topic</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -457,57 +455,55 @@ DefaultCluster    5b557ea1e6be            <span class="m">0</span>     172.17.0.
 </span><span class="lnt">39
 </span><span class="lnt">40
 </span><span class="lnt">41
-</span><span class="lnt">42
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kn">import</span> <span class="p">(</span>
-	<span class="s">&#34;context&#34;</span>
-	<span class="s">&#34;fmt&#34;</span>
-	<span class="s">&#34;github.com/apache/rocketmq-client-go/v2/admin&#34;</span>
-	<span class="s">&#34;github.com/apache/rocketmq-client-go/v2/primitive&#34;</span>
-<span class="p">)</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">topic</span> <span class="o">:=</span> <span class="s">&#34;Develop&#34;</span>
-	<span class="nx">nameSrvAddr</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;192.168.150.70:9876&#34;</span><span class="p">}</span>
-	<span class="nx">brokerAddr</span> <span class="o">:=</span> <span class="s">&#34;192.168.150.70:10911&#34;</span>
-
-	<span class="nx">testAdmin</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">admin</span><span class="p">.</span><span class="nf">NewAdmin</span><span class="p">(</span><span class="nx">admin</span><span class="p">.</span><span class="nf">WithResolver</span><span class="p">(</span><span class="nx">primitive</span><span class="p">.</span><span class="nf">NewPassthroughResolver</span><span class="p">(</span><span class="nx">nameSrvAddr</span><span class="p">)))</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span>
-
-	<span class="c1">// 创建topic
-</span><span class="c1"></span>	<span class="nx">err</span> <span class="p">=</span> <span class="nx">testAdmin</span><span class="p">.</span><span class="nf">CreateTopic</span><span class="p">(</span>
-		<span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span>
-		<span class="nx">admin</span><span class="p">.</span><span class="nf">WithTopicCreate</span><span class="p">(</span><span class="nx">topic</span><span class="p">),</span>
-		<span class="nx">admin</span><span class="p">.</span><span class="nf">WithBrokerAddrCreate</span><span class="p">(</span><span class="nx">brokerAddr</span><span class="p">))</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Create topic error:&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span>
-
-	<span class="c1">// 删除topic
-</span><span class="c1"></span>	<span class="nx">err</span> <span class="p">=</span> <span class="nx">testAdmin</span><span class="p">.</span><span class="nf">DeleteTopic</span><span class="p">(</span>
-		<span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span>
-		<span class="nx">admin</span><span class="p">.</span><span class="nf">WithTopicDelete</span><span class="p">(</span><span class="nx">topic</span><span class="p">),</span>
-		<span class="c1">//admin.WithBrokerAddrDelete(brokerAddr), 
-</span><span class="c1"></span>		<span class="c1">//admin.WithNameSrvAddr(nameSrvAddr),
-</span><span class="c1"></span>	<span class="p">)</span>
-
-	<span class="nx">err</span> <span class="p">=</span> <span class="nx">testAdmin</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Shutdown admin error:&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;context&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/apache/rocketmq-client-go/v2/admin&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/apache/rocketmq-client-go/v2/primitive&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">topic</span> <span class="o">:=</span> <span class="s">&#34;Develop&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">nameSrvAddr</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;192.168.150.70:9876&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">brokerAddr</span> <span class="o">:=</span> <span class="s">&#34;192.168.150.70:10911&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">testAdmin</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">admin</span><span class="p">.</span><span class="nf">NewAdmin</span><span class="p">(</span><span class="nx">admin</span><span class="p">.</span><span class="nf">WithResolver</span><span class="p">(</span><span class="nx">primitive</span><span class="p">.</span><span class="nf">NewPassthroughResolver</span><span class="p">(</span><span class="nx">nameSrvAddr</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 创建topic
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">err</span> <span class="p">=</span> <span class="nx">testAdmin</span><span class="p">.</span><span class="nf">CreateTopic</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">admin</span><span class="p">.</span><span class="nf">WithTopicCreate</span><span class="p">(</span><span class="nx">topic</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">admin</span><span class="p">.</span><span class="nf">WithBrokerAddrCreate</span><span class="p">(</span><span class="nx">brokerAddr</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Create topic error:&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 删除topic
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">err</span> <span class="p">=</span> <span class="nx">testAdmin</span><span class="p">.</span><span class="nf">DeleteTopic</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">admin</span><span class="p">.</span><span class="nf">WithTopicDelete</span><span class="p">(</span><span class="nx">topic</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">//admin.WithBrokerAddrDelete(brokerAddr), 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">//admin.WithNameSrvAddr(nameSrvAddr),
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="p">=</span> <span class="nx">testAdmin</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Shutdown admin error:&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="client-go-生产者">client-go 生产者</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -597,100 +593,100 @@ DefaultCluster    5b557ea1e6be            <span class="m">0</span>     172.17.0.
 </span><span class="lnt">88
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kn">import</span> <span class="p">(</span>
-	<span class="s">&#34;context&#34;</span>
-	<span class="s">&#34;fmt&#34;</span>
-	<span class="s">&#34;github.com/apache/rocketmq-client-go/v2&#34;</span>
-	<span class="s">&#34;github.com/apache/rocketmq-client-go/v2/primitive&#34;</span>
-	<span class="s">&#34;github.com/apache/rocketmq-client-go/v2/producer&#34;</span>
-	<span class="s">&#34;strconv&#34;</span>
-<span class="p">)</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">addr</span><span class="p">,</span><span class="nx">err</span> <span class="o">:=</span> <span class="nx">primitive</span><span class="p">.</span><span class="nf">NewNamesrvAddr</span><span class="p">(</span><span class="s">&#34;192.168.150.70:9876&#34;</span><span class="p">)</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span>
-	<span class="nx">topic</span> <span class="o">:=</span> <span class="s">&#34;Develop&#34;</span>
-	<span class="nx">p</span><span class="p">,</span><span class="nx">err</span> <span class="o">:=</span> <span class="nx">rocketmq</span><span class="p">.</span><span class="nf">NewProducer</span><span class="p">(</span>
-		<span class="nx">producer</span><span class="p">.</span><span class="nf">WithGroupName</span><span class="p">(</span><span class="s">&#34;my_service&#34;</span><span class="p">),</span>
-		<span class="nx">producer</span><span class="p">.</span><span class="nf">WithNameServer</span><span class="p">(</span><span class="nx">addr</span><span class="p">),</span>
-		<span class="nx">producer</span><span class="p">.</span><span class="nf">WithCreateTopicKey</span><span class="p">(</span><span class="nx">topic</span><span class="p">),</span>
-		<span class="nx">producer</span><span class="p">.</span><span class="nf">WithRetry</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span>
-
-	<span class="nx">err</span> <span class="p">=</span> <span class="nx">p</span><span class="p">.</span><span class="nf">Start</span><span class="p">()</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span>
-
-	<span class="c1">// 发送异步消息
-</span><span class="c1"></span>	<span class="nx">res</span><span class="p">,</span><span class="nx">err</span> <span class="o">:=</span> <span class="nx">p</span><span class="p">.</span><span class="nf">SendSync</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span><span class="nx">primitive</span><span class="p">.</span><span class="nf">NewMessage</span><span class="p">(</span><span class="nx">topic</span><span class="p">,[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;send sync message&#34;</span><span class="p">)))</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;send sync message error:%s\n&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;send sync message success. result=%s\n&#34;</span><span class="p">,</span><span class="nx">res</span><span class="p">.</span><span class="nf">String</span><span class="p">())</span>
-	<span class="p">}</span>
-
-	<span class="c1">// 发送消息后回调
-</span><span class="c1"></span>	<span class="nx">err</span> <span class="p">=</span> <span class="nx">p</span><span class="p">.</span><span class="nf">SendAsync</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span> <span class="kd">func</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">result</span> <span class="o">*</span><span class="nx">primitive</span><span class="p">.</span><span class="nx">SendResult</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
-		<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;receive message error:%v\n&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
-		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;send message success. result=%s\n&#34;</span><span class="p">,</span><span class="nx">result</span><span class="p">.</span><span class="nf">String</span><span class="p">())</span>
-		<span class="p">}</span>
-	<span class="p">},</span><span class="nx">primitive</span><span class="p">.</span><span class="nf">NewMessage</span><span class="p">(</span><span class="nx">topic</span><span class="p">,[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;send async message&#34;</span><span class="p">)))</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;send async message error:%s\n&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span>
-
-	<span class="c1">// 批量发送消息
-</span><span class="c1"></span>	<span class="kd">var</span> <span class="nx">msgs</span> <span class="p">[]</span><span class="o">*</span><span class="nx">primitive</span><span class="p">.</span><span class="nx">Message</span>
-	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
-		<span class="nx">msgs</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">msgs</span><span class="p">,</span> <span class="nx">primitive</span><span class="p">.</span><span class="nf">NewMessage</span><span class="p">(</span><span class="nx">topic</span><span class="p">,[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;batch send message. num:&#34;</span><span class="o">+</span><span class="nx">strconv</span><span class="p">.</span><span class="nf">Itoa</span><span class="p">(</span><span class="nx">i</span><span class="p">))))</span>
-	<span class="p">}</span>
-	<span class="nx">res</span><span class="p">,</span><span class="nx">err</span> <span class="p">=</span> <span class="nx">p</span><span class="p">.</span><span class="nf">SendSync</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span><span class="nx">msgs</span><span class="o">...</span><span class="p">)</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;batch send sync message error:%s\n&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;batch send sync message success. result=%s\n&#34;</span><span class="p">,</span><span class="nx">res</span><span class="p">.</span><span class="nf">String</span><span class="p">())</span>
-	<span class="p">}</span>
-
-	<span class="c1">// 发送延迟消息
-</span><span class="c1"></span>	<span class="nx">msg</span> <span class="o">:=</span> <span class="nx">primitive</span><span class="p">.</span><span class="nf">NewMessage</span><span class="p">(</span><span class="nx">topic</span><span class="p">,[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;delay send message&#34;</span><span class="p">))</span>
-	<span class="nx">msg</span><span class="p">.</span><span class="nf">WithDelayTimeLevel</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-	<span class="nx">res</span><span class="p">,</span><span class="nx">err</span> <span class="p">=</span> <span class="nx">p</span><span class="p">.</span><span class="nf">SendSync</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span><span class="nx">msg</span><span class="p">)</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;delay send sync message error:%s\n&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;delay send sync message success. result=%s\n&#34;</span><span class="p">,</span><span class="nx">res</span><span class="p">.</span><span class="nf">String</span><span class="p">())</span>
-	<span class="p">}</span>
-
-	<span class="c1">// 发送带有tag的消息
-</span><span class="c1"></span>	<span class="nx">msg1</span> <span class="o">:=</span> <span class="nx">primitive</span><span class="p">.</span><span class="nf">NewMessage</span><span class="p">(</span><span class="nx">topic</span><span class="p">,[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;send tag message&#34;</span><span class="p">))</span>
-	<span class="nx">msg1</span><span class="p">.</span><span class="nf">WithTag</span><span class="p">(</span><span class="s">&#34;tagA&#34;</span><span class="p">)</span>
-	<span class="nx">res</span><span class="p">,</span><span class="nx">err</span> <span class="p">=</span> <span class="nx">p</span><span class="p">.</span><span class="nf">SendSync</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span><span class="nx">msg1</span><span class="p">)</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;send tag sync message error:%s\n&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;send tag sync message success. result=%s\n&#34;</span><span class="p">,</span><span class="nx">res</span><span class="p">.</span><span class="nf">String</span><span class="p">())</span>
-	<span class="p">}</span>
-
-	<span class="nx">err</span> <span class="p">=</span> <span class="nx">p</span><span class="p">.</span><span class="nf">Shutdown</span><span class="p">()</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;context&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/apache/rocketmq-client-go/v2&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/apache/rocketmq-client-go/v2/primitive&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;github.com/apache/rocketmq-client-go/v2/producer&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;strconv&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">addr</span><span class="p">,</span><span class="nx">err</span> <span class="o">:=</span> <span class="nx">primitive</span><span class="p">.</span><span class="nf">NewNamesrvAddr</span><span class="p">(</span><span class="s">&#34;192.168.150.70:9876&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">topic</span> <span class="o">:=</span> <span class="s">&#34;Develop&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">p</span><span class="p">,</span><span class="nx">err</span> <span class="o">:=</span> <span class="nx">rocketmq</span><span class="p">.</span><span class="nf">NewProducer</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">producer</span><span class="p">.</span><span class="nf">WithGroupName</span><span class="p">(</span><span class="s">&#34;my_service&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">producer</span><span class="p">.</span><span class="nf">WithNameServer</span><span class="p">(</span><span class="nx">addr</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">producer</span><span class="p">.</span><span class="nf">WithCreateTopicKey</span><span class="p">(</span><span class="nx">topic</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">producer</span><span class="p">.</span><span class="nf">WithRetry</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="p">=</span> <span class="nx">p</span><span class="p">.</span><span class="nf">Start</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 发送异步消息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">res</span><span class="p">,</span><span class="nx">err</span> <span class="o">:=</span> <span class="nx">p</span><span class="p">.</span><span class="nf">SendSync</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span><span class="nx">primitive</span><span class="p">.</span><span class="nf">NewMessage</span><span class="p">(</span><span class="nx">topic</span><span class="p">,[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;send sync message&#34;</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;send sync message error:%s\n&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;send sync message success. result=%s\n&#34;</span><span class="p">,</span><span class="nx">res</span><span class="p">.</span><span class="nf">String</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 发送消息后回调
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">err</span> <span class="p">=</span> <span class="nx">p</span><span class="p">.</span><span class="nf">SendAsync</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span> <span class="kd">func</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">result</span> <span class="o">*</span><span class="nx">primitive</span><span class="p">.</span><span class="nx">SendResult</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;receive message error:%v\n&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;send message success. result=%s\n&#34;</span><span class="p">,</span><span class="nx">result</span><span class="p">.</span><span class="nf">String</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">},</span><span class="nx">primitive</span><span class="p">.</span><span class="nf">NewMessage</span><span class="p">(</span><span class="nx">topic</span><span class="p">,[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;send async message&#34;</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;send async message error:%s\n&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 批量发送消息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kd">var</span> <span class="nx">msgs</span> <span class="p">[]</span><span class="o">*</span><span class="nx">primitive</span><span class="p">.</span><span class="nx">Message</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">msgs</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">msgs</span><span class="p">,</span> <span class="nx">primitive</span><span class="p">.</span><span class="nf">NewMessage</span><span class="p">(</span><span class="nx">topic</span><span class="p">,[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;batch send message. num:&#34;</span><span class="o">+</span><span class="nx">strconv</span><span class="p">.</span><span class="nf">Itoa</span><span class="p">(</span><span class="nx">i</span><span class="p">))))</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">res</span><span class="p">,</span><span class="nx">err</span> <span class="p">=</span> <span class="nx">p</span><span class="p">.</span><span class="nf">SendSync</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span><span class="nx">msgs</span><span class="o">...</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;batch send sync message error:%s\n&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;batch send sync message success. result=%s\n&#34;</span><span class="p">,</span><span class="nx">res</span><span class="p">.</span><span class="nf">String</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 发送延迟消息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">msg</span> <span class="o">:=</span> <span class="nx">primitive</span><span class="p">.</span><span class="nf">NewMessage</span><span class="p">(</span><span class="nx">topic</span><span class="p">,[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;delay send message&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">msg</span><span class="p">.</span><span class="nf">WithDelayTimeLevel</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">res</span><span class="p">,</span><span class="nx">err</span> <span class="p">=</span> <span class="nx">p</span><span class="p">.</span><span class="nf">SendSync</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span><span class="nx">msg</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;delay send sync message error:%s\n&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;delay send sync message success. result=%s\n&#34;</span><span class="p">,</span><span class="nx">res</span><span class="p">.</span><span class="nf">String</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 发送带有tag的消息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">msg1</span> <span class="o">:=</span> <span class="nx">primitive</span><span class="p">.</span><span class="nf">NewMessage</span><span class="p">(</span><span class="nx">topic</span><span class="p">,[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;send tag message&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">msg1</span><span class="p">.</span><span class="nf">WithTag</span><span class="p">(</span><span class="s">&#34;tagA&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">res</span><span class="p">,</span><span class="nx">err</span> <span class="p">=</span> <span class="nx">p</span><span class="p">.</span><span class="nf">SendSync</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span><span class="nx">msg1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;send tag sync message error:%s\n&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;send tag sync message success. result=%s\n&#34;</span><span class="p">,</span><span class="nx">res</span><span class="p">.</span><span class="nf">String</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="p">=</span> <span class="nx">p</span><span class="p">.</span><span class="nf">Shutdown</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="client-go-消费者">client-go 消费者</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -783,105 +779,104 @@ DefaultCluster    5b557ea1e6be            <span class="m">0</span>     172.17.0.
 </span><span class="lnt">91
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// 在v2.1.0-rc5.0不支持，会在下一个版本中支持
-</span><span class="c1"></span><span class="kd">func</span> <span class="nf">PullConsumer</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">topic</span> <span class="o">:=</span> <span class="s">&#34;Develop&#34;</span>
-
-	<span class="c1">// 消费者主动拉取消息
-</span><span class="c1"></span>	<span class="c1">// not
-</span><span class="c1"></span>	<span class="nx">c1</span><span class="p">,</span><span class="nx">err</span> <span class="o">:=</span> <span class="nx">rocketmq</span><span class="p">.</span><span class="nf">NewPullConsumer</span><span class="p">(</span>
-		<span class="nx">consumer</span><span class="p">.</span><span class="nf">WithGroupName</span><span class="p">(</span><span class="s">&#34;my_service&#34;</span><span class="p">),</span>
-		<span class="nx">consumer</span><span class="p">.</span><span class="nf">WithNsResolver</span><span class="p">(</span><span class="nx">primitive</span><span class="p">.</span><span class="nf">NewPassthroughResolver</span><span class="p">([]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;192.168.150.70:9876&#34;</span><span class="p">})))</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span>
-	<span class="nx">err</span> <span class="p">=</span> <span class="nx">c1</span><span class="p">.</span><span class="nf">Start</span><span class="p">()</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-		<span class="nx">os</span><span class="p">.</span><span class="nf">Exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-	<span class="p">}</span>
-	<span class="nx">queue</span> <span class="o">:=</span> <span class="nx">primitive</span><span class="p">.</span><span class="nx">MessageQueue</span><span class="p">{</span>
-		<span class="nx">Topic</span><span class="p">:</span>      <span class="nx">topic</span><span class="p">,</span>
-		<span class="nx">BrokerName</span><span class="p">:</span> <span class="s">&#34;broker-a&#34;</span><span class="p">,</span> <span class="c1">// 使用broker的名称
-</span><span class="c1"></span>		<span class="nx">QueueId</span><span class="p">:</span>    <span class="mi">0</span><span class="p">,</span>
-	<span class="p">}</span>
-
-	<span class="nx">err</span> <span class="p">=</span> <span class="nx">c1</span><span class="p">.</span><span class="nf">Shutdown</span><span class="p">()</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Shutdown Pull Consumer error: &#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span>
-
-	<span class="nx">offset</span> <span class="o">:=</span> <span class="nb">int64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-	<span class="k">for</span>  <span class="p">{</span>
-		<span class="nx">resp</span><span class="p">,</span><span class="nx">err</span> <span class="o">:=</span> <span class="nx">c1</span><span class="p">.</span><span class="nf">PullFrom</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span><span class="nx">queue</span><span class="p">,</span><span class="nx">offset</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-		<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-			<span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="nx">rocketmq</span><span class="p">.</span><span class="nx">ErrRequestTimeout</span> <span class="p">{</span>
-				<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;timeout\n&#34;</span><span class="p">)</span>
-				<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-				<span class="k">continue</span>
-			<span class="p">}</span>
-			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;unexpected error: %v\n&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
-			<span class="k">return</span>
-		<span class="p">}</span>
-		<span class="k">if</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">Status</span> <span class="o">==</span> <span class="nx">primitive</span><span class="p">.</span><span class="nx">PullFound</span> <span class="p">{</span>
-			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;pull message success. nextOffset: %d\n&#34;</span><span class="p">,</span><span class="nx">resp</span><span class="p">.</span><span class="nx">NextBeginOffset</span><span class="p">)</span>
-			<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">ext</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">resp</span><span class="p">.</span><span class="nf">GetMessageExts</span><span class="p">()</span> <span class="p">{</span>
-				<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;pull msg: %s\n&#34;</span><span class="p">,</span><span class="nx">ext</span><span class="p">)</span>
-			<span class="p">}</span>
-		<span class="p">}</span>
-		<span class="nx">offset</span> <span class="p">=</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">NextBeginOffset</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">PushConsumer</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">topic</span> <span class="o">:=</span> <span class="s">&#34;Develop&#34;</span>
-
-	<span class="c1">// 消息主动推送给消费者
-</span><span class="c1"></span>	<span class="nx">c2</span><span class="p">,</span><span class="nx">err</span> <span class="o">:=</span> <span class="nx">rocketmq</span><span class="p">.</span><span class="nf">NewPushConsumer</span><span class="p">(</span>
-		<span class="nx">consumer</span><span class="p">.</span><span class="nf">WithGroupName</span><span class="p">(</span><span class="s">&#34;my_service&#34;</span><span class="p">),</span>
-		<span class="nx">consumer</span><span class="p">.</span><span class="nf">WithNsResolver</span><span class="p">(</span><span class="nx">primitive</span><span class="p">.</span><span class="nf">NewPassthroughResolver</span><span class="p">([]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;192.168.150.70:9876&#34;</span><span class="p">})),</span>
-        <span class="nx">consumer</span><span class="p">.</span><span class="nf">WithConsumeFromWhere</span><span class="p">(</span><span class="nx">consumer</span><span class="p">.</span><span class="nx">ConsumeFromFirstOffset</span><span class="p">),</span> <span class="c1">// 选择消费时间(首次/当前/根据时间)
-</span><span class="c1"></span>        <span class="nx">consumer</span><span class="p">.</span><span class="nf">WithConsumerModel</span><span class="p">(</span><span class="nx">consumer</span><span class="p">.</span><span class="nx">BroadCasting</span><span class="p">))</span> <span class="c1">// 消费模式(集群消费:消费完其他人不能再读取/广播消费：所有人都能读)
-</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span>
-
-	<span class="nx">err</span> <span class="p">=</span> <span class="nx">c2</span><span class="p">.</span><span class="nf">Subscribe</span><span class="p">(</span>
-		<span class="nx">topic</span><span class="p">,</span><span class="nx">consumer</span><span class="p">.</span><span class="nx">MessageSelector</span><span class="p">{</span>
-		<span class="nx">Type</span><span class="p">:</span> <span class="nx">consumer</span><span class="p">.</span><span class="nx">TAG</span><span class="p">,</span>
-		<span class="nx">Expression</span><span class="p">:</span> <span class="s">&#34;*&#34;</span><span class="p">,</span> <span class="c1">// 可以 TagA || TagB
-</span><span class="c1"></span>		<span class="p">},</span>
-	<span class="kd">func</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">msgs</span> <span class="o">...*</span><span class="nx">primitive</span><span class="p">.</span><span class="nx">MessageExt</span><span class="p">)</span> <span class="p">(</span><span class="nx">consumer</span><span class="p">.</span><span class="nx">ConsumeResult</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">orderlyCtx</span><span class="p">,</span><span class="nx">_</span> <span class="o">:=</span> <span class="nx">primitive</span><span class="p">.</span><span class="nf">GetOrderlyCtx</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;orderly context: %v\n&#34;</span><span class="p">,</span><span class="nx">orderlyCtx</span><span class="p">)</span>
-		<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">msgs</span> <span class="p">{</span>
-			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Subscribe callback: %v\n&#34;</span><span class="p">,</span><span class="nx">msgs</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
-		<span class="p">}</span>
-		<span class="k">return</span> <span class="nx">consumer</span><span class="p">.</span><span class="nx">ConsumeSuccess</span><span class="p">,</span><span class="kc">nil</span>
-	<span class="p">})</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Subscribe error:%s\n&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span>
-
-	<span class="nx">err</span> <span class="p">=</span> <span class="nx">c2</span><span class="p">.</span><span class="nf">Start</span><span class="p">()</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-		<span class="nx">os</span><span class="p">.</span><span class="nf">Exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-	<span class="p">}</span>
-	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Minute</span><span class="p">)</span>
-	<span class="nx">err</span> <span class="p">=</span> <span class="nx">c2</span><span class="p">.</span><span class="nf">Shutdown</span><span class="p">()</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Shutdown Consumer error: &#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 在v2.1.0-rc5.0不支持，会在下一个版本中支持
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">PullConsumer</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">topic</span> <span class="o">:=</span> <span class="s">&#34;Develop&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 消费者主动拉取消息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// not
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">c1</span><span class="p">,</span><span class="nx">err</span> <span class="o">:=</span> <span class="nx">rocketmq</span><span class="p">.</span><span class="nf">NewPullConsumer</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">consumer</span><span class="p">.</span><span class="nf">WithGroupName</span><span class="p">(</span><span class="s">&#34;my_service&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">consumer</span><span class="p">.</span><span class="nf">WithNsResolver</span><span class="p">(</span><span class="nx">primitive</span><span class="p">.</span><span class="nf">NewPassthroughResolver</span><span class="p">([]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;192.168.150.70:9876&#34;</span><span class="p">})))</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="p">=</span> <span class="nx">c1</span><span class="p">.</span><span class="nf">Start</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">os</span><span class="p">.</span><span class="nf">Exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">queue</span> <span class="o">:=</span> <span class="nx">primitive</span><span class="p">.</span><span class="nx">MessageQueue</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Topic</span><span class="p">:</span>      <span class="nx">topic</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">BrokerName</span><span class="p">:</span> <span class="s">&#34;broker-a&#34;</span><span class="p">,</span> <span class="c1">// 使用broker的名称
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">QueueId</span><span class="p">:</span>    <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="p">=</span> <span class="nx">c1</span><span class="p">.</span><span class="nf">Shutdown</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Shutdown Pull Consumer error: &#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">offset</span> <span class="o">:=</span> <span class="nb">int64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span>  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">resp</span><span class="p">,</span><span class="nx">err</span> <span class="o">:=</span> <span class="nx">c1</span><span class="p">.</span><span class="nf">PullFrom</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span><span class="nx">queue</span><span class="p">,</span><span class="nx">offset</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="nx">rocketmq</span><span class="p">.</span><span class="nx">ErrRequestTimeout</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;timeout\n&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">				<span class="k">continue</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;unexpected error: %v\n&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">Status</span> <span class="o">==</span> <span class="nx">primitive</span><span class="p">.</span><span class="nx">PullFound</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;pull message success. nextOffset: %d\n&#34;</span><span class="p">,</span><span class="nx">resp</span><span class="p">.</span><span class="nx">NextBeginOffset</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">ext</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">resp</span><span class="p">.</span><span class="nf">GetMessageExts</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;pull msg: %s\n&#34;</span><span class="p">,</span><span class="nx">ext</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">offset</span> <span class="p">=</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">NextBeginOffset</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">PushConsumer</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">topic</span> <span class="o">:=</span> <span class="s">&#34;Develop&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 消息主动推送给消费者
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">c2</span><span class="p">,</span><span class="nx">err</span> <span class="o">:=</span> <span class="nx">rocketmq</span><span class="p">.</span><span class="nf">NewPushConsumer</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">consumer</span><span class="p">.</span><span class="nf">WithGroupName</span><span class="p">(</span><span class="s">&#34;my_service&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">consumer</span><span class="p">.</span><span class="nf">WithNsResolver</span><span class="p">(</span><span class="nx">primitive</span><span class="p">.</span><span class="nf">NewPassthroughResolver</span><span class="p">([]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;192.168.150.70:9876&#34;</span><span class="p">})),</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">consumer</span><span class="p">.</span><span class="nf">WithConsumeFromWhere</span><span class="p">(</span><span class="nx">consumer</span><span class="p">.</span><span class="nx">ConsumeFromFirstOffset</span><span class="p">),</span> <span class="c1">// 选择消费时间(首次/当前/根据时间)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">consumer</span><span class="p">.</span><span class="nf">WithConsumerModel</span><span class="p">(</span><span class="nx">consumer</span><span class="p">.</span><span class="nx">BroadCasting</span><span class="p">))</span> <span class="c1">// 消费模式(集群消费:消费完其他人不能再读取/广播消费：所有人都能读)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="p">=</span> <span class="nx">c2</span><span class="p">.</span><span class="nf">Subscribe</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">topic</span><span class="p">,</span><span class="nx">consumer</span><span class="p">.</span><span class="nx">MessageSelector</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Type</span><span class="p">:</span> <span class="nx">consumer</span><span class="p">.</span><span class="nx">TAG</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Expression</span><span class="p">:</span> <span class="s">&#34;*&#34;</span><span class="p">,</span> <span class="c1">// 可以 TagA || TagB
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="p">},</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">func</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">msgs</span> <span class="o">...*</span><span class="nx">primitive</span><span class="p">.</span><span class="nx">MessageExt</span><span class="p">)</span> <span class="p">(</span><span class="nx">consumer</span><span class="p">.</span><span class="nx">ConsumeResult</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">orderlyCtx</span><span class="p">,</span><span class="nx">_</span> <span class="o">:=</span> <span class="nx">primitive</span><span class="p">.</span><span class="nf">GetOrderlyCtx</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;orderly context: %v\n&#34;</span><span class="p">,</span><span class="nx">orderlyCtx</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">msgs</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Subscribe callback: %v\n&#34;</span><span class="p">,</span><span class="nx">msgs</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">consumer</span><span class="p">.</span><span class="nx">ConsumeSuccess</span><span class="p">,</span><span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">	<span class="p">})</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Subscribe error:%s\n&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="p">=</span> <span class="nx">c2</span><span class="p">.</span><span class="nf">Start</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">os</span><span class="p">.</span><span class="nf">Exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Minute</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="p">=</span> <span class="nx">c2</span><span class="p">.</span><span class="nf">Shutdown</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Shutdown Consumer error: &#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2021-07-19&nbsp;<a class="git-hash" href="https://betterfor.github.io/commit/1a7befd3bf6b110e0728d6541bf17494efe8f241" target="_blank" title="commit by betterfor(xiejian) 1a7befd3bf6b110e0728d6541bf17494efe8f241: 添加sync包的源码解析">
-                                    <i class="fas fa-hashtag fa-fw"></i>1a7befd</a></span>
+                <span>更新于 2021-01-07</span>
             </div>
             <div class="post-info-license"></div>
         </div>
@@ -909,8 +904,8 @@ DefaultCluster    5b557ea1e6be            <span class="m">0</span>     172.17.0.
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.85.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
-                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 

@@ -10,7 +10,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.betterformile.ml/2021/02/uuid/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-02-08T14:16:15+08:00" />
-<meta property="article:modified_time" content="2021-07-19T17:45:05+08:00" />
+<meta property="article:modified_time" content="2021-02-08T14:16:15+08:00" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/>
@@ -30,7 +30,7 @@
             "@type": "WebPage",
             "@id": "https:\/\/blog.betterformile.ml\/2021\/02\/uuid\/"
         },"genre": "posts","keywords": "uuid, snowflake","wordcount":  2212 ,
-        "url": "https:\/\/blog.betterformile.ml\/2021\/02\/uuid\/","datePublished": "2021-02-08T14:16:15+08:00","dateModified": "2021-07-19T17:45:05+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+        "url": "https:\/\/blog.betterformile.ml\/2021\/02\/uuid\/","datePublished": "2021-02-08T14:16:15+08:00","dateModified": "2021-02-08T14:16:15+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "月霜天"},"author": {
                 "@type": "Person",
@@ -92,7 +92,7 @@
             <h2 class="toc-title">目录</h2>
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">生成uuid的几种方式</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/"><i class="far fa-folder fa-fw"></i>月霜天的GO</a></span></div>
+            <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw"></i>月霜天的小笔记</a></span></div>
             <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2021-02-08">2021-02-08</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2212 字&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  kept="">
@@ -164,7 +164,7 @@
 <p>代码实现：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">  1
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
 </span><span class="lnt">  2
 </span><span class="lnt">  3
 </span><span class="lnt">  4
@@ -269,126 +269,126 @@
 </span><span class="lnt">103
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kn">import</span> <span class="p">(</span>
-	<span class="s">&#34;errors&#34;</span>
-	<span class="s">&#34;fmt&#34;</span>
-	<span class="s">&#34;runtime&#34;</span>
-	<span class="s">&#34;sync&#34;</span>
-	<span class="s">&#34;time&#34;</span>
-<span class="p">)</span>
-
-<span class="c1">//global var
-</span><span class="c1"></span><span class="kd">var</span> <span class="nx">sequence</span> <span class="kt">int</span> <span class="p">=</span> <span class="mi">0</span>
-<span class="kd">var</span> <span class="nx">lastTime</span> <span class="kt">int</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span>
-<span class="c1">//every segment bit
-</span><span class="c1"></span><span class="kd">var</span> <span class="nx">workerIdBits</span> <span class="p">=</span> <span class="mi">5</span>
-<span class="kd">var</span> <span class="nx">datacenterIdBits</span> <span class="p">=</span> <span class="mi">5</span>
-<span class="kd">var</span> <span class="nx">sequenceBits</span> <span class="p">=</span> <span class="mi">12</span>
-<span class="c1">//every segment max number
-</span><span class="c1"></span><span class="kd">var</span> <span class="nx">maxWorkerId</span> <span class="kt">int</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="p">^</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="nx">workerIdBits</span><span class="p">)</span>
-<span class="kd">var</span> <span class="nx">maxDatacenterId</span> <span class="kt">int</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="p">^</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="nx">datacenterIdBits</span><span class="p">)</span>
-<span class="kd">var</span> <span class="nx">maxSequence</span> <span class="kt">int</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="p">^</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="nx">sequenceBits</span><span class="p">)</span>
-<span class="c1">//bit operation shift
-</span><span class="c1"></span><span class="kd">var</span> <span class="nx">workerIdShift</span> <span class="p">=</span> <span class="nx">sequenceBits</span>
-<span class="kd">var</span> <span class="nx">datacenterShift</span> <span class="p">=</span> <span class="nx">workerIdBits</span> <span class="o">+</span> <span class="nx">sequenceBits</span>
-<span class="kd">var</span> <span class="nx">timestampShift</span> <span class="p">=</span> <span class="nx">datacenterIdBits</span> <span class="o">+</span> <span class="nx">workerIdBits</span> <span class="o">+</span> <span class="nx">sequenceBits</span>
-
-<span class="kd">type</span> <span class="nx">Snowflake</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">datacenterId</span> <span class="kt">int</span>
-	<span class="nx">workerId</span>     <span class="kt">int</span>
-	<span class="nx">epoch</span>        <span class="kt">int</span>
-	<span class="nx">mt</span>           <span class="o">*</span><span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">NewSnowflake</span><span class="p">(</span><span class="nx">datacenterId</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">workerId</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">epoch</span> <span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">Snowflake</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
-	<span class="k">if</span> <span class="nx">datacenterId</span> <span class="p">&gt;</span> <span class="nx">maxDatacenterId</span> <span class="o">||</span> <span class="nx">datacenterId</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
-		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;datacenterId cant be greater than %d or less than 0&#34;</span><span class="p">,</span> <span class="nx">maxDatacenterId</span><span class="p">))</span>
-	<span class="p">}</span>
-	<span class="k">if</span> <span class="nx">workerId</span> <span class="p">&gt;</span> <span class="nx">maxWorkerId</span> <span class="o">||</span> <span class="nx">workerId</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
-		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;workerId cant be greater than %d or less than 0&#34;</span><span class="p">,</span> <span class="nx">maxWorkerId</span><span class="p">))</span>
-	<span class="p">}</span>
-	<span class="k">if</span> <span class="nx">epoch</span> <span class="p">&gt;</span> <span class="nf">getCurrentTime</span><span class="p">()</span> <span class="p">{</span>
-		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;epoch time cant be after now&#34;</span><span class="p">))</span>
-	<span class="p">}</span>
-	<span class="nx">sf</span> <span class="o">:=</span> <span class="nx">Snowflake</span><span class="p">{</span><span class="nx">datacenterId</span><span class="p">,</span> <span class="nx">workerId</span><span class="p">,</span> <span class="nx">epoch</span><span class="p">,</span> <span class="nb">new</span><span class="p">(</span><span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span><span class="p">)}</span>
-	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">sf</span><span class="p">,</span> <span class="kc">nil</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="p">(</span><span class="nx">sf</span> <span class="o">*</span><span class="nx">Snowflake</span><span class="p">)</span> <span class="nf">getUniqueId</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
-	<span class="nx">sf</span><span class="p">.</span><span class="nx">mt</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
-	<span class="k">defer</span> <span class="nx">sf</span><span class="p">.</span><span class="nx">mt</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
-	<span class="c1">//get current time
-</span><span class="c1"></span>	<span class="nx">currentTime</span> <span class="o">:=</span> <span class="nf">getCurrentTime</span><span class="p">()</span>
-	<span class="c1">//compute sequence
-</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">currentTime</span> <span class="p">&lt;</span> <span class="nx">lastTime</span> <span class="p">{</span> <span class="c1">//occur clock back
-</span><span class="c1"></span>		<span class="c1">//panic or wait,wait is not the best way.can be optimized.
-</span><span class="c1"></span>		<span class="nx">currentTime</span> <span class="p">=</span> <span class="nf">waitUntilNextTime</span><span class="p">(</span><span class="nx">lastTime</span><span class="p">)</span>
-		<span class="nx">sequence</span> <span class="p">=</span> <span class="mi">0</span>
-	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">currentTime</span> <span class="o">==</span> <span class="nx">lastTime</span> <span class="p">{</span> <span class="c1">//at the same time(micro-second)
-</span><span class="c1"></span>		<span class="nx">sequence</span> <span class="p">=</span> <span class="p">(</span><span class="nx">sequence</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">maxSequence</span>
-		<span class="k">if</span> <span class="nx">sequence</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span> <span class="c1">//overflow max num,wait next time
-</span><span class="c1"></span>			<span class="nx">currentTime</span> <span class="p">=</span> <span class="nf">waitUntilNextTime</span><span class="p">(</span><span class="nx">lastTime</span><span class="p">)</span>
-		<span class="p">}</span>
-	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">currentTime</span> <span class="p">&gt;</span> <span class="nx">lastTime</span> <span class="p">{</span> <span class="c1">//next time
-</span><span class="c1"></span>		<span class="nx">sequence</span> <span class="p">=</span> <span class="mi">0</span>
-		<span class="nx">lastTime</span> <span class="p">=</span> <span class="nx">currentTime</span>
-	<span class="p">}</span>
-	<span class="c1">//generate id
-</span><span class="c1"></span>	<span class="k">return</span> <span class="p">(</span><span class="nx">currentTime</span><span class="o">-</span><span class="nx">sf</span><span class="p">.</span><span class="nx">epoch</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="nx">timestampShift</span> <span class="p">|</span> <span class="nx">sf</span><span class="p">.</span><span class="nx">datacenterId</span><span class="o">&lt;&lt;</span><span class="nx">datacenterShift</span> <span class="p">|</span>
-		<span class="nx">sf</span><span class="p">.</span><span class="nx">workerId</span><span class="o">&lt;&lt;</span><span class="nx">workerIdShift</span> <span class="p">|</span> <span class="nx">sequence</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">waitUntilNextTime</span><span class="p">(</span><span class="nx">lasttime</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
-	<span class="nx">currentTime</span> <span class="o">:=</span> <span class="nf">getCurrentTime</span><span class="p">()</span>
-	<span class="k">for</span> <span class="nx">currentTime</span> <span class="o">&lt;=</span> <span class="nx">lasttime</span> <span class="p">{</span>
-		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span> <span class="c1">//sleep micro second
-</span><span class="c1"></span>		<span class="nx">currentTime</span> <span class="p">=</span> <span class="nf">getCurrentTime</span><span class="p">()</span>
-	<span class="p">}</span>
-	<span class="k">return</span> <span class="nx">currentTime</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">getCurrentTime</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
-	<span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">().</span><span class="nf">UnixNano</span><span class="p">()</span> <span class="o">/</span> <span class="mf">1e6</span><span class="p">)</span> <span class="c1">//micro second
-</span><span class="c1"></span><span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">runtime</span><span class="p">.</span><span class="nf">GOMAXPROCS</span><span class="p">(</span><span class="nx">runtime</span><span class="p">.</span><span class="nf">NumCPU</span><span class="p">())</span>
-	<span class="nx">datacenterId</span> <span class="o">:=</span> <span class="mi">0</span>
-	<span class="nx">workerId</span> <span class="o">:=</span> <span class="mi">0</span>
-	<span class="nx">epoch</span> <span class="o">:=</span> <span class="mi">1596850974657</span>
-	<span class="nx">s</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">NewSnowflake</span><span class="p">(</span><span class="nx">datacenterId</span><span class="p">,</span> <span class="nx">workerId</span><span class="p">,</span> <span class="nx">epoch</span><span class="p">)</span>
-	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-	<span class="p">}</span>
-	<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
-	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">1000000</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
-		<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nf">getUniqueId</span><span class="p">())</span>
-			<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
-		<span class="p">}()</span>
-	<span class="p">}</span>
-	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;errors&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;runtime&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;sync&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;time&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//global var
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">sequence</span> <span class="kt">int</span> <span class="p">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">lastTime</span> <span class="kt">int</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//every segment bit
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">workerIdBits</span> <span class="p">=</span> <span class="mi">5</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">datacenterIdBits</span> <span class="p">=</span> <span class="mi">5</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">sequenceBits</span> <span class="p">=</span> <span class="mi">12</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//every segment max number
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">maxWorkerId</span> <span class="kt">int</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="p">^</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="nx">workerIdBits</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">maxDatacenterId</span> <span class="kt">int</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="p">^</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="nx">datacenterIdBits</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">maxSequence</span> <span class="kt">int</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="p">^</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="nx">sequenceBits</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//bit operation shift
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">workerIdShift</span> <span class="p">=</span> <span class="nx">sequenceBits</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">datacenterShift</span> <span class="p">=</span> <span class="nx">workerIdBits</span> <span class="o">+</span> <span class="nx">sequenceBits</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">timestampShift</span> <span class="p">=</span> <span class="nx">datacenterIdBits</span> <span class="o">+</span> <span class="nx">workerIdBits</span> <span class="o">+</span> <span class="nx">sequenceBits</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Snowflake</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">datacenterId</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">workerId</span>     <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">epoch</span>        <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">mt</span>           <span class="o">*</span><span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">NewSnowflake</span><span class="p">(</span><span class="nx">datacenterId</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">workerId</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">epoch</span> <span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">Snowflake</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">datacenterId</span> <span class="p">&gt;</span> <span class="nx">maxDatacenterId</span> <span class="o">||</span> <span class="nx">datacenterId</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;datacenterId cant be greater than %d or less than 0&#34;</span><span class="p">,</span> <span class="nx">maxDatacenterId</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">workerId</span> <span class="p">&gt;</span> <span class="nx">maxWorkerId</span> <span class="o">||</span> <span class="nx">workerId</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;workerId cant be greater than %d or less than 0&#34;</span><span class="p">,</span> <span class="nx">maxWorkerId</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">epoch</span> <span class="p">&gt;</span> <span class="nf">getCurrentTime</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;epoch time cant be after now&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">sf</span> <span class="o">:=</span> <span class="nx">Snowflake</span><span class="p">{</span><span class="nx">datacenterId</span><span class="p">,</span> <span class="nx">workerId</span><span class="p">,</span> <span class="nx">epoch</span><span class="p">,</span> <span class="nb">new</span><span class="p">(</span><span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span><span class="p">)}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">sf</span><span class="p">,</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">sf</span> <span class="o">*</span><span class="nx">Snowflake</span><span class="p">)</span> <span class="nf">getUniqueId</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">sf</span><span class="p">.</span><span class="nx">mt</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">defer</span> <span class="nx">sf</span><span class="p">.</span><span class="nx">mt</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//get current time
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">currentTime</span> <span class="o">:=</span> <span class="nf">getCurrentTime</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//compute sequence
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nx">currentTime</span> <span class="p">&lt;</span> <span class="nx">lastTime</span> <span class="p">{</span> <span class="c1">//occur clock back
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">//panic or wait,wait is not the best way.can be optimized.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">currentTime</span> <span class="p">=</span> <span class="nf">waitUntilNextTime</span><span class="p">(</span><span class="nx">lastTime</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">sequence</span> <span class="p">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">currentTime</span> <span class="o">==</span> <span class="nx">lastTime</span> <span class="p">{</span> <span class="c1">//at the same time(micro-second)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">sequence</span> <span class="p">=</span> <span class="p">(</span><span class="nx">sequence</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">maxSequence</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">sequence</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span> <span class="c1">//overflow max num,wait next time
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="nx">currentTime</span> <span class="p">=</span> <span class="nf">waitUntilNextTime</span><span class="p">(</span><span class="nx">lastTime</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">currentTime</span> <span class="p">&gt;</span> <span class="nx">lastTime</span> <span class="p">{</span> <span class="c1">//next time
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">sequence</span> <span class="p">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">lastTime</span> <span class="p">=</span> <span class="nx">currentTime</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//generate id
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">return</span> <span class="p">(</span><span class="nx">currentTime</span><span class="o">-</span><span class="nx">sf</span><span class="p">.</span><span class="nx">epoch</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="nx">timestampShift</span> <span class="p">|</span> <span class="nx">sf</span><span class="p">.</span><span class="nx">datacenterId</span><span class="o">&lt;&lt;</span><span class="nx">datacenterShift</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">sf</span><span class="p">.</span><span class="nx">workerId</span><span class="o">&lt;&lt;</span><span class="nx">workerIdShift</span> <span class="p">|</span> <span class="nx">sequence</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">waitUntilNextTime</span><span class="p">(</span><span class="nx">lasttime</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">currentTime</span> <span class="o">:=</span> <span class="nf">getCurrentTime</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">currentTime</span> <span class="o">&lt;=</span> <span class="nx">lasttime</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span> <span class="c1">//sleep micro second
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">currentTime</span> <span class="p">=</span> <span class="nf">getCurrentTime</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">currentTime</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">getCurrentTime</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">().</span><span class="nf">UnixNano</span><span class="p">()</span> <span class="o">/</span> <span class="mf">1e6</span><span class="p">)</span> <span class="c1">//micro second
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">runtime</span><span class="p">.</span><span class="nf">GOMAXPROCS</span><span class="p">(</span><span class="nx">runtime</span><span class="p">.</span><span class="nf">NumCPU</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">datacenterId</span> <span class="o">:=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">workerId</span> <span class="o">:=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">epoch</span> <span class="o">:=</span> <span class="mi">1596850974657</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">s</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">NewSnowflake</span><span class="p">(</span><span class="nx">datacenterId</span><span class="p">,</span> <span class="nx">workerId</span><span class="p">,</span> <span class="nx">epoch</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">1000000</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nf">getUniqueId</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}()</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="数据库id">数据库ID</h2>
 <p>利用数据库字段设置auto_increment_increment和auto_increment_offset来保证ID自增，每次业务使用一下SQL读写MySQL得到ID。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-mysql" data-lang="mysql"><span class="n">begin</span><span class="p">;</span><span class="w">
-</span><span class="w"></span><span class="k">REPLACE</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="nf">Tickets</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">values</span><span class="w"> </span><span class="p">(</span><span class="no">null</span><span class="p">);</span><span class="w">
-</span><span class="w"></span><span class="k">select</span><span class="w"> </span><span class="nf">LAST_INSERT_ID</span><span class="p">();</span><span class="w">
-</span><span class="w"></span><span class="n">commit</span><span class="p">;</span><span class="w">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="cl"><span class="n">begin</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">REPLACE</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="nf">Tickets</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">values</span><span class="w"> </span><span class="p">(</span><span class="no">null</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">select</span><span class="w"> </span><span class="nf">LAST_INSERT_ID</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">commit</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p><img
         class="lazyload"
@@ -419,8 +419,7 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2021-07-19&nbsp;<a class="git-hash" href="https://betterfor.github.io/commit/1a7befd3bf6b110e0728d6541bf17494efe8f241" target="_blank" title="commit by betterfor(xiejian) 1a7befd3bf6b110e0728d6541bf17494efe8f241: 添加sync包的源码解析">
-                                    <i class="fas fa-hashtag fa-fw"></i>1a7befd</a></span>
+                <span>更新于 2021-02-08</span>
             </div>
             <div class="post-info-license"></div>
         </div>
@@ -448,8 +447,8 @@
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.85.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
-                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 

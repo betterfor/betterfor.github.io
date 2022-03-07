@@ -3,7 +3,14 @@
         <title>golang - 标签 - 月霜天的小站</title>
         <link>https://blog.betterformile.ml/tags/golang/</link>
         <description>golang - 标签 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 19 Jul 2021 14:44:23 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/golang/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 27 Jul 2021 09:35:42 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/golang/" rel="self" type="application/rss+xml" /><item>
+    <title>停止goroutine的几种方法</title>
+    <link>https://blog.betterformile.ml/2021/07/%E5%81%9C%E6%AD%A2goroutine%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/</link>
+    <pubDate>Tue, 27 Jul 2021 09:35:42 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2021/07/%E5%81%9C%E6%AD%A2goroutine%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/</guid>
+    <description><![CDATA[在日常工作中，我们经常会用关键字go起一个goroutine。 但是在跑一段时间后，可能会遇到一些问题：当goroutine内的任务运行的太久]]></description>
+</item><item>
     <title>no copy机制</title>
     <link>https://blog.betterformile.ml/2021/07/nocopy%E6%9C%BA%E5%88%B6/</link>
     <pubDate>Mon, 19 Jul 2021 14:44:23 &#43;0800</pubDate>
@@ -17,13 +24,6 @@
     <author>作者</author>
     <guid>https://blog.betterformile.ml/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/</guid>
     <description><![CDATA[限流又称为流量控制，是限制到达系统的并发请求数，当达到限制条件时可以拒绝请求，可以起到保护下游服务，熔断流量的作用。常用的限流策略有漏桶算法]]></description>
-</item><item>
-    <title>Mutex的源码解析</title>
-    <link>https://blog.betterformile.ml/2021/02/mutex/</link>
-    <pubDate>Fri, 26 Feb 2021 14:46:05 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/02/mutex/</guid>
-    <description><![CDATA[我们来看一下sync包下有哪些常见的使用：cond.go map.go mutex.go once.go pool.go rwmutex.go waitgroup.go 什么是sync？ Package sync provides basic synchronization primitives such as mutual exclusion locks. Other than the Once and WaitGroup types, most are intended for use by low-level library routines. Higher-level]]></description>
 </item><item>
     <title>Golang 1.16版本新特性 =&gt; 撤回版本(retract)</title>
     <link>https://blog.betterformile.ml/2021/02/golang_retract/</link>
@@ -39,6 +39,13 @@
     <guid>https://blog.betterformile.ml/2021/02/defer/</guid>
     <description><![CDATA[什么是defer？ defer是go语言提供的一种用于注册延迟调用的机制，让函数或语句可以在当前函数执行完毕后（包括通过return正常结束或]]></description>
 </item><item>
+    <title>Iota的使用方法</title>
+    <link>https://blog.betterformile.ml/2021/02/itoa/</link>
+    <pubDate>Wed, 10 Feb 2021 20:14:57 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2021/02/itoa/</guid>
+    <description><![CDATA[iota是golang语言的常数计量器，只能在常量的表达式中使用。 iota在const关键字出现时被重置为0(const内部的第一行之前)。]]></description>
+</item><item>
     <title>十大基础排序算法</title>
     <link>https://blog.betterformile.ml/2021/02/%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95/</link>
     <pubDate>Sun, 07 Feb 2021 13:43:54 &#43;0800</pubDate>
@@ -53,25 +60,11 @@
     <guid>https://blog.betterformile.ml/2021/01/%E5%B9%B6%E6%9F%A5%E9%9B%86/</guid>
     <description><![CDATA[并查集 目的: 解决元素分组问题 用途: 1、判断有向图中是否产生环 2、维护无向图的连通性，判断两个点是否在同一个连通块中 操作: 1、初始化: 每个集合]]></description>
 </item><item>
-    <title>常见的数据结构--chan</title>
-    <link>https://blog.betterformile.ml/2020/12/chan/</link>
-    <pubDate>Wed, 09 Dec 2020 10:25:54 &#43;0800</pubDate>
+    <title>如何自定义让json解析出自定义值</title>
+    <link>https://blog.betterformile.ml/2020/11/json_unmarshal/</link>
+    <pubDate>Wed, 25 Nov 2020 09:54:07 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2020/12/chan/</guid>
-    <description><![CDATA[介绍一下Golang channel的内部实现，包括channel的数据结构及相关操作的代码实现。 数据结构 1 2 3 4 5 6 7 8 9 10 11 12 13 type hchan struct { qcount]]></description>
-</item><item>
-    <title>常见的数据结构--map</title>
-    <link>https://blog.betterformile.ml/2020/12/map/</link>
-    <pubDate>Mon, 07 Dec 2020 11:09:14 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2020/12/map/</guid>
-    <description><![CDATA[很多的业务场景都会用到map，在其他语言可能成为set/集合等，主要就是key:value格式。 1 2 3 4 5 6 7 8 9 10 11 12 13 // A map is just a hash table. The]]></description>
-</item><item>
-    <title>常见的数据结构--切片</title>
-    <link>https://blog.betterformile.ml/2020/12/slice/</link>
-    <pubDate>Mon, 07 Dec 2020 09:18:56 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2020/12/slice/</guid>
-    <description><![CDATA[在使用过程中，我们经常会用到数组这一数据结构，而在golang中，提供了数组和切片两种，数组是固定长度的且长度为定值，而切片是可以扩张的数组]]></description>
+    <guid>https://blog.betterformile.ml/2020/11/json_unmarshal/</guid>
+    <description><![CDATA[简介 先来看一下 json.Unmarshal 的注释 大意是 json 解析的时候会调用 Unmarshaler 的接口。那么我们就可以自定义解析数据了。 先看一个例子 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20]]></description>
 </item></channel>
 </rss>

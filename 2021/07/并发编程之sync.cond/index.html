@@ -121,7 +121,7 @@
 <p>下面我们看一下 GopherCon 2018 上《Rethinking Classical Concurrency Patterns》 中的演示代码例子。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -173,63 +173,63 @@
 </span><span class="lnt">50
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Item</span> <span class="p">=</span> <span class="kt">int</span>
-
-<span class="kd">type</span> <span class="nx">Queue</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">items</span>     <span class="p">[]</span><span class="nx">Item</span>
-	<span class="nx">itemAdded</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Cond</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">NewQueue</span><span class="p">()</span> <span class="o">*</span><span class="nx">Queue</span> <span class="p">{</span>
-	<span class="nx">q</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">Queue</span><span class="p">)</span>
-	<span class="nx">q</span><span class="p">.</span><span class="nx">itemAdded</span><span class="p">.</span><span class="nx">L</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span><span class="p">{}</span> <span class="c1">// 为 Cond 绑定锁
-</span><span class="c1"></span>	<span class="k">return</span> <span class="nx">q</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="p">(</span><span class="nx">q</span> <span class="o">*</span><span class="nx">Queue</span><span class="p">)</span> <span class="nf">Put</span><span class="p">(</span><span class="nx">item</span> <span class="nx">Item</span><span class="p">)</span> <span class="p">{</span>
-	<span class="nx">q</span><span class="p">.</span><span class="nx">itemAdded</span><span class="p">.</span><span class="nx">L</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
-	<span class="k">defer</span> <span class="nx">q</span><span class="p">.</span><span class="nx">itemAdded</span><span class="p">.</span><span class="nx">L</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
-	<span class="nx">q</span><span class="p">.</span><span class="nx">items</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">q</span><span class="p">.</span><span class="nx">items</span><span class="p">,</span> <span class="nx">item</span><span class="p">)</span>
-	<span class="nx">q</span><span class="p">.</span><span class="nx">itemAdded</span><span class="p">.</span><span class="nf">Signal</span><span class="p">()</span> <span class="c1">// 当 Queue 中加入数据成功，调用 Singal 发送通知
-</span><span class="c1"></span><span class="p">}</span>
-
-<span class="kd">func</span> <span class="p">(</span><span class="nx">q</span> <span class="o">*</span><span class="nx">Queue</span><span class="p">)</span> <span class="nf">GetMany</span><span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">)</span> <span class="p">[]</span><span class="nx">Item</span> <span class="p">{</span>
-	<span class="nx">q</span><span class="p">.</span><span class="nx">itemAdded</span><span class="p">.</span><span class="nx">L</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
-	<span class="k">defer</span> <span class="nx">q</span><span class="p">.</span><span class="nx">itemAdded</span><span class="p">.</span><span class="nx">L</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
-	<span class="k">for</span> <span class="nb">len</span><span class="p">(</span><span class="nx">q</span><span class="p">.</span><span class="nx">items</span><span class="p">)</span> <span class="p">&lt;</span> <span class="nx">n</span> <span class="p">{</span> <span class="c1">// 等待 Queue 中有 n 个数据
-</span><span class="c1"></span>		<span class="nx">q</span><span class="p">.</span><span class="nx">itemAdded</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span> <span class="c1">// 阻塞等待 Singal 发送通知
-</span><span class="c1"></span>	<span class="p">}</span>
-	<span class="nx">items</span> <span class="o">:=</span> <span class="nx">q</span><span class="p">.</span><span class="nx">items</span><span class="p">[:</span><span class="nx">n</span><span class="p">:</span><span class="nx">n</span><span class="p">]</span>
-	<span class="nx">q</span><span class="p">.</span><span class="nx">items</span> <span class="p">=</span> <span class="nx">q</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span><span class="nx">n</span><span class="p">:]</span>
-	<span class="k">return</span> <span class="nx">items</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">q</span> <span class="o">:=</span> <span class="nf">NewQueue</span><span class="p">()</span>
-
-	<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
-	<span class="k">for</span> <span class="nx">n</span> <span class="o">:=</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">n</span> <span class="p">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">n</span><span class="o">--</span> <span class="p">{</span>
-		<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-		<span class="k">go</span> <span class="kd">func</span><span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
-			<span class="nx">items</span> <span class="o">:=</span> <span class="nx">q</span><span class="p">.</span><span class="nf">GetMany</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span>
-			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%2d: %2d\n&#34;</span><span class="p">,</span> <span class="nx">n</span><span class="p">,</span> <span class="nx">items</span><span class="p">)</span>
-			<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
-		<span class="p">}(</span><span class="nx">n</span><span class="p">)</span>
-	<span class="p">}</span>
-
-	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">100</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
-		<span class="nx">q</span><span class="p">.</span><span class="nf">Put</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
-	<span class="p">}</span>
-
-	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Item</span> <span class="p">=</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Queue</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">items</span>     <span class="p">[]</span><span class="nx">Item</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">itemAdded</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Cond</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">NewQueue</span><span class="p">()</span> <span class="o">*</span><span class="nx">Queue</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">q</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">Queue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">q</span><span class="p">.</span><span class="nx">itemAdded</span><span class="p">.</span><span class="nx">L</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span><span class="p">{}</span> <span class="c1">// 为 Cond 绑定锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">return</span> <span class="nx">q</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">q</span> <span class="o">*</span><span class="nx">Queue</span><span class="p">)</span> <span class="nf">Put</span><span class="p">(</span><span class="nx">item</span> <span class="nx">Item</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">q</span><span class="p">.</span><span class="nx">itemAdded</span><span class="p">.</span><span class="nx">L</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">defer</span> <span class="nx">q</span><span class="p">.</span><span class="nx">itemAdded</span><span class="p">.</span><span class="nx">L</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">q</span><span class="p">.</span><span class="nx">items</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">q</span><span class="p">.</span><span class="nx">items</span><span class="p">,</span> <span class="nx">item</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">q</span><span class="p">.</span><span class="nx">itemAdded</span><span class="p">.</span><span class="nf">Signal</span><span class="p">()</span> <span class="c1">// 当 Queue 中加入数据成功，调用 Singal 发送通知
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">q</span> <span class="o">*</span><span class="nx">Queue</span><span class="p">)</span> <span class="nf">GetMany</span><span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">)</span> <span class="p">[]</span><span class="nx">Item</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">q</span><span class="p">.</span><span class="nx">itemAdded</span><span class="p">.</span><span class="nx">L</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">defer</span> <span class="nx">q</span><span class="p">.</span><span class="nx">itemAdded</span><span class="p">.</span><span class="nx">L</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nb">len</span><span class="p">(</span><span class="nx">q</span><span class="p">.</span><span class="nx">items</span><span class="p">)</span> <span class="p">&lt;</span> <span class="nx">n</span> <span class="p">{</span> <span class="c1">// 等待 Queue 中有 n 个数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">q</span><span class="p">.</span><span class="nx">itemAdded</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span> <span class="c1">// 阻塞等待 Singal 发送通知
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">items</span> <span class="o">:=</span> <span class="nx">q</span><span class="p">.</span><span class="nx">items</span><span class="p">[:</span><span class="nx">n</span><span class="p">:</span><span class="nx">n</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">q</span><span class="p">.</span><span class="nx">items</span> <span class="p">=</span> <span class="nx">q</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span><span class="nx">n</span><span class="p">:]</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">items</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">q</span> <span class="o">:=</span> <span class="nf">NewQueue</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">n</span> <span class="o">:=</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">n</span> <span class="p">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">n</span><span class="o">--</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">go</span> <span class="kd">func</span><span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">items</span> <span class="o">:=</span> <span class="nx">q</span><span class="p">.</span><span class="nf">GetMany</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%2d: %2d\n&#34;</span><span class="p">,</span> <span class="nx">n</span><span class="p">,</span> <span class="nx">items</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}(</span><span class="nx">n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">100</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">q</span><span class="p">.</span><span class="nf">Put</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>在这个例子中，<code>Queue</code>是存储<code>Item</code>的结构体，通过<code>Cond</code>类型的<code>itemAdded</code>来控制数据的输入与输出。可以看到，这里通过10个goroutine来消费数据，但是逐步添加100个数据至<code>Queue</code>中。最后，我们能够看到10个goroutine都能被唤醒，得到数据。</p>
 <p>程序的运行结果如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -241,17 +241,17 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"> <span class="mi">3</span><span class="p">:</span> <span class="p">[</span><span class="mi">11</span> <span class="mi">12</span> <span class="mi">13</span><span class="p">]</span>
- <span class="mi">2</span><span class="p">:</span> <span class="p">[</span> <span class="mi">0</span>  <span class="mi">1</span><span class="p">]</span>
- <span class="mi">9</span><span class="p">:</span> <span class="p">[</span> <span class="mi">2</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="mi">5</span>  <span class="mi">6</span>  <span class="mi">7</span>  <span class="mi">8</span>  <span class="mi">9</span> <span class="mi">10</span><span class="p">]</span>
- <span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="mi">14</span><span class="p">]</span>
- <span class="mi">6</span><span class="p">:</span> <span class="p">[</span><span class="mi">41</span> <span class="mi">42</span> <span class="mi">43</span> <span class="mi">44</span> <span class="mi">45</span> <span class="mi">46</span><span class="p">]</span>
- <span class="mi">4</span><span class="p">:</span> <span class="p">[</span><span class="mi">32</span> <span class="mi">33</span> <span class="mi">34</span> <span class="mi">35</span><span class="p">]</span>
- <span class="mi">5</span><span class="p">:</span> <span class="p">[</span><span class="mi">36</span> <span class="mi">37</span> <span class="mi">38</span> <span class="mi">39</span> <span class="mi">40</span><span class="p">]</span>
- <span class="mi">7</span><span class="p">:</span> <span class="p">[</span><span class="mi">25</span> <span class="mi">26</span> <span class="mi">27</span> <span class="mi">28</span> <span class="mi">29</span> <span class="mi">30</span> <span class="mi">31</span><span class="p">]</span>
- <span class="mi">8</span><span class="p">:</span> <span class="p">[</span><span class="mi">47</span> <span class="mi">48</span> <span class="mi">49</span> <span class="mi">50</span> <span class="mi">51</span> <span class="mi">52</span> <span class="mi">53</span> <span class="mi">54</span><span class="p">]</span>
-<span class="mi">10</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span> <span class="mi">16</span> <span class="mi">17</span> <span class="mi">18</span> <span class="mi">19</span> <span class="mi">20</span> <span class="mi">21</span> <span class="mi">22</span> <span class="mi">23</span> <span class="mi">24</span><span class="p">]</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"> <span class="mi">3</span><span class="p">:</span> <span class="p">[</span><span class="mi">11</span> <span class="mi">12</span> <span class="mi">13</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"> <span class="mi">2</span><span class="p">:</span> <span class="p">[</span> <span class="mi">0</span>  <span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"> <span class="mi">9</span><span class="p">:</span> <span class="p">[</span> <span class="mi">2</span>  <span class="mi">3</span>  <span class="mi">4</span>  <span class="mi">5</span>  <span class="mi">6</span>  <span class="mi">7</span>  <span class="mi">8</span>  <span class="mi">9</span> <span class="mi">10</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"> <span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="mi">14</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"> <span class="mi">6</span><span class="p">:</span> <span class="p">[</span><span class="mi">41</span> <span class="mi">42</span> <span class="mi">43</span> <span class="mi">44</span> <span class="mi">45</span> <span class="mi">46</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"> <span class="mi">4</span><span class="p">:</span> <span class="p">[</span><span class="mi">32</span> <span class="mi">33</span> <span class="mi">34</span> <span class="mi">35</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"> <span class="mi">5</span><span class="p">:</span> <span class="p">[</span><span class="mi">36</span> <span class="mi">37</span> <span class="mi">38</span> <span class="mi">39</span> <span class="mi">40</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"> <span class="mi">7</span><span class="p">:</span> <span class="p">[</span><span class="mi">25</span> <span class="mi">26</span> <span class="mi">27</span> <span class="mi">28</span> <span class="mi">29</span> <span class="mi">30</span> <span class="mi">31</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"> <span class="mi">8</span><span class="p">:</span> <span class="p">[</span><span class="mi">47</span> <span class="mi">48</span> <span class="mi">49</span> <span class="mi">50</span> <span class="mi">51</span> <span class="mi">52</span> <span class="mi">53</span> <span class="mi">54</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="mi">10</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span> <span class="mi">16</span> <span class="mi">17</span> <span class="mi">18</span> <span class="mi">19</span> <span class="mi">20</span> <span class="mi">21</span> <span class="mi">22</span> <span class="mi">23</span> <span class="mi">24</span><span class="p">]</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>当然，每次的运行结果都不会相同。</p>
 <h2 id="源码实现">源码实现</h2>
@@ -260,7 +260,7 @@
 <p>首先来看它的结构体：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -273,23 +273,23 @@
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// A Cond must not be copied after first use.
-</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Cond</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">noCopy</span> <span class="nx">noCopy</span> <span class="c1">// 不允许拷贝
-</span><span class="c1"></span>
-	<span class="c1">// L is held while observing or changing the condition
-</span><span class="c1"></span>	<span class="c1">// L 是观察和改变条件的
-</span><span class="c1"></span>	<span class="nx">L</span> <span class="nx">Locker</span>
-
-	<span class="nx">notify</span>  <span class="nx">notifyList</span>  <span class="c1">// 通知列表，调用Wait()方法的goroutine会放入list中，每次被唤醒从这里取出
-</span><span class="c1"></span>	<span class="nx">checker</span> <span class="nx">copyChecker</span> <span class="c1">// 拷贝检查，检查cond是否被拷贝
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// A Cond must not be copied after first use.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">Cond</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">noCopy</span> <span class="nx">noCopy</span> <span class="c1">// 不允许拷贝
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// L is held while observing or changing the condition
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// L 是观察和改变条件的
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">L</span> <span class="nx">Locker</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">notify</span>  <span class="nx">notifyList</span>  <span class="c1">// 通知列表，调用Wait()方法的goroutine会放入list中，每次被唤醒从这里取出
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">checker</span> <span class="nx">copyChecker</span> <span class="c1">// 拷贝检查，检查cond是否被拷贝
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>这里的<code>notifyList</code>通知列表：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -298,20 +298,20 @@
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">notifyList</span> <span class="kd">struct</span> <span class="p">{</span>
-	<span class="nx">wait</span>   <span class="kt">uint32</span>         <span class="c1">// 写一个等待goroutine的ticket，是原子性的，在锁外递增
-</span><span class="c1"></span>	<span class="nx">notify</span> <span class="kt">uint32</span>         <span class="c1">// 下一个通知的goroutine的ticket，在锁外读取，但只能在持有锁的情况下写入
-</span><span class="c1"></span>	<span class="nx">lock</span>   <span class="kt">uintptr</span>        <span class="c1">// 需要传入的锁的标记
-</span><span class="c1"></span>	<span class="nx">head</span>   <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span> <span class="c1">// 基于*sudog的双向链表的前驱指针
-</span><span class="c1"></span>	<span class="nx">tail</span>   <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span> <span class="c1">// 基于*sudog的双向链表的后驱指针
-</span><span class="c1"></span><span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">notifyList</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">wait</span>   <span class="kt">uint32</span>         <span class="c1">// 写一个等待goroutine的ticket，是原子性的，在锁外递增
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">notify</span> <span class="kt">uint32</span>         <span class="c1">// 下一个通知的goroutine的ticket，在锁外读取，但只能在持有锁的情况下写入
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">lock</span>   <span class="kt">uintptr</span>        <span class="c1">// 需要传入的锁的标记
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">head</span>   <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span> <span class="c1">// 基于*sudog的双向链表的前驱指针
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">tail</span>   <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span> <span class="c1">// 基于*sudog的双向链表的后驱指针
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>基本结构大致就是这样，下面来看看实现方法。</p>
 <h3 id="wait方法的实现"><code>Wait</code>方法的实现</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -320,14 +320,14 @@
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Cond</span><span class="p">)</span> <span class="nf">Wait</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">c</span><span class="p">.</span><span class="nx">checker</span><span class="p">.</span><span class="nf">check</span><span class="p">()</span>
-	<span class="nx">t</span> <span class="o">:=</span> <span class="nf">runtime_notifyListAdd</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">notify</span><span class="p">)</span> <span class="c1">// 加入到通知列表
-</span><span class="c1"></span>	<span class="nx">c</span><span class="p">.</span><span class="nx">L</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
-	<span class="nf">runtime_notifyListWait</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">notify</span><span class="p">,</span> <span class="nx">t</span><span class="p">)</span> <span class="c1">// 等待通知
-</span><span class="c1"></span>	<span class="nx">c</span><span class="p">.</span><span class="nx">L</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Cond</span><span class="p">)</span> <span class="nf">Wait</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">c</span><span class="p">.</span><span class="nx">checker</span><span class="p">.</span><span class="nf">check</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">t</span> <span class="o">:=</span> <span class="nf">runtime_notifyListAdd</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">notify</span><span class="p">)</span> <span class="c1">// 加入到通知列表
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">c</span><span class="p">.</span><span class="nx">L</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">runtime_notifyListWait</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">notify</span><span class="p">,</span> <span class="nx">t</span><span class="p">)</span> <span class="c1">// 等待通知
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">c</span><span class="p">.</span><span class="nx">L</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
 <li>执行运行期间拷贝检查，如果发生了拷贝，则直接panic</li>
@@ -337,25 +337,25 @@
 <p>而在<code>runtime/sema.go</code>中<code>runtime_notifyListAdd</code>的实现：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">notifyListAdd</span><span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">notifyList</span><span class="p">)</span> <span class="kt">uint32</span> <span class="p">{</span>
-	<span class="c1">// This may be called concurrently, for example, when called from
-</span><span class="c1"></span>	<span class="c1">// sync.Cond.Wait while holding a RWMutex in read mode.
-</span><span class="c1"></span>	<span class="k">return</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Xadd</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">wait</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">notifyListAdd</span><span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">notifyList</span><span class="p">)</span> <span class="kt">uint32</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// This may be called concurrently, for example, when called from
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// sync.Cond.Wait while holding a RWMutex in read mode.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">return</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Xadd</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">wait</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>实现比较简单，就是原子操作将等待计数器+1，而返回的值是代表下一个等待唤醒的<code>goroutine</code>的索引</p>
 <h3 id="runtime_notifylistwait的实现"><code>runtime_notifyListWait</code>的实现</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -388,38 +388,38 @@
 </span><span class="lnt">31
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">notifyListWait</span><span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">notifyList</span><span class="p">,</span> <span class="nx">t</span> <span class="kt">uint32</span><span class="p">)</span> <span class="p">{</span>
-	<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
-
-	<span class="c1">// Return right away if this ticket has already been notified.
-</span><span class="c1"></span>	<span class="k">if</span> <span class="nf">less</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">l</span><span class="p">.</span><span class="nx">notify</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
-		<span class="k">return</span>
-	<span class="p">}</span>
-
-	<span class="c1">// Enqueue itself.
-</span><span class="c1"></span>	<span class="nx">s</span> <span class="o">:=</span> <span class="nf">acquireSudog</span><span class="p">()</span>
-	<span class="nx">s</span><span class="p">.</span><span class="nx">g</span> <span class="p">=</span> <span class="nf">getg</span><span class="p">()</span>
-	<span class="nx">s</span><span class="p">.</span><span class="nx">ticket</span> <span class="p">=</span> <span class="nx">t</span>
-	<span class="nx">s</span><span class="p">.</span><span class="nx">releasetime</span> <span class="p">=</span> <span class="mi">0</span>
-	<span class="nx">t0</span> <span class="o">:=</span> <span class="nb">int64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-	<span class="k">if</span> <span class="nx">blockprofilerate</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
-		<span class="nx">t0</span> <span class="p">=</span> <span class="nf">cputicks</span><span class="p">()</span>
-		<span class="nx">s</span><span class="p">.</span><span class="nx">releasetime</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span>
-	<span class="p">}</span>
-	<span class="k">if</span> <span class="nx">l</span><span class="p">.</span><span class="nx">tail</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nx">l</span><span class="p">.</span><span class="nx">head</span> <span class="p">=</span> <span class="nx">s</span>
-	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-		<span class="nx">l</span><span class="p">.</span><span class="nx">tail</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="nx">s</span>
-	<span class="p">}</span>
-	<span class="nx">l</span><span class="p">.</span><span class="nx">tail</span> <span class="p">=</span> <span class="nx">s</span>
-	<span class="nf">goparkunlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">,</span> <span class="nx">waitReasonSyncCondWait</span><span class="p">,</span> <span class="nx">traceEvGoBlockCond</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-	<span class="k">if</span> <span class="nx">t0</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
-		<span class="nf">blockevent</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">releasetime</span><span class="o">-</span><span class="nx">t0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-	<span class="p">}</span>
-	<span class="nf">releaseSudog</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">notifyListWait</span><span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">notifyList</span><span class="p">,</span> <span class="nx">t</span> <span class="kt">uint32</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Return right away if this ticket has already been notified.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nf">less</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">l</span><span class="p">.</span><span class="nx">notify</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Enqueue itself.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">s</span> <span class="o">:=</span> <span class="nf">acquireSudog</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">s</span><span class="p">.</span><span class="nx">g</span> <span class="p">=</span> <span class="nf">getg</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">s</span><span class="p">.</span><span class="nx">ticket</span> <span class="p">=</span> <span class="nx">t</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">s</span><span class="p">.</span><span class="nx">releasetime</span> <span class="p">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">t0</span> <span class="o">:=</span> <span class="nb">int64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">blockprofilerate</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">t0</span> <span class="p">=</span> <span class="nf">cputicks</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">s</span><span class="p">.</span><span class="nx">releasetime</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">l</span><span class="p">.</span><span class="nx">tail</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">l</span><span class="p">.</span><span class="nx">head</span> <span class="p">=</span> <span class="nx">s</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">l</span><span class="p">.</span><span class="nx">tail</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="nx">s</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">l</span><span class="p">.</span><span class="nx">tail</span> <span class="p">=</span> <span class="nx">s</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">goparkunlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">,</span> <span class="nx">waitReasonSyncCondWait</span><span class="p">,</span> <span class="nx">traceEvGoBlockCond</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">t0</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">blockevent</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">releasetime</span><span class="o">-</span><span class="nx">t0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">releaseSudog</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
 <li>检查当前<code>wait</code>与<code>notify</code>索引位置是否匹配，如果已经通知过了，则立即返回</li>
@@ -431,7 +431,7 @@
 <h3 id="signal">Signal</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -477,58 +477,58 @@
 </span><span class="lnt">44
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// 通知等待列表中的一个
-</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Cond</span><span class="p">)</span> <span class="nf">Signal</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">c</span><span class="p">.</span><span class="nx">checker</span><span class="p">.</span><span class="nf">check</span><span class="p">()</span>
-	<span class="nf">runtime_notifyListNotifyOne</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">notify</span><span class="p">)</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">notifyListNotifyOne</span><span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">notifyList</span><span class="p">)</span> <span class="p">{</span>
-	<span class="c1">// Fast-path: if there are no new waiters since the last notification
-</span><span class="c1"></span>	<span class="c1">// we don&#39;t need to acquire the lock at all.
-</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">wait</span><span class="p">)</span> <span class="o">==</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">notify</span><span class="p">)</span> <span class="p">{</span>
-		<span class="k">return</span>
-	<span class="p">}</span>
-
-	<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
-
-	<span class="c1">// Re-check under the lock if we need to do anything.
-</span><span class="c1"></span>	<span class="nx">t</span> <span class="o">:=</span> <span class="nx">l</span><span class="p">.</span><span class="nx">notify</span>
-	<span class="k">if</span> <span class="nx">t</span> <span class="o">==</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">wait</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
-		<span class="k">return</span>
-	<span class="p">}</span>
-
-	<span class="c1">// Update the next notify ticket number.
-</span><span class="c1"></span>	<span class="nx">atomic</span><span class="p">.</span><span class="nf">Store</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">notify</span><span class="p">,</span> <span class="nx">t</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-
-	<span class="k">for</span> <span class="nx">p</span><span class="p">,</span> <span class="nx">s</span> <span class="o">:=</span> <span class="p">(</span><span class="o">*</span><span class="nx">sudog</span><span class="p">)(</span><span class="kc">nil</span><span class="p">),</span> <span class="nx">l</span><span class="p">.</span><span class="nx">head</span><span class="p">;</span> <span class="nx">s</span> <span class="o">!=</span> <span class="kc">nil</span><span class="p">;</span> <span class="nx">p</span><span class="p">,</span> <span class="nx">s</span> <span class="p">=</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">s</span><span class="p">.</span><span class="nx">next</span> <span class="p">{</span>
-		<span class="k">if</span> <span class="nx">s</span><span class="p">.</span><span class="nx">ticket</span> <span class="o">==</span> <span class="nx">t</span> <span class="p">{</span>
-			<span class="nx">n</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">next</span>
-			<span class="k">if</span> <span class="nx">p</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-				<span class="nx">p</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="nx">n</span>
-			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-				<span class="nx">l</span><span class="p">.</span><span class="nx">head</span> <span class="p">=</span> <span class="nx">n</span>
-			<span class="p">}</span>
-			<span class="k">if</span> <span class="nx">n</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
-				<span class="nx">l</span><span class="p">.</span><span class="nx">tail</span> <span class="p">=</span> <span class="nx">p</span>
-			<span class="p">}</span>
-			<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
-			<span class="nx">s</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="kc">nil</span>
-			<span class="nf">readyWithTime</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-			<span class="k">return</span>
-		<span class="p">}</span>
-	<span class="p">}</span>
-	<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 通知等待列表中的一个
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Cond</span><span class="p">)</span> <span class="nf">Signal</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">c</span><span class="p">.</span><span class="nx">checker</span><span class="p">.</span><span class="nf">check</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">runtime_notifyListNotifyOne</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">notify</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">notifyListNotifyOne</span><span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">notifyList</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Fast-path: if there are no new waiters since the last notification
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// we don&#39;t need to acquire the lock at all.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">wait</span><span class="p">)</span> <span class="o">==</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">notify</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Re-check under the lock if we need to do anything.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">t</span> <span class="o">:=</span> <span class="nx">l</span><span class="p">.</span><span class="nx">notify</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">t</span> <span class="o">==</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">wait</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Update the next notify ticket number.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">atomic</span><span class="p">.</span><span class="nf">Store</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">notify</span><span class="p">,</span> <span class="nx">t</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">p</span><span class="p">,</span> <span class="nx">s</span> <span class="o">:=</span> <span class="p">(</span><span class="o">*</span><span class="nx">sudog</span><span class="p">)(</span><span class="kc">nil</span><span class="p">),</span> <span class="nx">l</span><span class="p">.</span><span class="nx">head</span><span class="p">;</span> <span class="nx">s</span> <span class="o">!=</span> <span class="kc">nil</span><span class="p">;</span> <span class="nx">p</span><span class="p">,</span> <span class="nx">s</span> <span class="p">=</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">s</span><span class="p">.</span><span class="nx">next</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">s</span><span class="p">.</span><span class="nx">ticket</span> <span class="o">==</span> <span class="nx">t</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">n</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">next</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">p</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">p</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="nx">n</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">l</span><span class="p">.</span><span class="nx">head</span> <span class="p">=</span> <span class="nx">n</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">n</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">l</span><span class="p">.</span><span class="nx">tail</span> <span class="p">=</span> <span class="nx">p</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">s</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">			<span class="nf">readyWithTime</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>我们记得在<code>wait</code>代码中，每次调用都会原子累加<code>wait</code>，那么这个<code>wait</code>就代表最大的<code>wait</code>值，对应唤醒时，也会对应一个<code>notify</code>属性。我们在<code>notifyList</code>链表中逐个检查，找到<code>ticket</code>对应相等的<code>notify</code>属性。</p>
 <p><code>notifyList</code>并不是一直有序的，<code>wait</code>方法中调用<code>runtime_notifyListAdd</code>和<code>runtime_notifyListWait</code>完全是两个独立的行为。</p>
 <h3 id="broadcast">Broadcast</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -565,42 +565,42 @@
 </span><span class="lnt">35
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Broadcast唤醒所有等待的协程
-</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Cond</span><span class="p">)</span> <span class="nf">Broadcast</span><span class="p">()</span> <span class="p">{</span>
-	<span class="nx">c</span><span class="p">.</span><span class="nx">checker</span><span class="p">.</span><span class="nf">check</span><span class="p">()</span>
-	<span class="nf">runtime_notifyListNotifyAll</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">notify</span><span class="p">)</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">notifyListNotifyAll</span><span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">notifyList</span><span class="p">)</span> <span class="p">{</span>
-	<span class="c1">// Fast-path: if there are no new waiters since the last notification
-</span><span class="c1"></span>	<span class="c1">// we don&#39;t need to acquire the lock.
-</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">wait</span><span class="p">)</span> <span class="o">==</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">notify</span><span class="p">)</span> <span class="p">{</span>
-		<span class="k">return</span>
-	<span class="p">}</span>
-
-	<span class="c1">// Pull the list out into a local variable, waiters will be readied
-</span><span class="c1"></span>	<span class="c1">// outside the lock.
-</span><span class="c1"></span>	<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
-	<span class="nx">s</span> <span class="o">:=</span> <span class="nx">l</span><span class="p">.</span><span class="nx">head</span>
-	<span class="nx">l</span><span class="p">.</span><span class="nx">head</span> <span class="p">=</span> <span class="kc">nil</span>
-	<span class="nx">l</span><span class="p">.</span><span class="nx">tail</span> <span class="p">=</span> <span class="kc">nil</span>
-
-	<span class="c1">// Update the next ticket to be notified. We can set it to the current
-</span><span class="c1"></span>	<span class="c1">// value of wait because any previous waiters are already in the list
-</span><span class="c1"></span>	<span class="c1">// or will notice that they have already been notified when trying to
-</span><span class="c1"></span>	<span class="c1">// add themselves to the list.
-</span><span class="c1"></span>	<span class="nx">atomic</span><span class="p">.</span><span class="nf">Store</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">notify</span><span class="p">,</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">wait</span><span class="p">))</span>
-	<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
-
-	<span class="c1">// Go through the local list and ready all waiters.
-</span><span class="c1"></span>	<span class="k">for</span> <span class="nx">s</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-		<span class="nx">next</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">next</span>
-		<span class="nx">s</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="kc">nil</span>
-		<span class="nf">readyWithTime</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-		<span class="nx">s</span> <span class="p">=</span> <span class="nx">next</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Broadcast唤醒所有等待的协程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Cond</span><span class="p">)</span> <span class="nf">Broadcast</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">c</span><span class="p">.</span><span class="nx">checker</span><span class="p">.</span><span class="nf">check</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">runtime_notifyListNotifyAll</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">c</span><span class="p">.</span><span class="nx">notify</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">notifyListNotifyAll</span><span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">notifyList</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Fast-path: if there are no new waiters since the last notification
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// we don&#39;t need to acquire the lock.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">wait</span><span class="p">)</span> <span class="o">==</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">notify</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Pull the list out into a local variable, waiters will be readied
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// outside the lock.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">s</span> <span class="o">:=</span> <span class="nx">l</span><span class="p">.</span><span class="nx">head</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">l</span><span class="p">.</span><span class="nx">head</span> <span class="p">=</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">l</span><span class="p">.</span><span class="nx">tail</span> <span class="p">=</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Update the next ticket to be notified. We can set it to the current
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// value of wait because any previous waiters are already in the list
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// or will notice that they have already been notified when trying to
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// add themselves to the list.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">atomic</span><span class="p">.</span><span class="nf">Store</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">notify</span><span class="p">,</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">wait</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">l</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Go through the local list and ready all waiters.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">for</span> <span class="nx">s</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">next</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">next</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">s</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">readyWithTime</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">s</span> <span class="p">=</span> <span class="nx">next</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>全部唤醒的实现简单一点，主要是通过调用<code>readyWithTime</code>方法唤醒链表中的goroutine，唤醒的顺序也是按照加入队列的先后顺序唤醒，而后加入的goroutine可能需要等待调度器的调度。</p>
 <h2 id="使用场景">使用场景</h2>
@@ -608,7 +608,7 @@
 <p>当然使用的姿势一定要正确：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -616,13 +616,13 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-go" data-lang="go"> <span class="nx">c</span><span class="p">.</span><span class="nx">L</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
-<span class="k">for</span> <span class="p">!</span><span class="nf">condition</span><span class="p">()</span> <span class="p">{</span>
-   <span class="nx">c</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
-<span class="p">}</span>
-<span class="c1">// ... make use of condition ...
-</span><span class="c1"></span><span class="nx">c</span><span class="p">.</span><span class="nx">L</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"> <span class="nx">c</span><span class="p">.</span><span class="nx">L</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">!</span><span class="nf">condition</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">   <span class="nx">c</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// ... make use of condition ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">c</span><span class="p">.</span><span class="nx">L</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+</span></span></code></pre></td></tr></table>
 </div>
 </div></div><div class="post-footer" id="post-footer">
     <div class="post-info">
@@ -656,8 +656,8 @@
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.85.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
-                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 

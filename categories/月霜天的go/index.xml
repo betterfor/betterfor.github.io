@@ -68,10 +68,10 @@
     <description><![CDATA[channel设计的基本思想是： 不要通过共享内存来通信，而是要通过通信来实现共享内存。 Do not communicate by sharing memory; instead, share memory by communicating. channel在设计上本质就是一]]></description>
 </item><item>
     <title>深入理解Golang Map</title>
-    <link>https://blog.betterformile.ml/2021/07/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3golang_map/</link>
+    <link>https://blog.betterformile.ml/2021/07/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3map/</link>
     <pubDate>Wed, 14 Jul 2021 09:34:50 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3golang_map/</guid>
+    <guid>https://blog.betterformile.ml/2021/07/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3map/</guid>
     <description><![CDATA[前言 Map是一种常用的数据结构，通常用于存储无序的键值对。但是，Map在Golang中是如何实现的？ 如果判断Map中是否包含某个key？ Ma]]></description>
 </item></channel>
 </rss>

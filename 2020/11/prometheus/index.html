@@ -10,7 +10,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.betterformile.ml/2020/11/prometheus/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-11-19T18:03:03+08:00" />
-<meta property="article:modified_time" content="2021-07-19T17:45:05+08:00" />
+<meta property="article:modified_time" content="2020-11-19T18:03:03+08:00" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/>
@@ -29,8 +29,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/blog.betterformile.ml\/2020\/11\/prometheus\/"
-        },"genre": "posts","keywords": "prometheus","wordcount":  2139 ,
-        "url": "https:\/\/blog.betterformile.ml\/2020\/11\/prometheus\/","datePublished": "2020-11-19T18:03:03+08:00","dateModified": "2021-07-19T17:45:05+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+        },"genre": "posts","keywords": "prometheus","wordcount":  2138 ,
+        "url": "https:\/\/blog.betterformile.ml\/2020\/11\/prometheus\/","datePublished": "2020-11-19T18:03:03+08:00","dateModified": "2020-11-19T18:03:03+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "月霜天"},"author": {
                 "@type": "Person",
@@ -93,7 +93,7 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animated flipInX">5分钟学会搭建Prometheus</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E6%95%99%E7%A8%8B/"><i class="far fa-folder fa-fw"></i>月霜天的小教程</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-11-19">2020-11-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2139 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-11-19">2020-11-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2138 字&nbsp;
                 <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  kept="">
                 <div class="details-summary toc-title">
@@ -137,20 +137,20 @@
 <p><a href="https://prometheus.io/download/" target="_blank" rel="noopener noreffer">二进制下载地址</a></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">tar xvfz prometheus-*.tar.gz
-cd prometheus-*
-./prometheus --config.file=prometheus.yml
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">tar xvfz prometheus-*.tar.gz
+</span></span><span class="line"><span class="cl">cd prometheus-*
+</span></span><span class="line"><span class="cl">./prometheus --config.file=prometheus.yml
+</span></span></code></pre></td></tr></table>
 </div>
 </div><p>当然你可以下载最新的源码进行编译获取最新的二进制文件。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -158,57 +158,55 @@ cd prometheus-*
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">mkdir -p $GOPATH/src/github.com/prometheus
-cd $GOPATH/src/github.com/prometheus
-git clone https://github.com/prometheus/prometheus.git
-cd prometheus
-make build
-./prometheus -config.file=your_config.yml
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">mkdir -p $GOPATH/src/github.com/prometheus
+</span></span><span class="line"><span class="cl">cd $GOPATH/src/github.com/prometheus
+</span></span><span class="line"><span class="cl">git clone https://github.com/prometheus/prometheus.git
+</span></span><span class="line"><span class="cl">cd prometheus
+</span></span><span class="line"><span class="cl">make build
+</span></span><span class="line"><span class="cl">./prometheus -config.file=your_config.yml
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="docker">docker</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback"># 使用 /opt/prometheus/prometheus.yml 的配置
-docker run --name prometheus -d -p 127.0.0.1:9090:9090 -v /opt/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># 使用 /opt/prometheus/prometheus.yml 的配置
+</span></span><span class="line"><span class="cl">docker run --name prometheus -d -p 127.0.0.1:9090:9090 -v /opt/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="helm">helm</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo add stable https://charts.helm.sh/stable
-helm repo update
-
-# Helm 3
-$ helm install [RELEASE_NAME] prometheus-community/prometheus
-
-# Helm 2
-$ helm install --name [RELEASE_NAME] prometheus-community/prometheus
-
-</code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+</span></span><span class="line"><span class="cl">helm repo add stable https://charts.helm.sh/stable
+</span></span><span class="line"><span class="cl">helm repo update
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Helm 3
+</span></span><span class="line"><span class="cl">$ helm install [RELEASE_NAME] prometheus-community/prometheus
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># Helm 2
+</span></span><span class="line"><span class="cl">$ helm install --name [RELEASE_NAME] prometheus-community/prometheus
+</span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="配置文件">配置文件</h3>
 <p>prometheus已经能够起来了，我们也需要对服务做一些个性化的配置，让prometheus能够获取到数据。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -220,17 +218,17 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">global</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">15s</span><span class="w"> </span><span class="c"># 默认抓取间隔，15s向目标抓取一次数据</span><span class="w">
-</span><span class="w">  </span><span class="nt">external_labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">monitor</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;prometheus-monitor&#39;</span><span class="w">
-</span><span class="w"></span><span class="c"># 抓取对象</span><span class="w">
-</span><span class="w"></span><span class="nt">scrape_configs</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;prometheus&#39;</span><span class="w"> </span><span class="c"># 名称，会在每一条metrics添加标签{job_name:&#34;prometheus&#34;}</span><span class="w">
-</span><span class="w">    </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">5s</span><span class="w"> </span><span class="c"># 抓取时间</span><span class="w">
-</span><span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span><span class="w"> </span><span class="c"># 抓取对象</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9090&#39;</span><span class="p">]</span><span class="w">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">global</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">15s</span><span class="w"> </span><span class="c"># 默认抓取间隔，15s向目标抓取一次数据</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">external_labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">monitor</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;prometheus-monitor&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># 抓取对象</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">scrape_configs</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;prometheus&#39;</span><span class="w"> </span><span class="c"># 名称，会在每一条metrics添加标签{job_name:&#34;prometheus&#34;}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">5s</span><span class="w"> </span><span class="c"># 抓取时间</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span><span class="w"> </span><span class="c"># 抓取对象</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9090&#39;</span><span class="p">]</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p><img
         class="lazyload"
@@ -256,7 +254,7 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 <p>下载运行之后，我们需要更新prometheus.yml，然后 <strong>重启</strong> prometheus加载新的配置</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -272,28 +270,28 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">global</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">15s</span><span class="w"> </span><span class="c"># 默认抓取间隔，15s向目标抓取一次数据</span><span class="w">
-</span><span class="w">  </span><span class="nt">external_labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">monitor</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;codelab-monitor&#39;</span><span class="w">
-</span><span class="w"></span><span class="c"># 抓取对象</span><span class="w">
-</span><span class="w"></span><span class="nt">scrape_configs</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;prometheus&#39;</span><span class="w"> </span><span class="c"># 名称，会在每一条metrics添加标签{job_name:&#34;prometheus&#34;}</span><span class="w">
-</span><span class="w">    </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">5s</span><span class="w"> </span><span class="c"># 抓取时间</span><span class="w">
-</span><span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span><span class="w"> </span><span class="c"># 抓取对象</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9090&#39;</span><span class="p">]</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;node&#39;</span><span class="w">
-</span><span class="w">    </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">5s</span><span class="w">
-</span><span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9100&#39;</span><span class="p">]</span><span class="w">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">global</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">15s</span><span class="w"> </span><span class="c"># 默认抓取间隔，15s向目标抓取一次数据</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">external_labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">monitor</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;codelab-monitor&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># 抓取对象</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">scrape_configs</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;prometheus&#39;</span><span class="w"> </span><span class="c"># 名称，会在每一条metrics添加标签{job_name:&#34;prometheus&#34;}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">5s</span><span class="w"> </span><span class="c"># 抓取时间</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span><span class="w"> </span><span class="c"># 抓取对象</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9090&#39;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;node&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">5s</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9100&#39;</span><span class="p">]</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="告警通知">告警通知</h2>
 <p>如果你需要设定特定的规则，例如cpu/内存超过了设定值，需要将告警数据发送到你的邮件、微信、钉钉等，那么你就需要Alertmanager。</p>
 <p>告警分为两个部分。首先需要在prometheus中添加告警规则，定义告警产生的逻辑，其次Altermanager将触发的警报转化为通知，例如邮件，呼叫和聊天消息。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -320,36 +318,36 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </span><span class="lnt">25
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">global</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">15s</span><span class="w"> </span><span class="c"># 默认抓取间隔，15s向目标抓取一次数据</span><span class="w">
-</span><span class="w">  </span><span class="nt">evaluation_interval</span><span class="p">:</span><span class="w"> </span><span class="l">10s</span><span class="w">
-</span><span class="w">  </span><span class="nt">external_labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">monitor</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;codelab-monitor&#39;</span><span class="w">
-</span><span class="w"></span><span class="c"># 规则文件</span><span class="w">
-</span><span class="w"></span><span class="nt">rule_files</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="l">rules.yml</span><span class="w">
-</span><span class="w">  
-</span><span class="w"></span><span class="nt">alerting</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">alertmanagers</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">static_configs</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- <span class="nt">targets</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="l">localhost:9093</span><span class="w">
-</span><span class="w">      
-</span><span class="w"></span><span class="c"># 抓取对象</span><span class="w">
-</span><span class="w"></span><span class="nt">scrape_configs</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;prometheus&#39;</span><span class="w"> </span><span class="c"># 名称，会在每一条metrics添加标签{job_name:&#34;prometheus&#34;}</span><span class="w">
-</span><span class="w">    </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">5s</span><span class="w"> </span><span class="c"># 抓取时间</span><span class="w">
-</span><span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span><span class="w"> </span><span class="c"># 抓取对象</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9090&#39;</span><span class="p">]</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;node&#39;</span><span class="w">
-</span><span class="w">    </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">5s</span><span class="w">
-</span><span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9100&#39;</span><span class="p">]</span><span class="w">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">global</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">15s</span><span class="w"> </span><span class="c"># 默认抓取间隔，15s向目标抓取一次数据</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">evaluation_interval</span><span class="p">:</span><span class="w"> </span><span class="l">10s</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">external_labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">monitor</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;codelab-monitor&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># 规则文件</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">rule_files</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">rules.yml</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">alerting</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">alertmanagers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">static_configs</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">targets</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">localhost:9093</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># 抓取对象</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">scrape_configs</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;prometheus&#39;</span><span class="w"> </span><span class="c"># 名称，会在每一条metrics添加标签{job_name:&#34;prometheus&#34;}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">5s</span><span class="w"> </span><span class="c"># 抓取时间</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span><span class="w"> </span><span class="c"># 抓取对象</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9090&#39;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;node&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l">5s</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">static_configs</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">targets</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;localhost:9100&#39;</span><span class="p">]</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
@@ -358,14 +356,14 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c"># 规则文件rules.yml</span><span class="w">
-</span><span class="w"></span><span class="nt">groups</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">example</span><span class="w">
-</span><span class="w">    </span><span class="nt">rules</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- <span class="nt">alert</span><span class="p">:</span><span class="w"> </span><span class="l">InstanceDown</span><span class="w">
-</span><span class="w">      </span><span class="nt">expr</span><span class="p">:</span><span class="w"> </span><span class="l">up == 0</span><span class="w">
-</span><span class="w">      </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l">1m</span><span class="w">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># 规则文件rules.yml</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">groups</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">example</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">rules</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">alert</span><span class="p">:</span><span class="w"> </span><span class="l">InstanceDown</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">expr</span><span class="p">:</span><span class="w"> </span><span class="l">up == 0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">for</span><span class="p">:</span><span class="w"> </span><span class="l">1m</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>按照 evaluation_interval 的配置，InstanceDown告警每10s将被执行1次。如果持续1m收到数据，那么这个告警就会被触发。在达到设定的时间长度前，这个告警处于 <em>pending</em> 状态，在 Alerts 页面可以单击警告查看包括它的标签在内的更多详细信息。</p>
 <p><img
@@ -386,7 +384,7 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 <p>现在需要为 Alertmanager 创建一个配置文件。这里有很多中方式让Alertmanager 通知到你。这里使用SMTP。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -398,17 +396,17 @@ $ helm install --name [RELEASE_NAME] prometheus-community/prometheus
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">global</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">smtp_smarthost</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;localhost:25&#39;</span><span class="w">
-</span><span class="w">  </span><span class="nt">smtp_from</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;youraddress@example.org&#39;</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="nt">route</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">receiver</span><span class="p">:</span><span class="w"> </span><span class="l">example-email</span><span class="w">
-</span><span class="w"></span><span class="nt">receivers</span><span class="p">:</span><span class="w">
-</span><span class="w"></span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;example-email&#39;</span><span class="w">
-</span><span class="w">  </span><span class="nt">email_configs</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;youraddress@example.org&#39;</span><span class="w">
-</span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">global</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">smtp_smarthost</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;localhost:25&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">smtp_from</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;youraddress@example.org&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">route</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">receiver</span><span class="p">:</span><span class="w"> </span><span class="l">example-email</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">receivers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;example-email&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">email_configs</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;youraddress@example.org&#39;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>启动Alertmanager，现在可以在浏览器输入 <em>http://localhost:9093</em> 来访问 Alertmanager，在这个页面你将看到触发的告警，如果所有的配置<strong>正确</strong>并正常启动，一两分钟后就会收到邮件告警通知。</p>
 <p><img
@@ -427,8 +425,7 @@ exporter收集数据，prometheus server 拉取exporter数据，然后根据告�
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2021-07-19&nbsp;<a class="git-hash" href="https://betterfor.github.io/commit/1a7befd3bf6b110e0728d6541bf17494efe8f241" target="_blank" title="commit by betterfor(xiejian) 1a7befd3bf6b110e0728d6541bf17494efe8f241: 添加sync包的源码解析">
-                                    <i class="fas fa-hashtag fa-fw"></i>1a7befd</a></span>
+                <span>更新于 2020-11-19</span>
             </div>
             <div class="post-info-license"></div>
         </div>
@@ -456,8 +453,8 @@ exporter收集数据，prometheus server 拉取exporter数据，然后根据告�
                 Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.85.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
-                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
 
