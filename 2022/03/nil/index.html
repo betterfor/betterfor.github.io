@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Nil的使用场景 - 月霜天的小站</title><meta name="Description" content="月霜天的小站"><meta property="og:title" content="Nil的使用场景" />
+<meta property="og:description" content="在日常Golang使用中，你有没有这样的疑惑？ nil是什么？哪些可以用nil？哪些不能用nil？ 接下来，我将对这些内容进行总结。 一、什么是n" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.betterformile.ml/2022/03/nil/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-07T11:17:34+08:00" />
+<meta property="article:modified_time" content="2022-03-07T11:18:57+08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/>
+
+<meta name="twitter:title" content="Nil的使用场景"/>
+<meta name="twitter:description" content="在日常Golang使用中，你有没有这样的疑惑？ nil是什么？哪些可以用nil？哪些不能用nil？ 接下来，我将对这些内容进行总结。 一、什么是n"/>
+<meta name="application-name" content="月霜天">
+<meta name="apple-mobile-web-app-title" content="月霜天"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.betterformile.ml/2022/03/nil/" /><link rel="prev" href="https://blog.betterformile.ml/2022/03/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Nil的使用场景",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog.betterformile.ml\/2022\/03\/nil\/"
+        },"genre": "posts","keywords": "nil","wordcount":  2142 ,
+        "url": "https:\/\/blog.betterformile.ml\/2022\/03\/nil\/","datePublished": "2022-03-07T11:17:34+08:00","dateModified": "2022-03-07T11:18:57+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "月霜天"},"author": {
+                "@type": "Person",
+                "name": "月霜天"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png" /></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png" /></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Nil的使用场景</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E9%9A%8F%E7%AC%94/"><i class="far fa-folder fa-fw"></i>月霜天的小随笔</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-03-07">2022-03-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2142 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一什么是nil">一、什么是nil</a></li>
+    <li><a href="#二六大类型">二、六大类型</a>
+      <ul>
+        <li><a href="#1指针">1、指针</a>
+          <ul>
+            <li><a href="#11变量定义">1.1、变量定义</a></li>
+            <li><a href="#12变量本身">1.2、变量本身</a></li>
+            <li><a href="#13nil赋值">1.3、nil赋值</a></li>
+            <li><a href="#14nil判断">1.4、nil判断</a></li>
+          </ul>
+        </li>
+        <li><a href="#2channel">2、channel</a>
+          <ul>
+            <li><a href="#21变量定义">2.1、变量定义</a></li>
+            <li><a href="#22变量本身">2.2、变量本身</a></li>
+            <li><a href="#23nil赋值">2.3、nil赋值</a></li>
+            <li><a href="#24nil判断">2.4、nil判断</a></li>
+          </ul>
+        </li>
+        <li><a href="#3map">3、map</a>
+          <ul>
+            <li><a href="#31变量定义">3.1、变量定义</a></li>
+            <li><a href="#32变量本身">3.2、变量本身</a></li>
+            <li><a href="#33nil赋值">3.3、nil赋值</a></li>
+            <li><a href="#34nil判断">3.4、nil判断</a></li>
+          </ul>
+        </li>
+        <li><a href="#4interface">4、interface</a>
+          <ul>
+            <li><a href="#41变量定义">4.1、变量定义</a></li>
+            <li><a href="#42变量本身">4.2、变量本身</a></li>
+            <li><a href="#43nil赋值">4.3、nil赋值</a></li>
+            <li><a href="#44nil判断">4.4、nil判断</a></li>
+          </ul>
+        </li>
+        <li><a href="#5函数">5、函数</a>
+          <ul>
+            <li><a href="#51变量定义">5.1、变量定义</a></li>
+            <li><a href="#52变量本身">5.2、变量本身</a></li>
+            <li><a href="#53nil赋值">5.3、nil赋值</a></li>
+            <li><a href="#54nil判断">5.4、nil判断</a></li>
+          </ul>
+        </li>
+        <li><a href="#6slice">6、slice</a>
+          <ul>
+            <li><a href="#61变量定义">6.1、变量定义</a></li>
+            <li><a href="#62变量本身">6.2、变量本身</a></li>
+            <li><a href="#63nil赋值">6.3、nil赋值</a></li>
+            <li><a href="#64nil判断">6.4、nil判断</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#三总结">三、总结</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>在日常Golang使用中，你有没有这样的疑惑？</p>
+<p><code>nil</code>是什么？哪些可以用<code>nil</code>？哪些不能用<code>nil</code>？</p>
+<p>接下来，我将对这些内容进行总结。</p>
+<h2 id="一什么是nil">一、什么是nil</h2>
+<p>首先<code>nil</code>是一个变量，我们可以在源码包中找到这样的描述：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// nil is a predeclared identifier representing the zero value for a
+</span></span></span><span class="line"><span class="cl"><span class="c1">// pointer, channel, func, interface, map, or slice type.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="kc">nil</span> <span class="nx">Type</span> <span class="c1">// Type must be a pointer, channel, func, interface, map, or slice type
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Type is here for the purposes of documentation only. It is a stand-in
+</span></span></span><span class="line"><span class="cl"><span class="c1">// for any Go type, but represents the same type for any given function
+</span></span></span><span class="line"><span class="cl"><span class="c1">// invocation.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">Type</span> <span class="kt">int</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>从类型定义上可以得到以下关键点：</p>
+<ul>
+<li><code>nil</code>本质上是一个<code>Type</code>类型的变量</li>
+<li><code>Type</code>类型仅仅是基于<code>int</code>定义出来的新类型</li>
+<li><code>nil</code>适用于指针、<code>channel</code>、函数、<code>interface</code>、<code>map</code>、<code>slice</code>六种类型</li>
+</ul>
+<h2 id="二六大类型">二、六大类型</h2>
+<h3 id="1指针">1、指针</h3>
+<h4 id="11变量定义">1.1、变量定义</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">ptr</span> <span class="o">*</span><span class="kt">int</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="12变量本身">1.2、变量本身</h4>
+<p>变量本身是8字节的内存块</p>
+<h4 id="13nil赋值">1.3、nil赋值</h4>
+<p>这8个字节指针置0</p>
+<h4 id="14nil判断">1.4、nil判断</h4>
+<p>判断这8个字节是否为0</p>
+<h3 id="2channel">2、channel</h3>
+<h4 id="21变量定义">2.1、变量定义</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 变量本身定义
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">c1</span> <span class="kd">chan</span> <span class="kd">struct</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 变量定义和初始化
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">c2</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>第一种方式仅仅定义了<code>c1</code>变量本身</li>
+<li>第二种方式则分配了<code>c2</code>的内存，调用了<code>runtime</code>下的<code>makechan</code>函数来创建结构</li>
+</ul>
+<h4 id="22变量本身">2.2、变量本身</h4>
+<p>一个 8 字节的指针而已，指向一个 channel 管理结构，也就是 <code>struct hchan</code> 的指针。</p>
+<h4 id="23nil赋值">2.3、nil赋值</h4>
+<p>赋值 nil 之后，仅仅是把这 8 字节的指针置 0 。</p>
+<h4 id="24nil判断">2.4、nil判断</h4>
+<p>判断这指针是否为0</p>
+<h3 id="3map">3、map</h3>
+<h4 id="31变量定义">3.1、变量定义</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 变量定义
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">m1</span> <span class="kd">map</span><span class="p">[</span><span class="kt">int</span><span class="p">]</span><span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 变量定义和初始化
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">m2</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">int</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>第一种方式仅仅定义了<code>m1</code>变量本身</li>
+<li>第二种方式则分配了<code>m2</code>的内存，调用了<code>runtime</code>下的<code>makemap</code>函数来创建结构</li>
+</ul>
+<h4 id="32变量本身">3.2、变量本身</h4>
+<p>变量本身是个指针</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// A header for a Go map.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">hmap</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Note: the format of the hmap is also encoded in cmd/compile/internal/gc/reflect.go.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// Make sure this stays in sync with the compiler&#39;s definition.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 键值对的数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">count</span> <span class="kt">int</span> <span class="c1">// # live cells == size of map.  Must be first (used by len() builtin)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 标识状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">flags</span> <span class="kt">uint8</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 2^B = len(buckets)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">B</span> <span class="kt">uint8</span> <span class="c1">// log_2 of # of buckets (can hold up to loadFactor * 2^B items)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 溢出桶里bmap大致数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">noverflow</span> <span class="kt">uint16</span> <span class="c1">// approximate number of overflow buckets; see incrnoverflow for details
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// hash因子
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">hash0</span> <span class="kt">uint32</span> <span class="c1">// hash seed
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 指向一个数组（连续内存空间），数组类型为[]bmap，bmap类型就是存在键值对的结构
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">buckets</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span> <span class="c1">// array of 2^B Buckets. may be nil if count==0.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 扩容时，存放之前的buckets
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">oldbuckets</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span> <span class="c1">// previous bucket array of half the size, non-nil only when growing
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 分流次数，成倍扩容分流操作计数的字段
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">nevacuate</span> <span class="kt">uintptr</span> <span class="c1">// progress counter for evacuation (buckets less than this have been evacuated)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// 溢出桶结构，正常桶里面某个bmap存满了，会使用这里面的内存空间存放键值对
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">extra</span> <span class="o">*</span><span class="nx">mapextra</span> <span class="c1">// optional fields
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>初始化了<code>map</code>结构后，才能分配<code>map</code>所使用的内存。</p>
+<h4 id="33nil赋值">3.3、nil赋值</h4>
+<p>赋值 nil 之后，仅仅是把这 8 字节的指针置 0 。</p>
+<h4 id="34nil判断">3.4、nil判断</h4>
+<p>判断这指针是否为0</p>
+<h3 id="4interface">4、interface</h3>
+<h4 id="41变量定义">4.1、变量定义</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 定义一个接口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">Reader</span> <span class="kd">interface</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">Read</span><span class="p">(</span><span class="nx">p</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 定义一个接口变量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">reader</span> <span class="nx">Reader</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 空接口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">empty</span> <span class="kd">interface</span><span class="p">{}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="42变量本身">4.2、变量本身</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">iface</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">tab</span>  <span class="o">*</span><span class="nx">itab</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">data</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">eface</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">_type</span> <span class="o">*</span><span class="nx">_type</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">data</span>  <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>其中<code>iface</code>是通常定义的interface类型，<code>eface</code>是空接口对应的数据结构，这两个结构体占用内存都是16字节。</p>
+<h4 id="43nil赋值">4.3、nil赋值</h4>
+<p>赋值 nil 之后，把这 16 字节的内存块置 0 。</p>
+<h4 id="44nil判断">4.4、nil判断</h4>
+<p>需要判断类型和值</p>
+<h3 id="5函数">5、函数</h3>
+<h4 id="51变量定义">5.1、变量定义</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">f</span> <span class="kd">func</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="kt">error</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="52变量本身">5.2、变量本身</h4>
+<p>变量本身是8字节的指针</p>
+<h4 id="53nil赋值">5.3、nil赋值</h4>
+<p>本身就是指针，只不过指向的是函数而已，所以赋值也是将这 8 字节置 0 。</p>
+<h4 id="54nil判断">5.4、nil判断</h4>
+<p>判断这8个字节是否为0</p>
+<h3 id="6slice">6、slice</h3>
+<h4 id="61变量定义">6.1、变量定义</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 定义
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">slice1</span> <span class="p">[]</span><span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">slice2</span> <span class="p">[]</span><span class="kt">int</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 定义及初始化
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">slice3</span> <span class="p">=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong><code>var</code>和<code>make</code>这两种方式有什么区别？</strong></p>
+<ul>
+<li>第一种<code>var</code>的方式定义变量，如果逃逸分析之后，可以确认分配在栈上，那么就在栈上分配24个字节，如果逃逸到堆上，那么调用<code>newobject</code>函数进行类型分析。</li>
+<li>第二种<code>make</code>方式略有不同，如果逃逸分析之后，确认分配在栈上，那么直接在栈上分配24字节，如果逃逸到堆上，会调用<code>makeslice</code>来分配变量。</li>
+</ul>
+<h4 id="62变量本身">6.2、变量本身</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">slice</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">array</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span>	<span class="c1">// 管理的内存块首地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">len</span>   <span class="kt">int</span>				<span class="c1">// 动态数组实际使用大小
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">cap</span>   <span class="kt">int</span>				<span class="c1">// 动态数据内存大小
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>变量本身占用24字节。</p>
+<blockquote>
+<p>我们看到无论是var声明定义的slice变量，还是make创建的slice变量，slice管理结构是已经分配出来的，也就是<code>struct slice</code>结构</p>
+</blockquote>
+<h4 id="63nil赋值">6.3、nil赋值</h4>
+<p>本身的 24 字节的内存块被置 0。</p>
+<h4 id="64nil判断">6.4、nil判断</h4>
+<p>那么什么样的<code>slice</code>被认为是<code>nil</code>？</p>
+<p>指针为0，也就是这个动态数组没有实际数据的时候。</p>
+<p>问题：仅判断指针？对len和cap两个字段不做判断吗？</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;unsafe&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">sliceType</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">pdata</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">len</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cap</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">slice</span> <span class="p">[]</span><span class="kt">byte</span>
+</span></span><span class="line"><span class="cl">	<span class="p">((</span><span class="o">*</span><span class="nx">sliceType</span><span class="p">)(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">slice</span><span class="p">))).</span><span class="nx">len</span> <span class="p">=</span> <span class="mh">0x3</span>
+</span></span><span class="line"><span class="cl">	<span class="p">((</span><span class="o">*</span><span class="nx">sliceType</span><span class="p">)(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">slice</span><span class="p">))).</span><span class="nx">cap</span> <span class="p">=</span> <span class="mh">0x4</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">slice</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">println</span><span class="p">(</span><span class="s">&#34;not nil&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">println</span><span class="p">(</span><span class="s">&#34;nil&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Output: nil
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="三总结">三、总结</h2>
+<p>1、变量就是绑定到某个内存块上的名称</p>
+<p>2、变量定义分配的内存是置零分配的</p>
+<p>3、不是所有的类型能够赋值 nil，并且和 nil 进行对比判断。只有 指针、<code>channel</code>、函数、<code>interface</code>、<code>map</code>、<code>slice</code> 这 6 种类型</p>
+<p>4、<code>channel</code>、<code>map</code>类型的变量需要<code>make</code>才能使用</p>
+<p>5、<code>slice</code>在声明后可以使用，是因为<code>struct slice</code>核心结构在定义的时候就已经分配出来了。</p>
+<p>6、<code>slice</code>是24字节，<code>interface</code>是16字节，其他的都是8字节</p>
+<p>7、这 6 种类型和 <code>nil</code> 进行比较判断本质上都是和变量本身做判断，slice 是判断管理结构的第一个指针字段，map，channel 本身就是指针</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-03-07&nbsp;<a class="git-hash" href="https://betterfor.github.io/commit/f8bc47674a38c6b2a4c15a4d0c9ac118813d4c4f" target="_blank" title="commit by betterfor(xiejian) f8bc47674a38c6b2a4c15a4d0c9ac118813d4c4f: nil的使用场景">
+                                    <i class="fas fa-hashtag fa-fw"></i>f8bc476</a></span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2022/03/nil/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/nil/">nil</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2022/03/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/" class="prev" rel="prev" title="CSP并发模型"><i class="fas fa-angle-left fa-fw"></i>CSP并发模型</a></div>
+</div>
+<div id="comments"><div id="utterances"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"评论系统","lightTheme":"github-light","repo":"betterfor/betterfor.github.io"}},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

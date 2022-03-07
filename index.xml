@@ -3,9 +3,16 @@
         <title>月霜天的小站</title>
         <link>https://blog.betterformile.ml/</link>
         <description>月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:14:26 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:17:34 &#43;0800</lastBuildDate>
             <atom:link href="https://blog.betterformile.ml/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>Nil的使用场景</title>
+    <link>https://blog.betterformile.ml/2022/03/nil/</link>
+    <pubDate>Mon, 07 Mar 2022 11:17:34 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/nil/</guid>
+    <description><![CDATA[在日常Golang使用中，你有没有这样的疑惑？ nil是什么？哪些可以用nil？哪些不能用nil？ 接下来，我将对这些内容进行总结。 一、什么是n]]></description>
+</item><item>
     <title>CSP并发模型</title>
     <link>https://blog.betterformile.ml/2022/03/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/</link>
     <pubDate>Mon, 07 Mar 2022 11:14:26 &#43;0800</pubDate>
@@ -68,12 +75,5 @@
     <author>作者</author>
     <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.mutex/</guid>
     <description><![CDATA[并发必然会带来对于资源的竞争，这时需要使用go提供的sync.Mutex这把互斥锁来保证临界资源的访问互斥了。 锁的性质 在代码注释开篇就有一大]]></description>
-</item><item>
-    <title>并发编程之条件变量Cond</title>
-    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.cond/</link>
-    <pubDate>Fri, 16 Jul 2021 10:52:14 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.cond/</guid>
-    <description><![CDATA[sync.Cond字面意思就是同步条件变量，它实现的是一种监视器(Monitor)模式。 对于Cond而言，它实现一个条件变量，是gorout]]></description>
 </item></channel>
 </rss>
