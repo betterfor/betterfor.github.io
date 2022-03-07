@@ -3,7 +3,14 @@
         <title>所有文章 - 月霜天的小站</title>
         <link>https://blog.betterformile.ml/posts/</link>
         <description>所有文章 | 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:19:43 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/posts/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:21:14 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Struct的使用场景</title>
+    <link>https://blog.betterformile.ml/2022/03/struct/</link>
+    <pubDate>Mon, 07 Mar 2022 11:21:14 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/struct/</guid>
+    <description><![CDATA[golang里有个重要的类型就是结构体，虽然不能像C++一样有类的功能和特性，但也有自己独特的魅力。 这里着重介绍一下经常遇到的空结构体，我们]]></description>
+</item><item>
     <title>Httprouter</title>
     <link>https://blog.betterformile.ml/2022/03/httprouter/</link>
     <pubDate>Mon, 07 Mar 2022 11:19:43 &#43;0800</pubDate>
@@ -66,12 +73,5 @@
     <author>作者</author>
     <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.map/</guid>
     <description><![CDATA[golang原生的map是不支持并发，而在sync/map是线程安全的，可以并发读写，适用于读多写少的场景。 sync.Map是Go map[i]]></description>
-</item><item>
-    <title>并发编程之读写锁</title>
-    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%AF%BB%E5%86%99%E9%94%81/</link>
-    <pubDate>Fri, 16 Jul 2021 10:52:34 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%AF%BB%E5%86%99%E9%94%81/</guid>
-    <description><![CDATA[读写锁是基于互斥锁Mutex实现的读写互斥锁，一个goroutine可以持有多个读锁或一个写锁，同一时刻只能同时持有读锁或写锁。 RWMute]]></description>
 </item></channel>
 </rss>

@@ -3,7 +3,14 @@
         <title>月霜天的小随笔 - 分类 - 月霜天的小站</title>
         <link>https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E9%9A%8F%E7%AC%94/</link>
         <description>月霜天的小随笔 - 分类 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:19:43 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E9%9A%8F%E7%AC%94/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:21:14 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E9%9A%8F%E7%AC%94/" rel="self" type="application/rss+xml" /><item>
+    <title>Struct的使用场景</title>
+    <link>https://blog.betterformile.ml/2022/03/struct/</link>
+    <pubDate>Mon, 07 Mar 2022 11:21:14 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/struct/</guid>
+    <description><![CDATA[golang里有个重要的类型就是结构体，虽然不能像C++一样有类的功能和特性，但也有自己独特的魅力。 这里着重介绍一下经常遇到的空结构体，我们]]></description>
+</item><item>
     <title>Httprouter</title>
     <link>https://blog.betterformile.ml/2022/03/httprouter/</link>
     <pubDate>Mon, 07 Mar 2022 11:19:43 &#43;0800</pubDate>
