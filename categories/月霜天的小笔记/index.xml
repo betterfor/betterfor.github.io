@@ -3,7 +3,56 @@
         <title>月霜天的小笔记 - 分类 - 月霜天的小站</title>
         <link>https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E7%AC%94%E8%AE%B0/</link>
         <description>月霜天的小笔记 - 分类 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 27 Jul 2021 09:35:42 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E7%AC%94%E8%AE%B0/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E7%AC%94%E8%AE%B0/" rel="self" type="application/rss+xml" /><item>
+    <title>client-go之工作队列</title>
+    <link>https://blog.betterformile.ml/2022/03/02-workqueue/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/02-workqueue/</guid>
+    <description><![CDATA[workqueue是client-go的工作队列，主要用于并行程序控制，比如各种资源controller监听informer对象的变化，当有]]></description>
+</item><item>
+    <title>client-go之索引</title>
+    <link>https://blog.betterformile.ml/2022/03/01-indexer/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/01-indexer/</guid>
+    <description><![CDATA[以下是client-go的官方架构图 先主要针对这个Indexer来分析。 一、Indexer Indexer保存来自api-server的资源，]]></description>
+</item><item>
+    <title>client-go之队列</title>
+    <link>https://blog.betterformile.ml/2022/03/03-deltafifo/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/03-deltafifo/</guid>
+    <description><![CDATA[看这个client-go的架构图，DeltaFIFO是一个生产者-消费者队列，生产者是Reflector，消费者是Pop()方法。 一、Del]]></description>
+</item><item>
+    <title>client-go架构</title>
+    <link>https://blog.betterformile.ml/2022/03/client-go/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/client-go/</guid>
+    <description><![CDATA[以下是client-go的官方架构图 一、Indexer Indexer保存来自api-server的资源，使用list-watch方式来维护资]]></description>
+</item><item>
+    <title>kubernetes简介</title>
+    <link>https://blog.betterformile.ml/2022/03/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</guid>
+    <description><![CDATA[kubernetes是Google开源的分布式容器管理平台，而我们已经知道了容器的本质就是由Linux Namespace、Cgroup和ro]]></description>
+</item><item>
+    <title>Linux六大Namespace</title>
+    <link>https://blog.betterformile.ml/2022/03/namespace/</link>
+    <pubDate>Mon, 07 Mar 2022 13:28:41 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/namespace/</guid>
+    <description><![CDATA[云计算领域最火的莫过于“容器”，而提到容器，就不得不提Docker，可以说Docker已经是容器的代名词。 容器其实是一种沙盒技术，顾名思义，]]></description>
+</item><item>
+    <title>进程后台运行</title>
+    <link>https://blog.betterformile.ml/2022/03/%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C/</link>
+    <pubDate>Mon, 07 Mar 2022 13:28:41 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C/</guid>
+    <description><![CDATA[之前介绍过，Namespace、Cgroup和Union File System是Docker的基石，那么我们通常在执行docker容器的时候，有两种]]></description>
+</item><item>
     <title>停止goroutine的几种方法</title>
     <link>https://blog.betterformile.ml/2021/07/%E5%81%9C%E6%AD%A2goroutine%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/</link>
     <pubDate>Tue, 27 Jul 2021 09:35:42 &#43;0800</pubDate>
@@ -24,54 +73,5 @@
     <author>作者</author>
     <guid>https://blog.betterformile.ml/2021/07/redis%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/</guid>
     <description><![CDATA[零、前言 redis的主要知识点 一、基础 1、redis是什么？ Redis是一个数据库，不过与传统RDBM(关系型数据库)不同，Redis属于N]]></description>
-</item><item>
-    <title>高并发系统下的限速策略</title>
-    <link>https://blog.betterformile.ml/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/</link>
-    <pubDate>Mon, 28 Jun 2021 14:07:33 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/06/%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E4%B8%8B%E7%9A%84%E9%99%90%E9%80%9F%E7%AD%96%E7%95%A5/</guid>
-    <description><![CDATA[限流又称为流量控制，是限制到达系统的并发请求数，当达到限制条件时可以拒绝请求，可以起到保护下游服务，熔断流量的作用。常用的限流策略有漏桶算法]]></description>
-</item><item>
-    <title>Pod升级与回滚</title>
-    <link>https://blog.betterformile.ml/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</link>
-    <pubDate>Wed, 24 Mar 2021 22:51:40 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</guid>
-    <description><![CDATA[一、简介 当集群中的某个服务需要升级时，我们需要停止目前与该服务的相关的所有pod，然后下载新版本镜像并创建新的pod。如果集群规模比较大，则]]></description>
-</item><item>
-    <title>Pod调度</title>
-    <link>https://blog.betterformile.ml/2021/03/pod%E8%B0%83%E5%BA%A6/</link>
-    <pubDate>Tue, 23 Mar 2021 22:32:36 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/03/pod%E8%B0%83%E5%BA%A6/</guid>
-    <description><![CDATA[一、简介 在大多数情况下，我们不关心pod会被调度到哪个节点，只关心pod是否被成功调度到集群的一个可用节点。但是，在真实生产环境中存在一种需]]></description>
-</item><item>
-    <title>Pod的基础</title>
-    <link>https://blog.betterformile.ml/2021/03/pod%E5%9F%BA%E7%A1%80/</link>
-    <pubDate>Mon, 22 Mar 2021 21:55:59 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/03/pod%E5%9F%BA%E7%A1%80/</guid>
-    <description><![CDATA[一、简介 pod在整个生命周期中被系统定义为各种状态，熟悉pod的各种状态对于理解如何设置pod的调度策略、重启策略都是很有必要的。 二、pod]]></description>
-</item><item>
-    <title>Golang 1.16版本新特性 =&gt; 撤回版本(retract)</title>
-    <link>https://blog.betterformile.ml/2021/02/golang_retract/</link>
-    <pubDate>Thu, 25 Feb 2021 15:15:36 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/02/golang_retract/</guid>
-    <description><![CDATA[一般来说，模块作者需要使用一种方法来只是不应该使用某个已发布的模块。 出现一个严重的安全漏洞 不闲不兼容或bug 版本发布错误 出现过模块最新版本为]]></description>
-</item><item>
-    <title>Docker命令大全</title>
-    <link>https://blog.betterformile.ml/2021/02/docker_command/</link>
-    <pubDate>Fri, 12 Feb 2021 19:26:01 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/02/docker_command/</guid>
-    <description><![CDATA[Docker是一个虚拟环境容器，可以将你的开发环境、代码、配置文件等一并打包到这个容器中，并发布和应用到任意平台中。所以你需要知道一点doc]]></description>
-</item><item>
-    <title>Defer的使用方法</title>
-    <link>https://blog.betterformile.ml/2021/02/defer/</link>
-    <pubDate>Thu, 11 Feb 2021 10:31:33 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/02/defer/</guid>
-    <description><![CDATA[什么是defer？ defer是go语言提供的一种用于注册延迟调用的机制，让函数或语句可以在当前函数执行完毕后（包括通过return正常结束或]]></description>
 </item></channel>
 </rss>

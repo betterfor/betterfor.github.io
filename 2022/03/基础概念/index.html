@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>kubernetes简介 - 月霜天的小站</title><meta name="Description" content="月霜天的小站"><meta property="og:title" content="kubernetes简介" />
+<meta property="og:description" content="kubernetes是Google开源的分布式容器管理平台，而我们已经知道了容器的本质就是由Linux Namespace、Cgroup和ro" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.betterformile.ml/2022/03/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-07T13:32:36+08:00" />
+<meta property="article:modified_time" content="2022-03-07T13:32:36+08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/>
+
+<meta name="twitter:title" content="kubernetes简介"/>
+<meta name="twitter:description" content="kubernetes是Google开源的分布式容器管理平台，而我们已经知道了容器的本质就是由Linux Namespace、Cgroup和ro"/>
+<meta name="application-name" content="月霜天">
+<meta name="apple-mobile-web-app-title" content="月霜天"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.betterformile.ml/2022/03/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/" /><link rel="prev" href="https://blog.betterformile.ml/2022/03/namespace/" /><link rel="next" href="https://blog.betterformile.ml/2022/03/client-go/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "kubernetes简介",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog.betterformile.ml\/2022\/03\/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5\/"
+        },"genre": "posts","keywords": "kubernetes","wordcount":  2840 ,
+        "url": "https:\/\/blog.betterformile.ml\/2022\/03\/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5\/","datePublished": "2022-03-07T13:32:36+08:00","dateModified": "2022-03-07T13:32:36+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "月霜天"},"author": {
+                "@type": "Person",
+                "name": "月霜天"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png" /></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png" /></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">kubernetes简介</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw"></i>月霜天的小笔记</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-03-07">2022-03-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2840 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 6 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一容器编排">一、容器编排</a>
+      <ul>
+        <li><a href="#11composeswarm">1.1、compose+swarm</a></li>
+        <li><a href="#12kubernetes">1.2、kubernetes</a></li>
+        <li><a href="#13对比">1.3、对比</a></li>
+      </ul>
+    </li>
+    <li><a href="#二基础对象">二、基础对象</a></li>
+    <li><a href="#三总结">三、总结</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>kubernetes是Google开源的分布式容器管理平台，而我们已经知道了容器的本质就是<a href="https://www.toutiao.com/i7046735677622518285/" target="_blank" rel="noopener noreffer">由Linux Namespace、Cgroup和rootfs组成的进程隔离环境</a>。</p>
+<p>一个正在运行的容器，可以分为两部分：</p>
+<ul>
+<li>一个由Namespace+Cgroup构成的隔离环境，是进程正在运行的环境，称为“容器运行时”(runtime)</li>
+<li>一个联合挂载在<code>/var/lib/docker/aufs/mnt</code>上的rootfs，称为&quot;容器镜像&quot;(image)</li>
+</ul>
+<p>那么这两个部分哪个比较重要？</p>
+<p>我认为是镜像比较重要，因为在&quot;开发-&gt;测试-&gt;发布&quot;流程中，承载容器信息的是镜像，而容器运行时是到了宿主机上才运行，我们可以通过镜像移植容器到不同机器上。</p>
+<h2 id="一容器编排">一、容器编排</h2>
+<p>假设有10台机器，需要部署多个服务，如果使用容器进行部署，需要运维人员自己分配不同机器上运行容器，这会带来很大的工作量。</p>
+<p>而“容器编排”技术能够将用户提交的Docker镜像以容器的方式运行起来，自动实现CI/CD，监控，安全，网络，存储等，将开发运维关联起来。</p>
+<p>这其中，最具代表性的容器编排工具，就是Docker的compose+swarm组合，和google和redhat主导的kubernetes。</p>
+<h3 id="11composeswarm">1.1、compose+swarm</h3>
+<p>docker-compose是用来管理容器的，在compose中可以定义多个镜像，但是仅仅只能运行在本机。而swarm弥补了compose的缺陷，可以管理容器集群。优点是适用简单，容易集成到现有系统中，但是在复杂调度就会比较困难。</p>
+<h3 id="12kubernetes">1.2、kubernetes</h3>
+<p>kubernetes基于Google内部项目Brog，在它的成长阶段，每一个核心特性的提出，几乎都基于Brog系统的设计和经验。</p>
+<p>kubernetes项目架构，由master和node两类节点组成，这两类节点分别担任控制节点和计算节点的角色。</p>
+<p>其中，控制节点即master节点，由三个紧密协作的独立组件而成：</p>
+<ul>
+<li>负责API服务的kube-apiserver</li>
+<li>负责调度的kube-scheduler</li>
+<li>负责容器编排的controller-manager</li>
+</ul>
+<p>整个集群的持久化数据，由kube-apiserver处理后保存在etcd中。</p>
+<p>而计算节点最核心的部分，是kubelet组件，主要负责和容器运行时交互。而这个容器运行时，是CRI(Container Runtime Interface)的远程调用接口，这个接口定义了容器运行时的所有操作，所以在kubernetes部署时并不关心使用的是什么容器运行时，使用什么技术实现，所以在kubernetes之后的版本中，把dockershim移除了。</p>
+<h3 id="13对比">1.3、对比</h3>
+<p>这两样一对比，就能发现，swarm停留在拉取用户镜像，运行容器，及常见的运维功能，而kubernetes已经在另一个维度上降维打击了。</p>
+<p>其实，在运行大规模集群的各种任务之间，存在各种各样的联系，而这些关系才是作业编排和管理系统中最困难的地方。</p>
+<p>比如web应用和数据库之间的访问关系，负载均衡器和后端服务之间的关系，门户应用和授权应用之间的关系。</p>
+<h2 id="二基础对象">二、基础对象</h2>
+<p>Pod是kubernetes项目中最基础的一个对象，就是一组共享了同一个Network Namespace、Volume的容器。</p>
+<p>而Pod的实现需要一个中间容器infra，在pod中，infra容器永远是第一个被创建，而其他的容器加入infra容器的network namespace。</p>
+<p>如果没有中间容器，那么一个pod中的两个容器，需要定义启动顺序，才能加入到另一个网络，这两个容器就不是对等关系。</p>
+<p>infra容器其实就是一个用汇编写的、永远处于&quot;暂停状态&quot;的容器，占用资源非常小，作用就是<code>hold</code>住network namespace，让其他容器加入。而对于这个pod的其他容器来说：</p>
+<ul>
+<li>可以通过localhost互相通信</li>
+<li>看到的网络设备和infra一样</li>
+<li>只有一个ip地址，就是pod的ip地址</li>
+<li>共享网络资源</li>
+<li>pod生命周期和infra一致，和其他容器无关</li>
+</ul>
+<p>通过这个特点，就能实现很多与pod网络相关的配置和管理，可以通过sidecar来实现，无需干涉业务。最典型的例子就是Istio微服务治理项目，prometheus、jaeger等都不需要侵入用户代码即可完成状态收集。</p>
+<hr>
+<p>接下来，我们从容器开始出发</p>
+<p>1、首先是容器间紧密协作的关系，用Pod来定义这种关系，可以包含多个容器</p>
+<p>2、有了Pod之后，希望能够一次运行多个应用的实例，这样就需要Deployment这个Pod的多实例管理器</p>
+<p>3、有了一组Pod之后，需要通过固定的IP地址和端口以负载均衡的方式访问，所以有了Service</p>
+<p>4、Pod运行需要配置，于是存在ConfigMap和Secret来存储配置和秘钥信息</p>
+<p>5、如果存在一次性任务或定时任务，所以有了新的基于Pod改进后的Job和CronJob</p>
+<p>6、比如每台宿主机都需要且只要一个副本运行的守护进程服务，于是有了DaemonSet</p>
+<p>这仅仅只是一小部分内容，通过这个流程，我们能看到kubernetes推崇的是“一切皆对象”的思想。</p>
+<p>首先，通过定义一个“编排对象”，比如Pod，来描述管理的应用。</p>
+<p>然后，定义“服务对象”，比如Service，负责具体的动作。</p>
+<p>当然，关联关系也是一个对象，比如在RBAC中，存在sa(账号)，Role(角色)，RoleBinding(绑定关系)。</p>
+<h2 id="三总结">三、总结</h2>
+<p><strong>创建一个pod的流程</strong></p>
+<p>1、用户通过<code>kubectl</code>命令提交创建pod的请求</p>
+<p>2、这个请求通过kube-apiserver响应，经过一系列认证授权，将pod数据存储到etcd中，创建Deployment资源并初始化</p>
+<p>3、controller-manager通过list-watch机制监听到了新的Deployment，将该资源加入到内部的工作队列中，如果没有发现关联的pod，启用Deployment Controller创建ReplicaSet，再通过ReplicaSet Controller创建pod</p>
+<p>4、所有的Controller创建完成后，再将Deployment、ReplicaSet、pod资源更新到etcd中</p>
+<p>5、schedule通过list-watch机制，监听到了新的pod，经过主机过滤、打分机制后，将pod绑定到合适的宿主机上，然后将结果更新到etcd中</p>
+<p>6、kubelet定时(20s)向kube-apiserver获取自身要运行的pod清单，然后与自身比较，如果发现新增pod，就创建pod</p>
+<p>7、kube-proxy为新创建的pod注册动态dns到CoreDNS，给pod的service添加iptables/ipvs规则，用于服务发现和负载均衡</p>
+<p>8、Controller-manager通过control loop将当前pod状态和用户期望状态做对比，如果不符合，就更新状态</p>
+<p>到这里，就是kubernetes的一个整体的介绍。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-03-07</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2022/03/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/kubernetes/">kubernetes</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2022/03/namespace/" class="prev" rel="prev" title="Linux六大Namespace"><i class="fas fa-angle-left fa-fw"></i>Linux六大Namespace</a>
+            <a href="/2022/03/client-go/" class="next" rel="next" title="client-go架构">client-go架构<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="utterances"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"评论系统","lightTheme":"github-light","repo":"betterfor/betterfor.github.io"}},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

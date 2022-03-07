@@ -1,0 +1,35 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>client-go - 标签 - 月霜天的小站</title>
+        <link>https://blog.betterformile.ml/tags/client-go/</link>
+        <description>client-go - 标签 - 月霜天的小站</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/client-go/" rel="self" type="application/rss+xml" /><item>
+    <title>client-go之工作队列</title>
+    <link>https://blog.betterformile.ml/2022/03/02-workqueue/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/02-workqueue/</guid>
+    <description><![CDATA[workqueue是client-go的工作队列，主要用于并行程序控制，比如各种资源controller监听informer对象的变化，当有]]></description>
+</item><item>
+    <title>client-go之索引</title>
+    <link>https://blog.betterformile.ml/2022/03/01-indexer/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/01-indexer/</guid>
+    <description><![CDATA[以下是client-go的官方架构图 先主要针对这个Indexer来分析。 一、Indexer Indexer保存来自api-server的资源，]]></description>
+</item><item>
+    <title>client-go之队列</title>
+    <link>https://blog.betterformile.ml/2022/03/03-deltafifo/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/03-deltafifo/</guid>
+    <description><![CDATA[看这个client-go的架构图，DeltaFIFO是一个生产者-消费者队列，生产者是Reflector，消费者是Pop()方法。 一、Del]]></description>
+</item><item>
+    <title>client-go架构</title>
+    <link>https://blog.betterformile.ml/2022/03/client-go/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/client-go/</guid>
+    <description><![CDATA[以下是client-go的官方架构图 一、Indexer Indexer保存来自api-server的资源，使用list-watch方式来维护资]]></description>
+</item></channel>
+</rss>

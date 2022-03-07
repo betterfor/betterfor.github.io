@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>进程后台运行 - 月霜天的小站</title><meta name="Description" content="月霜天的小站"><meta property="og:title" content="进程后台运行" />
+<meta property="og:description" content="之前介绍过，Namespace、Cgroup和Union File System是Docker的基石，那么我们通常在执行docker容器的时候，有两种" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.betterformile.ml/2022/03/%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-07T13:28:41+08:00" />
+<meta property="article:modified_time" content="2022-03-07T13:28:41+08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/>
+
+<meta name="twitter:title" content="进程后台运行"/>
+<meta name="twitter:description" content="之前介绍过，Namespace、Cgroup和Union File System是Docker的基石，那么我们通常在执行docker容器的时候，有两种"/>
+<meta name="application-name" content="月霜天">
+<meta name="apple-mobile-web-app-title" content="月霜天"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.betterformile.ml/2022/03/%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C/" /><link rel="prev" href="https://blog.betterformile.ml/2022/03/%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90/" /><link rel="next" href="https://blog.betterformile.ml/2022/03/namespace/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "进程后台运行",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog.betterformile.ml\/2022\/03\/%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C\/"
+        },"genre": "posts","keywords": "linux, 进程","wordcount":  1507 ,
+        "url": "https:\/\/blog.betterformile.ml\/2022\/03\/%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C\/","datePublished": "2022-03-07T13:28:41+08:00","dateModified": "2022-03-07T13:28:41+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "月霜天"},"author": {
+                "@type": "Person",
+                "name": "月霜天"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png" /></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png" /></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">进程后台运行</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw"></i>月霜天的小笔记</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-03-07">2022-03-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1507 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 4 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一进程">一、进程</a></li>
+    <li><a href="#二守护进程">二、守护进程</a></li>
+    <li><a href="#三docker应用">三、docker应用</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>之前介绍过，<a href="https://www.toutiao.com/i7046735677622518285/" target="_blank" rel="noopener noreffer">Namespace、Cgroup和Union File System是Docker的基石</a>，那么我们通常在执行docker容器的时候，有两种方法，一种是执行<code>sh</code>命令，进入到容器内部，一种是在后台运行容器。这就需要父进程在创建完子进程后，<code>detach</code>掉子进程。</p>
+<p>但是，在早期Docker版本中，所有的容器init进程都需要从Docker daemon进程中fork出来，如果docker daemon退出，那么所有的容器也会退出，所以在升级docker daemon就会有很大的风险。后来docker使用containerd，也就是现在用的<code>runc</code>，可以实现即使daemon退出，容器依然存在的功能。</p>
+<h2 id="一进程">一、进程</h2>
+<p>进程就是应用程序的启动实例，拥有代码和文件资源、数据资源、独立的内存空间。</p>
+<p>在Unix/Linux中，正常情况下，子进程是通过父进程创建的，子进程再创建新的进程。</p>
+<p>容器其实也是一个进程，当前运行命令的docker是主进程，容器是被docker进程fork出来的子进程。</p>
+<p>子进程的结束和父进程的运行时一个异步的过程，父进程永远不知道子进程什么时候结束。</p>
+<p>当一个进程完成它的工作后，它的父进程需要调用<code>wait()</code>或<code>waitpid()</code>系统调用才取得子进程的状态。</p>
+<ul>
+<li>孤儿进程：一个父进程退出，而它的一个或多个子进程还在运行，那么这些子进程将成为孤儿进程。孤儿进程将被init进程(进程号为1)所收养，并由init进程对它们完成状态收集工作。</li>
+<li>僵尸进程：一个进程使用fork创建子进程，如果子进程退出，而父进程并没有调用<code>wait()</code>或<code>waitpid()</code>系统调用获取子进程的状态信息，那么子进程的进程标识符仍然保存在系统中。</li>
+</ul>
+<p>在子进程退出后，内核释放该进程的所有资源，包括打开的文件，占用的内存等，但是仍会为其保留一定的信息(包括pid，退出状态，运行时间等)，直到父进程通过调用<code>wait()</code>或<code>waitpid()</code>才会释放。</p>
+<p>但是这就会出现一个问题，如果父进程不调用<code>wait()</code>或<code>waitpid()</code>，那么子进程状态信息就不会被释放，那么进程号pid就会被一直被占用。而系统能用的进程号是有限的，如果大量地产生僵死进程，就会因为没有可用的进程号而导致不能产生新的进程，这就是僵尸进程的危害。</p>
+<p>而孤儿进程是没有父进程的进程，孤儿进程有<code>init</code>进程收养，每当出现孤儿进程，内核就把孤儿进程的父进程设置为<code>init</code>，而<code>init</code>进程会循环的调用<code>wait()</code>。因此<strong>孤儿进程没有什么危害</strong>。</p>
+<h2 id="二守护进程">二、守护进程</h2>
+<p>而守护进程常用在处理一些系统级服务中，能够脱离终端会话的影响一直运行在后台，直到系统关闭后才退出。</p>
+<p>说白了，守护进程就是特殊的孤儿进程，只不过守护进程是有意的把父进程退出，然后让<code>init</code>收养。</p>
+<h2 id="三docker应用">三、docker应用</h2>
+<p>孤儿进程就是父进程退出而容器进程依然运行的原理。虽然容器是docker进程创建的，但是当docker进程退出后，容器进程会被<code>init</code>进程接管，这时容器进程还是运行的，这样也就实现了后台运行。</p>
+<p>使用<code>docker run -d</code>命令就能使容器脱离父进程在后台独立运行，而如果想要知道有哪些容器正在运行，就需要知道进程号，我们可以在定好的位置查询，如<code>/var/run/docker/runtime-runc/moby/{容器名}/state.json</code>，这样通过遍历目录就能知道有哪些容器正在运行。</p>
+<p>那如果想要停止容器了<code>docker stop</code>，很简单，就是找到进程的<code>pid</code>，然后发送<code>SIGTERM</code>信号，等待进程结束。</p>
+<p>删除容器就是在停止容器后，将对应的目录文件删除即可。</p>
+<p>这样一来，关于docker容器的相关操作其实就已经完成了，而剩下的就是一些关于docker容器参数的一些用法。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-03-07</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2022/03/%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/linux/">linux</a>,&nbsp;<a href="/tags/%E8%BF%9B%E7%A8%8B/">进程</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2022/03/%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90/" class="prev" rel="prev" title="逃逸分析"><i class="fas fa-angle-left fa-fw"></i>逃逸分析</a>
+            <a href="/2022/03/namespace/" class="next" rel="next" title="Linux六大Namespace">Linux六大Namespace<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="utterances"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"评论系统","lightTheme":"github-light","repo":"betterfor/betterfor.github.io"}},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

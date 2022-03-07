@@ -3,9 +3,58 @@
         <title>月霜天的小站</title>
         <link>https://blog.betterformile.ml/</link>
         <description>月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:22:28 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</lastBuildDate>
             <atom:link href="https://blog.betterformile.ml/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>client-go之工作队列</title>
+    <link>https://blog.betterformile.ml/2022/03/02-workqueue/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/02-workqueue/</guid>
+    <description><![CDATA[workqueue是client-go的工作队列，主要用于并行程序控制，比如各种资源controller监听informer对象的变化，当有]]></description>
+</item><item>
+    <title>client-go之索引</title>
+    <link>https://blog.betterformile.ml/2022/03/01-indexer/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/01-indexer/</guid>
+    <description><![CDATA[以下是client-go的官方架构图 先主要针对这个Indexer来分析。 一、Indexer Indexer保存来自api-server的资源，]]></description>
+</item><item>
+    <title>client-go之队列</title>
+    <link>https://blog.betterformile.ml/2022/03/03-deltafifo/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/03-deltafifo/</guid>
+    <description><![CDATA[看这个client-go的架构图，DeltaFIFO是一个生产者-消费者队列，生产者是Reflector，消费者是Pop()方法。 一、Del]]></description>
+</item><item>
+    <title>client-go架构</title>
+    <link>https://blog.betterformile.ml/2022/03/client-go/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/client-go/</guid>
+    <description><![CDATA[以下是client-go的官方架构图 一、Indexer Indexer保存来自api-server的资源，使用list-watch方式来维护资]]></description>
+</item><item>
+    <title>kubernetes简介</title>
+    <link>https://blog.betterformile.ml/2022/03/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</guid>
+    <description><![CDATA[kubernetes是Google开源的分布式容器管理平台，而我们已经知道了容器的本质就是由Linux Namespace、Cgroup和ro]]></description>
+</item><item>
+    <title>Linux六大Namespace</title>
+    <link>https://blog.betterformile.ml/2022/03/namespace/</link>
+    <pubDate>Mon, 07 Mar 2022 13:28:41 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/namespace/</guid>
+    <description><![CDATA[云计算领域最火的莫过于“容器”，而提到容器，就不得不提Docker，可以说Docker已经是容器的代名词。 容器其实是一种沙盒技术，顾名思义，]]></description>
+</item><item>
+    <title>进程后台运行</title>
+    <link>https://blog.betterformile.ml/2022/03/%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C/</link>
+    <pubDate>Mon, 07 Mar 2022 13:28:41 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C/</guid>
+    <description><![CDATA[之前介绍过，Namespace、Cgroup和Union File System是Docker的基石，那么我们通常在执行docker容器的时候，有两种]]></description>
+</item><item>
     <title>逃逸分析</title>
     <link>https://blog.betterformile.ml/2022/03/%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90/</link>
     <pubDate>Mon, 07 Mar 2022 11:22:28 &#43;0800</pubDate>
@@ -26,54 +75,5 @@
     <author>作者</author>
     <guid>https://blog.betterformile.ml/2022/03/httprouter/</guid>
     <description><![CDATA[httprouter是非常高效的http路由框架，gin框架的路由也是基于此库 一、使用方法 使用方法也比较简单，如下： 1 2 3 4 5 6 7 8 9 10 11 12]]></description>
-</item><item>
-    <title>Nil的使用场景</title>
-    <link>https://blog.betterformile.ml/2022/03/nil/</link>
-    <pubDate>Mon, 07 Mar 2022 11:17:34 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/nil/</guid>
-    <description><![CDATA[在日常Golang使用中，你有没有这样的疑惑？ nil是什么？哪些可以用nil？哪些不能用nil？ 接下来，我将对这些内容进行总结。 一、什么是n]]></description>
-</item><item>
-    <title>CSP并发模型</title>
-    <link>https://blog.betterformile.ml/2022/03/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/</link>
-    <pubDate>Mon, 07 Mar 2022 11:14:26 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/</guid>
-    <description><![CDATA[一、goroutine 进程：可并发执行的程序在某个数据集合上的一次计算活动，也是操作系统进行资源分配和调度的基本单位。每个进程都有自己的独立]]></description>
-</item><item>
-    <title>Context控制goroutine并发运行</title>
-    <link>https://blog.betterformile.ml/2022/03/context/</link>
-    <pubDate>Mon, 07 Mar 2022 11:12:38 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/context/</guid>
-    <description><![CDATA[在并发程序中，由于超时、取消操作或其他一些异常情况，往往需要通知其他goroutine，虽然可以使用channel来处理这些问题，但是会变得]]></description>
-</item><item>
-    <title>Beego路由---前缀树</title>
-    <link>https://blog.betterformile.ml/2022/03/beego_router/</link>
-    <pubDate>Mon, 07 Mar 2022 11:09:07 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/beego_router/</guid>
-    <description><![CDATA[beego 是一个快速开发 Go 应用的 HTTP 框架，可以用来快速开发 API、Web 及后端服务等各种应用，是一个 RESTful 的框架。 那么这种RESTfule路由到底是怎么实]]></description>
-</item><item>
-    <title>停止goroutine的几种方法</title>
-    <link>https://blog.betterformile.ml/2021/07/%E5%81%9C%E6%AD%A2goroutine%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/</link>
-    <pubDate>Tue, 27 Jul 2021 09:35:42 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/%E5%81%9C%E6%AD%A2goroutine%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E6%B3%95/</guid>
-    <description><![CDATA[在日常工作中，我们经常会用关键字go起一个goroutine。 但是在跑一段时间后，可能会遇到一些问题：当goroutine内的任务运行的太久]]></description>
-</item><item>
-    <title>no copy机制</title>
-    <link>https://blog.betterformile.ml/2021/07/nocopy%E6%9C%BA%E5%88%B6/</link>
-    <pubDate>Mon, 19 Jul 2021 14:44:23 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/nocopy%E6%9C%BA%E5%88%B6/</guid>
-    <description><![CDATA[在sync包下面经常出现&quot;XXX must not be copied after first use.&quot;，然后下面就有一个noCopy。 什么是noCopy ? 如果结构体对象]]></description>
-</item><item>
-    <title>并发编程之sync.Pool</title>
-    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.pool/</link>
-    <pubDate>Fri, 16 Jul 2021 10:53:06 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.pool/</guid>
-    <description><![CDATA[我们通常用golang来构建高并发场景下的应用，但是由于golang内建的GC机制会影响应用的性能，为了减少GC，golang提供了对象重用]]></description>
 </item></channel>
 </rss>

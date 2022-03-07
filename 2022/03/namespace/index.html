@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Linux六大Namespace - 月霜天的小站</title><meta name="Description" content="月霜天的小站"><meta property="og:title" content="Linux六大Namespace" />
+<meta property="og:description" content="云计算领域最火的莫过于“容器”，而提到容器，就不得不提Docker，可以说Docker已经是容器的代名词。 容器其实是一种沙盒技术，顾名思义，" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.betterformile.ml/2022/03/namespace/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-07T13:28:41+08:00" />
+<meta property="article:modified_time" content="2022-03-07T13:28:41+08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/>
+
+<meta name="twitter:title" content="Linux六大Namespace"/>
+<meta name="twitter:description" content="云计算领域最火的莫过于“容器”，而提到容器，就不得不提Docker，可以说Docker已经是容器的代名词。 容器其实是一种沙盒技术，顾名思义，"/>
+<meta name="application-name" content="月霜天">
+<meta name="apple-mobile-web-app-title" content="月霜天"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.betterformile.ml/2022/03/namespace/" /><link rel="prev" href="https://blog.betterformile.ml/2022/03/%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C/" /><link rel="next" href="https://blog.betterformile.ml/2022/03/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Linux六大Namespace",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog.betterformile.ml\/2022\/03\/namespace\/"
+        },"genre": "posts","keywords": "linux, namespace","wordcount":  7688 ,
+        "url": "https:\/\/blog.betterformile.ml\/2022\/03\/namespace\/","datePublished": "2022-03-07T13:28:41+08:00","dateModified": "2022-03-07T13:28:41+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "月霜天"},"author": {
+                "@type": "Person",
+                "name": "月霜天"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png" /></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png" /></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Linux六大Namespace</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw"></i>月霜天的小笔记</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-03-07">2022-03-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 7688 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 16 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一linux-namespace">一、Linux Namespace</a>
+      <ul>
+        <li><a href="#11utc-namespace">1.1、<code>UTC Namespace</code></a></li>
+        <li><a href="#12ipc-namespace">1.2、<code>IPC Namespace</code></a></li>
+        <li><a href="#13pid-namespace">1.3、<code>PID Namespace</code></a></li>
+        <li><a href="#14mount-namespace">1.4、<code>Mount Namespace</code></a></li>
+        <li><a href="#15user-namespace">1.5、<code>User Namespace</code></a></li>
+        <li><a href="#16network-namespace">1.6、<code>Network Namespace</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#二linux-cgoups">二、Linux Cgoups</a>
+      <ul>
+        <li><a href="#21挂载cgroup">2.1、挂载cgroup</a></li>
+        <li><a href="#22新建子cgroup">2.2、新建子cgroup</a></li>
+        <li><a href="#23添加进程">2.3、添加进程</a></li>
+        <li><a href="#24限制资源">2.4、限制资源</a></li>
+        <li><a href="#25docker使用cgroup">2.5、Docker使用Cgroup</a></li>
+        <li><a href="#26程序实现">2.6、程序实现</a></li>
+      </ul>
+    </li>
+    <li><a href="#三union-file-system">三、Union File System</a>
+      <ul>
+        <li><a href="#31chroot">3.1、chroot</a></li>
+        <li><a href="#32aufs">3.2、aufs</a></li>
+        <li><a href="#33docker使用的aufs">3.3、docker使用的aufs</a></li>
+      </ul>
+    </li>
+    <li><a href="#四总结">四、总结</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>云计算领域最火的莫过于“容器”，而提到容器，就不得不提Docker，可以说Docker已经是容器的代名词。</p>
+<p>容器其实是一种沙盒技术，顾名思义，沙盒就是能够像集装箱一样，把应用“装”起来的技术。这样，应用和应用之间就有了边界，不互相干扰。</p>
+<p>而我们通常会把容器技术和虚拟化技术做对比，应该会常常看到这样一张图</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/28/%e5%ae%b9%e5%99%a8%e5%92%8c%e8%99%9a%e6%8b%9f%e5%8c%96%e5%af%b9%e6%af%94%e5%9b%be.jpg"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/28/%e5%ae%b9%e5%99%a8%e5%92%8c%e8%99%9a%e6%8b%9f%e5%8c%96%e5%af%b9%e6%af%94%e5%9b%be.jpg, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/28/%e5%ae%b9%e5%99%a8%e5%92%8c%e8%99%9a%e6%8b%9f%e5%8c%96%e5%af%b9%e6%af%94%e5%9b%be.jpg 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/28/%e5%ae%b9%e5%99%a8%e5%92%8c%e8%99%9a%e6%8b%9f%e5%8c%96%e5%af%b9%e6%af%94%e5%9b%be.jpg 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/28/容器和虚拟化对比图.jpg"
+        title="容器和虚拟化对比图" /></p>
+<p>左边的图，画出了虚拟机的工作原理。其中，<code>Hypervisor</code>是虚拟机的重要组成部分，通过硬件虚拟化功能，模拟出了运行一个操作系统需要的各种硬件，比如CPU、内存、I/O设备等，然后，它在这些虚拟的硬件上安装了一个新的操作系统，即Guest OS。</p>
+<p>而容器是进程级隔离，依靠<code>Namespace</code>机制实现进程间隔离，<code>Cgroups</code>实现进程资源限制。</p>
+<h2 id="一linux-namespace">一、Linux Namespace</h2>
+<p>Linux Namespace是Kernel的一个功能，可以隔离一系列的系统资源，比如PID(Process ID)、User ID、Network等。命名空间建立系统不同的视图，从用户的角度来看，每个命名空间就像是一台独立的Linux计算机一样，有自己的init进程(PID为1)。</p>
+<p>当前Linux一共实现了6种不同类型的<a href="https://lwn.net/Articles/531114/" target="_blank" rel="noopener noreffer"><code>Namespace</code></a>：</p>
+<table>
+<thead>
+<tr>
+<th>Namespace类型</th>
+<th>系统调用参数</th>
+<th>内核版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mount</td>
+<td>CLONE_NEWNS</td>
+<td>2.4.19</td>
+</tr>
+<tr>
+<td>UTS</td>
+<td>CLONE_NEWUTS</td>
+<td>2.6.19</td>
+</tr>
+<tr>
+<td>IPC</td>
+<td>CLONE_NEWIPC</td>
+<td>2.6.19</td>
+</tr>
+<tr>
+<td>PID</td>
+<td>CLONE_NEWPID</td>
+<td>2.6.24</td>
+</tr>
+<tr>
+<td>Network</td>
+<td>CLONE_NEWNET</td>
+<td>2.6.29</td>
+</tr>
+<tr>
+<td>User</td>
+<td>CLONE_NEWUSER</td>
+<td>3.8</td>
+</tr>
+</tbody>
+</table>
+<p>Namespace的API主要使用如下3个系统调用：</p>
+<ul>
+<li><code>clone()</code>创建新进程。根据系统调用的参数判断哪些类型的Namespace被创建，而它的子进程也会被添加到这些Namespace中</li>
+<li><code>unshare()</code>将进程移除某个Namespace</li>
+<li><code>setns()</code>将进程加入到Namespace中</li>
+</ul>
+<h3 id="11utc-namespace">1.1、<code>UTC Namespace</code></h3>
+<p><code>UTC Namespace</code>主要用来隔离<code>nodename</code>和<code>domainname</code>两个系统标识。在<code>UTC Namespace</code>中，每个Namespace允许有自己的<code>hostname</code>。</p>
+<p>我们写一个<code>UTC Namespace</code>的例子</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;os&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;os/exec&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;syscall&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span> <span class="o">:=</span> <span class="nx">exec</span><span class="p">.</span><span class="nf">Command</span><span class="p">(</span><span class="s">&#34;sh&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">SysProcAttr</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">syscall</span><span class="p">.</span><span class="nx">SysProcAttr</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Cloneflags</span><span class="p">:</span> <span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWUTS</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdin</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdout</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stderr</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stderr</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="o">:=</span> <span class="nx">cmd</span><span class="p">.</span><span class="nf">Run</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>exec.Command(&quot;sh&quot;)</code>用来指定被<code>fork</code>处理的新进程的初始命令，默认使用<code>sh</code>来执行。然后就是设置系统调用参数，用<code>CLONE_NEWUTS</code>标识符去创建一个<code>UTC Namespace</code>。</p>
+<p>执行<code>go run main.go</code>，使用<code>pstree -pl</code>查看系统中进程之间的关系。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">sshd(1194)─┬─sshd(22904)───bash(22915)───go(23058)─┬─main(23075)─┬─sh(23078)
+</span></span><span class="line"><span class="cl">           │            │                                       │             ├─{main}(23076)
+</span></span><span class="line"><span class="cl">           │            │                                       │             └─{main}(23077)
+</span></span><span class="line"><span class="cl">           │            │                                       ├─{go}(23059)
+</span></span><span class="line"><span class="cl">           │            │                                       ├─{go}(23060)
+</span></span><span class="line"><span class="cl">           │            │                                       ├─{go}(23061)
+</span></span><span class="line"><span class="cl">           │            │                                       ├─{go}(23074)
+</span></span><span class="line"><span class="cl">           │            │                                       └─{go}(23079)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>输出当前的PID</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># echo $$</span>
+</span></span><span class="line"><span class="cl"><span class="m">23078</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>验证一下父进程和子进程是否在同一<code>UTC Namespace</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># readlink /proc/23075/ns/uts</span>
+</span></span><span class="line"><span class="cl">uts:<span class="o">[</span>4026531838<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># readlink /proc/23078/ns/uts</span>
+</span></span><span class="line"><span class="cl">uts:<span class="o">[</span>4026532284<span class="o">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到它们确实不在同一个<code>UTC Namespace</code>中。</p>
+<p>由于<code>UTC Namespace</code>对<code>hostname</code>做了隔离，所以在这个环境中修改<code>hostname</code>应该不影响外部主机。</p>
+<p>在shell环境下执行命令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># hostname -b golang</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># hostname</span>
+</span></span><span class="line"><span class="cl">golang
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在外部环境下执行命令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># hostname</span>
+</span></span><span class="line"><span class="cl">container
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到，外部的<code>hostname</code>确实没有被内部的修改影响到。</p>
+<h3 id="12ipc-namespace">1.2、<code>IPC Namespace</code></h3>
+<p><code>IPC</code>全称为<code>Inter-Process Communication</code>，是<code>Unix/Linux</code>下进程通信的一种方式，<code>IPC</code>有共享内存、信号量、消息队列等方法。为了隔离进程，也需要把<code>IPC Namespace</code>隔离开，这样，只有同一个命名空间下的进程才能够互相通信。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;os&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;os/exec&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;syscall&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span> <span class="o">:=</span> <span class="nx">exec</span><span class="p">.</span><span class="nf">Command</span><span class="p">(</span><span class="s">&#34;sh&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">SysProcAttr</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">syscall</span><span class="p">.</span><span class="nx">SysProcAttr</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Cloneflags</span><span class="p">:</span> <span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWUTS</span> <span class="p">|</span> <span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWIPC</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdin</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdout</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stderr</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stderr</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="o">:=</span> <span class="nx">cmd</span><span class="p">.</span><span class="nf">Run</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>我们在原先的代码仅做一点改动，增加<code>CLONE_NEWIPC</code>，希望创建<code>IPC Namespace</code>。</p>
+<p>在宿主机上打开一个<code>shell</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># 查看现有的ipc Message Queues</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ipcs -q</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">------ Message Queues --------
+</span></span><span class="line"><span class="cl">key        msqid      owner      perms      used-bytes   messages
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 在全局创建一个ipc的队列，队列id为0</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ipcmk -Q</span>
+</span></span><span class="line"><span class="cl">Message queue id: <span class="m">0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 查看刚刚新建的全局队列的信息</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ipcs -q</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">------ Message Queues --------
+</span></span><span class="line"><span class="cl">key        msqid      owner      perms      used-bytes   messages
+</span></span><span class="line"><span class="cl">0xad7e5e0d <span class="m">0</span>          root       <span class="m">644</span>        <span class="m">0</span>            <span class="m">0</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后，我们再执行<code>main.go</code>，在sh下查看ipc队列</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># go run main.go</span>
+</span></span><span class="line"><span class="cl">sh# ipcs -q
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">------ Message Queues --------
+</span></span><span class="line"><span class="cl">key        msqid      owner      perms      used-bytes   messages
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到，在新创建的<code>Namespace</code>看不到宿主机已经创建的<code>message queue</code>。同样，在新创建的<code>Namespace</code>里创建的队列，在全局中也无法看到。</p>
+<h3 id="13pid-namespace">1.3、<code>PID Namespace</code></h3>
+<p><code>PID Namespace</code>是用来隔离进程ID的，同一个进程，在<code>Namespace</code>里和在外部有着不同的进程<code>PID</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;os&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;os/exec&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;syscall&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span> <span class="o">:=</span> <span class="nx">exec</span><span class="p">.</span><span class="nf">Command</span><span class="p">(</span><span class="s">&#34;sh&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">SysProcAttr</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">syscall</span><span class="p">.</span><span class="nx">SysProcAttr</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Cloneflags</span><span class="p">:</span> <span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWUTS</span> <span class="p">|</span> <span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWIPC</span> <span class="p">|</span> <span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWPID</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdin</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdout</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stderr</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stderr</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="o">:=</span> <span class="nx">cmd</span><span class="p">.</span><span class="nf">Run</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>添加一个<code>CLONE_NEWPID</code>，代表<code>fork</code>出来的子进程创建自己的<code>PID Namespace</code>。</p>
+<p>用<code>pstree -pl</code>在宿主机上查看进程树，找到真实的<code>PID</code>，然后在<code>PID Namespace</code>打印<code>PID</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># 一个shell中运行</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># go run main.go</span>
+</span></span><span class="line"><span class="cl">sh# <span class="nb">echo</span> <span class="nv">$$</span>
+</span></span><span class="line"><span class="cl"><span class="m">1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 另一个shell中查看进程树</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># pstree -pl</span>
+</span></span><span class="line"><span class="cl">sshd<span class="o">(</span>1194<span class="o">)</span>─┬─sshd<span class="o">(</span>22904<span class="o">)</span>───bash<span class="o">(</span>22915<span class="o">)</span>───go<span class="o">(</span>23192<span class="o">)</span>─┬─main<span class="o">(</span>23212<span class="o">)</span>─┬─sh<span class="o">(</span>23215<span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到在<code>PID Namespace</code>打印<code>PID</code>为1，也就是说<code>23212</code>这个<code>PID</code>被映射为1。</p>
+<blockquote>
+<p>这里不能用<code>ps</code>查看，因为<code>ps</code>和<code>top</code>等命令是使用 <code>/proc</code>的内容。</p>
+</blockquote>
+<h3 id="14mount-namespace">1.4、<code>Mount Namespace</code></h3>
+<p>程序运行时可以将挂载点和系统分离，使用这个功能，我们可以达到<code>chroot</code>的功能。</p>
+<p><code>Mount Namespace</code>用来隔离各个进程看到的挂载点视图，在不同的<code>Namespace</code>的进程中，看到的文件系统的层次是不一样的。</p>
+<p>在<code>Mount Namespace</code>中调用<code>mount()</code>和<code>unmount()</code>仅仅只会影响当前<code>Namespace</code>内的文件系统，对全局文件系统是不影响的。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;os&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;os/exec&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;syscall&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span> <span class="o">:=</span> <span class="nx">exec</span><span class="p">.</span><span class="nf">Command</span><span class="p">(</span><span class="s">&#34;sh&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">SysProcAttr</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">syscall</span><span class="p">.</span><span class="nx">SysProcAttr</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Cloneflags</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWUTS</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWIPC</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWPID</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWNS</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdin</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdout</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stderr</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stderr</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="o">:=</span> <span class="nx">cmd</span><span class="p">.</span><span class="nf">Run</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>同样增加一点小改动<code>syscall.CLONE_NEWNS</code>，然后运行代码，查看<code>/proc</code>的文件内容。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># ls /proc</span>
+</span></span><span class="line"><span class="cl"><span class="m">1</span>      <span class="m">15766</span>  <span class="m">16043</span>  <span class="m">20</span>     <span class="m">22915</span>  <span class="m">23456</span>  <span class="m">27601</span>  <span class="m">43</span>   <span class="m">8050</span>       crypto       kallsyms    mounts        sys
+</span></span><span class="line"><span class="cl"><span class="m">10</span>     <span class="m">15770</span>  <span class="m">16061</span>  <span class="m">20803</span>  <span class="m">23</span>     <span class="m">23498</span>  <span class="m">27889</span>  <span class="m">44</span>   <span class="m">828</span>        devices      kcore       mtrr          sysrq-trigger
+</span></span><span class="line"><span class="cl"><span class="m">1045</span>   <span class="m">15782</span>  <span class="m">16079</span>  <span class="m">20822</span>  <span class="m">23192</span>  <span class="m">235</span>    <span class="m">27999</span>  <span class="m">45</span>   <span class="m">9</span>          diskstats    keys        net           sysvipc
+</span></span><span class="line"><span class="cl"><span class="m">1051</span>   <span class="m">15800</span>  <span class="m">16097</span>  <span class="m">20878</span>  <span class="m">23212</span>  <span class="m">23521</span>  <span class="m">30</span>     <span class="m">46</span>   <span class="m">94</span>         dma          key-users   pagetypeinfo  timer_list
+</span></span><span class="line"><span class="cl"><span class="m">1061</span>   <span class="m">15887</span>  <span class="m">16115</span>  <span class="m">20882</span>  <span class="m">23215</span>  <span class="m">23524</span>  <span class="m">31</span>     <span class="m">468</span>  <span class="m">955</span>        driver       kmsg        partitions    timer_stats
+</span></span><span class="line"><span class="cl"><span class="m">1062</span>   <span class="m">15906</span>  <span class="m">1612</span>   <span class="m">20896</span>  <span class="m">233</span>    <span class="m">23526</span>  <span class="m">31770</span>  <span class="m">472</span>  <span class="m">957</span>        execdomains  kpagecount  sched_debug   tty
+</span></span><span class="line"><span class="cl"><span class="m">11</span>     <span class="m">15907</span>  <span class="m">16185</span>  <span class="m">20914</span>  <span class="m">23339</span>  <span class="m">236</span>    <span class="m">32</span>     <span class="m">478</span>  acpi       fb           kpageflags  schedstat     uptime
+</span></span><span class="line"><span class="cl"><span class="m">1194</span>   <span class="m">15908</span>  <span class="m">17</span>     <span class="m">20999</span>  <span class="m">23387</span>  <span class="m">24</span>     <span class="m">33</span>     <span class="m">540</span>  buddyinfo  filesystems  loadavg     scsi          version
+</span></span><span class="line"><span class="cl"><span class="m">13</span>     <span class="m">15910</span>  <span class="m">18</span>     <span class="m">21</span>     <span class="m">234</span>    <span class="m">241</span>    <span class="m">350</span>    <span class="m">59</span>   bus        fs           locks       self          vmallocinfo
+</span></span><span class="line"><span class="cl"><span class="m">14</span>     <span class="m">15999</span>  <span class="m">19</span>     <span class="m">22</span>     <span class="m">23442</span>  <span class="m">247</span>    <span class="m">372</span>    <span class="m">6</span>    cgroups    interrupts   mdstat      slabinfo      vmstat
+</span></span><span class="line"><span class="cl"><span class="m">15</span>     <span class="m">16</span>     <span class="m">19352</span>  <span class="m">227</span>    <span class="m">23444</span>  <span class="m">257</span>    <span class="m">4</span>      <span class="m">7</span>    cmdline    iomem        meminfo     softirqs      zoneinfo
+</span></span><span class="line"><span class="cl"><span class="m">15750</span>  <span class="m">16012</span>  <span class="m">19898</span>  <span class="m">22900</span>  <span class="m">23446</span>  <span class="m">258</span>    <span class="m">403</span>    <span class="m">760</span>  consoles   ioports      misc        stat
+</span></span><span class="line"><span class="cl"><span class="m">15754</span>  <span class="m">16021</span>  <span class="m">2</span>      <span class="m">22904</span>  <span class="m">23453</span>  <span class="m">27588</span>  <span class="m">41</span>     <span class="m">8</span>    cpuinfo    irq          modules     swaps
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>因为这里的<code>/proc</code>还是宿主机的，所以我们用<code>mount</code>到<code>Namespace</code>里</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># mount -t proc proc /proc</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ls /proc</span>
+</span></span><span class="line"><span class="cl"><span class="m">1</span>          devices      ioports     locks         sched_debug    sysvipc
+</span></span><span class="line"><span class="cl"><span class="m">4</span>          diskstats    irq         mdstat        schedstat      timer_list
+</span></span><span class="line"><span class="cl">acpi       dma          kallsyms    meminfo       scsi           timer_stats
+</span></span><span class="line"><span class="cl">buddyinfo  driver       kcore       misc          self           tty
+</span></span><span class="line"><span class="cl">bus        execdomains  keys        modules       slabinfo       uptime
+</span></span><span class="line"><span class="cl">cgroups    fb           key-users   mounts        softirqs       version
+</span></span><span class="line"><span class="cl">cmdline    filesystems  kmsg        mtrr          stat           vmallocinfo
+</span></span><span class="line"><span class="cl">consoles   fs           kpagecount  net           swaps          vmstat
+</span></span><span class="line"><span class="cl">cpuinfo    interrupts   kpageflags  pagetypeinfo  sys            zoneinfo
+</span></span><span class="line"><span class="cl">crypto     iomem        loadavg     partitions    sysrq-trigger
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到，数字少了很多，这样就能够运行<code>ps</code>命令了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># ps -ef</span>
+</span></span><span class="line"><span class="cl">UID        PID  PPID  C STIME TTY          TIME CMD
+</span></span><span class="line"><span class="cl">root         <span class="m">1</span>     <span class="m">0</span>  <span class="m">0</span> 13:53 pts/1    00:00:00 sh
+</span></span><span class="line"><span class="cl">root         <span class="m">5</span>     <span class="m">1</span>  <span class="m">0</span> 13:59 pts/1    00:00:00 ps -ef
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到，<code>sh</code>进程时<code>PID</code>为1的进程，当前<code>Mount Namespace</code>的<code>mount</code>和外部空间是隔离的。</p>
+<h3 id="15user-namespace">1.5、<code>User Namespace</code></h3>
+<p><code>User Namespace</code>主要是隔离用户的用户组<code>ID</code>，也就是说，一个进程的<code>User ID</code>和<code>Group ID</code>在命名空间内外可以是不同的。</p>
+<p>比如，在宿主机上以一个非<code>root</code>用户创建的<code>User Namespace</code>，在<code>User Namespace</code>里被映射为<code>root</code>用户。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;os&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;os/exec&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;syscall&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span> <span class="o">:=</span> <span class="nx">exec</span><span class="p">.</span><span class="nf">Command</span><span class="p">(</span><span class="s">&#34;sh&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">SysProcAttr</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">syscall</span><span class="p">.</span><span class="nx">SysProcAttr</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Cloneflags</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWUTS</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWIPC</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWPID</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWNS</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWUSER</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdin</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdout</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stderr</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stderr</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="o">:=</span> <span class="nx">cmd</span><span class="p">.</span><span class="nf">Run</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>同样增加<code>syscall.CLONE_NEWUSER</code>。</p>
+<p>首先以<code>root</code>用户运行程序</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># 查看当前用户和用户组</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># id</span>
+</span></span><span class="line"><span class="cl"><span class="nv">uid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> <span class="nv">groups</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>我的系统是CentOS7，所以在执行前需要做一些工作。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># 需要开启User Namespace</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># grubby --args=&#34;user_namespace.enable=1&#34; --update-kernel=&#34;$(grubby --default-kernel)&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 重启</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># reboot</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># echo 640 &gt; /proc/sys/user/max_user_namespaces</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>之后就可以正常运行程序了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># go run main.go</span>
+</span></span><span class="line"><span class="cl">sh$ id
+</span></span><span class="line"><span class="cl"><span class="nv">uid</span><span class="o">=</span><span class="m">65534</span> <span class="nv">gid</span><span class="o">=</span><span class="m">65534</span> <span class="nv">groups</span><span class="o">=</span><span class="m">65534</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到，它们的<code>UID</code>不同，说明<code>User Namespace</code>生效了。</p>
+<h3 id="16network-namespace">1.6、<code>Network Namespace</code></h3>
+<p><code>Network Namespace</code>用于隔离网络资源(/proc/net、IP地址端口、网卡、路由等)，让每个容器都有自己独立的（虚拟）网络设备，每个网络命名空间都有自己的路由表，iptables。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;log&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;os&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;os/exec&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;syscall&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span> <span class="o">:=</span> <span class="nx">exec</span><span class="p">.</span><span class="nf">Command</span><span class="p">(</span><span class="s">&#34;sh&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">SysProcAttr</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">syscall</span><span class="p">.</span><span class="nx">SysProcAttr</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Cloneflags</span><span class="p">:</span> <span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWUTS</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWIPC</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWPID</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWNS</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWUSER</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWNET</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdin</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdout</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stderr</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stderr</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="o">:=</span> <span class="nx">cmd</span><span class="p">.</span><span class="nf">Run</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>首先在宿主机上查看自己的网络设备</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># ifconfig</span>
+</span></span><span class="line"><span class="cl">eth0: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu <span class="m">1500</span>
+</span></span><span class="line"><span class="cl">        inet 172.27.158.184  netmask 255.255.240.0  broadcast 172.27.159.255
+</span></span><span class="line"><span class="cl">        inet6 fe80::216:3eff:fe19:d2fc  prefixlen <span class="m">64</span>  scopeid 0x20&lt;link&gt;
+</span></span><span class="line"><span class="cl">        ether 00:16:3e:19:d2:fc  txqueuelen <span class="m">1000</span>  <span class="o">(</span>Ethernet<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        RX packets <span class="m">4583</span>  bytes <span class="m">3471561</span> <span class="o">(</span>3.3 MiB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        RX errors <span class="m">0</span>  dropped <span class="m">0</span>  overruns <span class="m">0</span>  frame <span class="m">0</span>
+</span></span><span class="line"><span class="cl">        TX packets <span class="m">2986</span>  bytes <span class="m">1983980</span> <span class="o">(</span>1.8 MiB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        TX errors <span class="m">0</span>  dropped <span class="m">0</span> overruns <span class="m">0</span>  carrier <span class="m">0</span>  collisions <span class="m">0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">lo: <span class="nv">flags</span><span class="o">=</span>73&lt;UP,LOOPBACK,RUNNING&gt;  mtu <span class="m">65536</span>
+</span></span><span class="line"><span class="cl">        inet 127.0.0.1  netmask 255.0.0.0
+</span></span><span class="line"><span class="cl">        inet6 ::1  prefixlen <span class="m">128</span>  scopeid 0x10&lt;host&gt;
+</span></span><span class="line"><span class="cl">        loop  txqueuelen <span class="m">1000</span>  <span class="o">(</span>Local Loopback<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        RX packets <span class="m">0</span>  bytes <span class="m">0</span> <span class="o">(</span>0.0 B<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        RX errors <span class="m">0</span>  dropped <span class="m">0</span>  overruns <span class="m">0</span>  frame <span class="m">0</span>
+</span></span><span class="line"><span class="cl">        TX packets <span class="m">0</span>  bytes <span class="m">0</span> <span class="o">(</span>0.0 B<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        TX errors <span class="m">0</span>  dropped <span class="m">0</span> overruns <span class="m">0</span>  carrier <span class="m">0</span>  collisions <span class="m">0</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到有<code>eth0</code>和<code>lo</code>网络设备，然后运行程序</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># go run main.go</span>
+</span></span><span class="line"><span class="cl">sh$ ifconfig
+</span></span><span class="line"><span class="cl">sh$
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>我们发现，在<code>Network Namespace</code>里什么网络设备都没有，这样<code>Network Namespace</code>和宿主机之间网络是隔离的。</p>
+<h2 id="二linux-cgoups">二、Linux Cgoups</h2>
+<p><code>Linux Cgoups</code>全称是<code>Linux Control Group</code>，它的主要作用就是限制一个进程组能够使用的资源上限，包括CPU、内存、磁盘、网络等。</p>
+<p>在Linux中，Cgroups给用户暴露出来的操作接口是文件系统，即它以文件和目录的方式组织在<code>/sys/fs/cgroup</code>路径下。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># mount -t cgroup</span>
+</span></span><span class="line"><span class="cl">cgroup on /sys/fs/cgroup/systemd <span class="nb">type</span> cgroup <span class="o">(</span>rw,nosuid,nodev,noexec,relatime,xattr,release_agent<span class="o">=</span>/usr/lib/systemd/systemd-cgroups-agent,name<span class="o">=</span>systemd<span class="o">)</span>
+</span></span><span class="line"><span class="cl">cgroup on /sys/fs/cgroup/net_cls,net_prio <span class="nb">type</span> cgroup <span class="o">(</span>rw,nosuid,nodev,noexec,relatime,net_prio,net_cls<span class="o">)</span>
+</span></span><span class="line"><span class="cl">cgroup on /sys/fs/cgroup/memory <span class="nb">type</span> cgroup <span class="o">(</span>rw,nosuid,nodev,noexec,relatime,memory<span class="o">)</span>
+</span></span><span class="line"><span class="cl">cgroup on /sys/fs/cgroup/cpuset <span class="nb">type</span> cgroup <span class="o">(</span>rw,nosuid,nodev,noexec,relatime,cpuset<span class="o">)</span>
+</span></span><span class="line"><span class="cl">cgroup on /sys/fs/cgroup/perf_event <span class="nb">type</span> cgroup <span class="o">(</span>rw,nosuid,nodev,noexec,relatime,perf_event<span class="o">)</span>
+</span></span><span class="line"><span class="cl">cgroup on /sys/fs/cgroup/freezer <span class="nb">type</span> cgroup <span class="o">(</span>rw,nosuid,nodev,noexec,relatime,freezer<span class="o">)</span>
+</span></span><span class="line"><span class="cl">cgroup on /sys/fs/cgroup/hugetlb <span class="nb">type</span> cgroup <span class="o">(</span>rw,nosuid,nodev,noexec,relatime,hugetlb<span class="o">)</span>
+</span></span><span class="line"><span class="cl">cgroup on /sys/fs/cgroup/blkio <span class="nb">type</span> cgroup <span class="o">(</span>rw,nosuid,nodev,noexec,relatime,blkio<span class="o">)</span>
+</span></span><span class="line"><span class="cl">cgroup on /sys/fs/cgroup/cpu,cpuacct <span class="nb">type</span> cgroup <span class="o">(</span>rw,nosuid,nodev,noexec,relatime,cpuacct,cpu<span class="o">)</span>
+</span></span><span class="line"><span class="cl">cgroup on /sys/fs/cgroup/devices <span class="nb">type</span> cgroup <span class="o">(</span>rw,nosuid,nodev,noexec,relatime,devices<span class="o">)</span>
+</span></span><span class="line"><span class="cl">cgroup on /sys/fs/cgroup/pids <span class="nb">type</span> cgroup <span class="o">(</span>rw,nosuid,nodev,noexec,relatime,pids<span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到，在<code>/sys/fs/cgroup</code>下面有很多<code>cpu</code>、<code>memory</code>这样的子目录，也就称为子系统<code>subsystem</code>，它是一组资源控制模块，一般包含如下几项：</p>
+<ul>
+<li><code>net_cls</code>：将cgroup中进程产生的网络包分类，以便Linux的tc(traffic controller)可以根据分类区分出来自某个cgroup的包并做限流或监控</li>
+<li><code>net_prio</code>：设置cgroup中进程产生的网络流量的优先级</li>
+<li><code>memory</code>：控制cgroup中进程的内存占用</li>
+<li><code>cpuset</code>：在多核机器上设置cgroup中进程可以使用的cpu和内存</li>
+<li><code>freezer</code>：挂起(suspend)和恢复(resume)cgroup中的进程</li>
+<li><code>blkio</code>：设置对块设备(如硬盘)输入输出的访问控制</li>
+<li><code>cpu</code>：设置cgroup中进程的CPU占用</li>
+<li><code>cpuacct</code>：统计cgroup中进程的CPU占用</li>
+<li><code>devices</code>：控制cgroup中进程对设备的访问</li>
+</ul>
+<h3 id="21挂载cgroup">2.1、挂载cgroup</h3>
+<p>我们创建并挂载一个cgroup</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># mkdir cgroup-test</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># mount -t cgroup -o none,name=cgroup-test cgroup-test ./cgroup-test</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ls ./cgroup-test/</span>
+</span></span><span class="line"><span class="cl">cgroup.clone_children  cgroup.event_control  cgroup.procs  cgroup.sane_behavior  notify_on_release  release_agent  tasks
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>挂载后我们能看到系统在这个目录下生成了一些默认的文件：</p>
+<ul>
+<li>cgroup.clone_children：cpuset的subsystem会读取这个配置文件，如果这个值是1(默认是0)，子cgroup才会继承父cgroup的cpuset的配置</li>
+<li>cgroup.event_control：监控状态变化和分组删除事件的配置文件</li>
+<li>cgroup.procs：树中当前节点cgroup的进程组ID</li>
+<li>notify_on_release和release_agent：notify_on_release标识这个cgroup最后一个进程退出时是否执行了release_agent，release_agent则是一个路径，通常用作进程退出后清理不再使用的cgroup</li>
+<li>task：标识该cgroup下的进程ID，如果把一个进程ID写入tasks文件中，便会将相应的进程加入到这个cgroup中</li>
+</ul>
+<h3 id="22新建子cgroup">2.2、新建子cgroup</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># mkdir cgroup-1</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># mkdir cgroup-2</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ls</span>
+</span></span><span class="line"><span class="cl">cgroup-1  cgroup.clone_children  cgroup.procs          notify_on_release  tasks
+</span></span><span class="line"><span class="cl">cgroup-2  cgroup.event_control   cgroup.sane_behavior  release_agent
+</span></span><span class="line"><span class="cl"><span class="c1"># tree</span>
+</span></span><span class="line"><span class="cl">.
+</span></span><span class="line"><span class="cl">├── cgroup-1
+</span></span><span class="line"><span class="cl">│   ├── cgroup.clone_children
+</span></span><span class="line"><span class="cl">│   ├── cgroup.event_control
+</span></span><span class="line"><span class="cl">│   ├── cgroup.procs
+</span></span><span class="line"><span class="cl">│   ├── notify_on_release
+</span></span><span class="line"><span class="cl">│   └── tasks
+</span></span><span class="line"><span class="cl">├── cgroup-2
+</span></span><span class="line"><span class="cl">│   ├── cgroup.clone_children
+</span></span><span class="line"><span class="cl">│   ├── cgroup.event_control
+</span></span><span class="line"><span class="cl">│   ├── cgroup.procs
+</span></span><span class="line"><span class="cl">│   ├── notify_on_release
+</span></span><span class="line"><span class="cl">│   └── tasks
+</span></span><span class="line"><span class="cl">├── cgroup.clone_children
+</span></span><span class="line"><span class="cl">├── cgroup.event_control
+</span></span><span class="line"><span class="cl">├── cgroup.procs
+</span></span><span class="line"><span class="cl">├── cgroup.sane_behavior
+</span></span><span class="line"><span class="cl">├── notify_on_release
+</span></span><span class="line"><span class="cl">├── release_agent
+</span></span><span class="line"><span class="cl">└── tasks
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="m">2</span> directories, <span class="m">17</span> files
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在挂载目录下创建文件夹时，操作系统会把文件夹标记为子cgroup，会继承父cgroup的属性</p>
+<h3 id="23添加进程">2.3、添加进程</h3>
+<p>把进程ID写入到cgroup节点的tasks文件中</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>cgroup-1<span class="o">]</span><span class="c1"># echo $$</span>
+</span></span><span class="line"><span class="cl"><span class="m">1186</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>cgroup-1<span class="o">]</span><span class="c1"># sh -c &#34;echo $$ &gt;&gt; tasks&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>cgroup-1<span class="o">]</span><span class="c1"># cat /proc/1186/cgroup</span>
+</span></span><span class="line"><span class="cl">12:name<span class="o">=</span>cgroup-test:/cgroup-1
+</span></span><span class="line"><span class="cl">11:pids:/
+</span></span><span class="line"><span class="cl">10:devices:/
+</span></span><span class="line"><span class="cl">9:cpuacct,cpu:/
+</span></span><span class="line"><span class="cl">8:blkio:/
+</span></span><span class="line"><span class="cl">7:hugetlb:/
+</span></span><span class="line"><span class="cl">6:freezer:/
+</span></span><span class="line"><span class="cl">5:perf_event:/
+</span></span><span class="line"><span class="cl">4:cpuset:/
+</span></span><span class="line"><span class="cl">3:memory:/
+</span></span><span class="line"><span class="cl">2:net_prio,net_cls:/
+</span></span><span class="line"><span class="cl">1:name<span class="o">=</span>systemd:/user.slice/user-0.slice/session-1.scope
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到，当前进程1186已经被加入到<code>cgroup-test:/cgroup-1</code>中了</p>
+<h3 id="24限制资源">2.4、限制资源</h3>
+<p>我们来写一个脚本</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># while : ; do : ; done &amp;</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>1<span class="o">]</span> <span class="m">1448</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>使用<code>top</code>命令查看，可以看到CPU已经占满</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># top</span>
+</span></span><span class="line"><span class="cl">%Cpu<span class="o">(</span>s<span class="o">)</span>:100.0 us,  0.0 sy,  0.0 ni,  0.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后我们通过cgroup限制这个进程资源</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># mount | grep cpu</span>
+</span></span><span class="line"><span class="cl">cgroup on /sys/fs/cgroup/cpuset <span class="nb">type</span> cgroup <span class="o">(</span>rw,nosuid,nodev,noexec,relatime,cpuset<span class="o">)</span>
+</span></span><span class="line"><span class="cl">cgroup on /sys/fs/cgroup/cpu,cpuacct <span class="nb">type</span> cgroup <span class="o">(</span>rw,nosuid,nodev,noexec,relatime,cpuacct,cpu<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># cd /sys/fs/cgroup/cpu</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ls</span>
+</span></span><span class="line"><span class="cl">aegis                  cgroup.event_control  cpuacct.stat          cpu.cfs_period_us  cpu.rt_runtime_us  notify_on_release
+</span></span><span class="line"><span class="cl">assist                 cgroup.procs          cpuacct.usage         cpu.cfs_quota_us   cpu.shares         release_agent
+</span></span><span class="line"><span class="cl">cgroup.clone_children  cgroup.sane_behavior  cpuacct.usage_percpu  cpu.rt_period_us   cpu.stat           tasks
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 创建一个cgroup</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># mkdir test-limit-cpu &amp;&amp; cd test-limit-cpu/</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 设置cpu占用容量，意味着在每100ms时间内，该进程只能使用20ms的CPU时间</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># echo 20000 &gt; cpu.cfs_quota_us</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 将当前进程添加进cgroup中</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># echo 1448 &gt; tasks</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>通过<code>top</code>命令查看</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># top</span>
+</span></span><span class="line"><span class="cl">%Cpu<span class="o">(</span>s<span class="o">)</span>: 20.5 us,  0.7 sy,  0.0 ni, 78.8 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到计算机的CPU使用率立刻降到了20%。</p>
+<h3 id="25docker使用cgroup">2.5、Docker使用Cgroup</h3>
+<p>Linux Cgroup的设计还是比较简单的，就是在子目录系统加上一组限制资源文件的组合。而对于Docker来说，只需要在每个子系统下面，为每个容器创建一个控制组(新建目录)，然后在启动容器进程后，把这个进程的PID填写到对应控制组的tasks文件中即可。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># docker run -itd -m 128m busybox</span>
+</span></span><span class="line"><span class="cl">3da89b011026f40a22b22c9b9b8e15e5fb85045c6aa72f7b54406f141cd63157
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># cd /sys/fs/cgroup/memory/docker/3da89b011026f40a22b22c9b9b8e15e5fb85045c6aa72f7b54406f141cd63157/</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># cat memory.limit_in_bytes</span>
+</span></span><span class="line"><span class="cl"><span class="m">134217728</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到，Docker通过为每个容器创建cgroup，并通过cgroup去配置资源限制和资源监控。</p>
+<h3 id="26程序实现">2.6、程序实现</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;io/ioutil&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;os&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;os/exec&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;path&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;strconv&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;syscall&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="nx">cgroupMountPath</span> <span class="p">=</span> <span class="s">&#34;/sys/fs/cgroup/cpu&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#34;/proc/self/exe&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// 容器进程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;current pid %d\n&#34;</span><span class="p">,</span> <span class="nx">syscall</span><span class="p">.</span><span class="nf">Getpid</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="nx">cmd</span> <span class="o">:=</span> <span class="nx">exec</span><span class="p">.</span><span class="nf">Command</span><span class="p">(</span><span class="s">&#34;sh&#34;</span><span class="p">,</span> <span class="s">&#34;-c&#34;</span><span class="p">,</span> <span class="s">&#34;while : ; do : ; done&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">cmd</span><span class="p">.</span><span class="nx">SysProcAttr</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">syscall</span><span class="p">.</span><span class="nx">SysProcAttr</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdin</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdout</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stderr</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stderr</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="nx">err</span> <span class="o">:=</span> <span class="nx">cmd</span><span class="p">.</span><span class="nf">Run</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span> <span class="o">:=</span> <span class="nx">exec</span><span class="p">.</span><span class="nf">Command</span><span class="p">(</span><span class="s">&#34;/proc/self/exe&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">SysProcAttr</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">syscall</span><span class="p">.</span><span class="nx">SysProcAttr</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Cloneflags</span><span class="p">:</span> <span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWUTS</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWPID</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">syscall</span><span class="p">.</span><span class="nx">CLONE_NEWNS</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdin</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stdout</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Stderr</span> <span class="p">=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stderr</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="o">:=</span> <span class="nx">cmd</span><span class="p">.</span><span class="nf">Start</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 得到fork出来进程映射在外部命名空间的pid
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%v\n&#34;</span><span class="p">,</span> <span class="nx">cmd</span><span class="p">.</span><span class="nx">Process</span><span class="p">.</span><span class="nx">Pid</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 在系统默认创建挂载了 cpu subsystem 上创建cgroup
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">pidCgroup</span> <span class="o">:=</span> <span class="nx">path</span><span class="p">.</span><span class="nf">Join</span><span class="p">(</span><span class="nx">cgroupMountPath</span><span class="p">,</span> <span class="s">&#34;testcpulimit&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">os</span><span class="p">.</span><span class="nf">Mkdir</span><span class="p">(</span><span class="nx">pidCgroup</span><span class="p">,</span> <span class="mo">0775</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 将容器进程加入到这个cgroup中
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">ioutil</span><span class="p">.</span><span class="nf">WriteFile</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nf">Join</span><span class="p">(</span><span class="nx">pidCgroup</span><span class="p">,</span> <span class="s">&#34;tasks&#34;</span><span class="p">),</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">strconv</span><span class="p">.</span><span class="nf">Itoa</span><span class="p">(</span><span class="nx">cmd</span><span class="p">.</span><span class="nx">Process</span><span class="p">.</span><span class="nx">Pid</span><span class="p">)),</span> <span class="mo">0644</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 限制cgroup使用
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">ioutil</span><span class="p">.</span><span class="nf">WriteFile</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nf">Join</span><span class="p">(</span><span class="nx">pidCgroup</span><span class="p">,</span> <span class="s">&#34;cpu.cfs_quota_us&#34;</span><span class="p">),</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;20000&#34;</span><span class="p">),</span> <span class="mo">0644</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">cmd</span><span class="p">.</span><span class="nx">Process</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>通过对cgroup的配置，将容器中<code>sh</code>进程的CPU占用限制到了20ms(20%)。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># top</span>
+</span></span><span class="line"><span class="cl">%Cpu<span class="o">(</span>s<span class="o">)</span>: 26.4 us,  1.4 sy,  0.0 ni, 72.2 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+</span></span><span class="line"><span class="cl">PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND
+</span></span><span class="line"><span class="cl"><span class="m">2668</span> root      <span class="m">20</span>   <span class="m">0</span>  <span class="m">113284</span>   <span class="m">1208</span>   <span class="m">1028</span> R 20.0  0.1   0:17.37 sh
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="三union-file-system">三、Union File System</h2>
+<p>Union File System简称是UnionFS，把其他文件系统联合到一个联合挂载点的文件系统服务。</p>
+<p>可能你会对之前提到的<code>Mount Namespace</code>产生混淆，<code>Mount Namespace</code>是容器进程对文件系统&quot;挂载点&quot;的认知，这就意味着，只有挂载这个操作发生后，进程的视图才会被改变。在此之前，新创建的容器会直接继承宿主机的各个挂载点。</p>
+<h3 id="31chroot">3.1、chroot</h3>
+<p>在Linux操作系统中，<code>chroot</code>命令可以<code>change root file system</code>，即改变进程的根目录到你指定的位置。</p>
+<p>它的使用方法也很简单。</p>
+<p>假设，我们现在有一个<code>$HOME/test</code>目录，想要把它作为<code>/bin/bash</code>进程的根目录</p>
+<p>1、首先创建一个<code>test</code>目录和几个<code>lib</code>文件夹</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># mkdir -p test</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># mkdir -p test/{bin,lib64,lib}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>2、把bash命令拷贝到test目录下的bin路径下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># cp -v /bin/{bash,ls} $HOME/test/bin</span>
+</span></span><span class="line"><span class="cl">‘/bin/bash’ -&gt; ‘/root/test/bin/bash’
+</span></span><span class="line"><span class="cl">‘/bin/ls’ -&gt; ‘/root/test/bin/ls’
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>3、把bash命令需要的所有so文件拷贝到对应的lib路径下。可以使用ldd命令找到so文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># T=$HOME/test</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># list=&#34;$(ldd /bin/ls | egrep -o &#39;/lib.*\.[0-9]&#39;)&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># for i in $list; do cp -v &#34;$i&#34; &#34;${T}${i}&#34;; done</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>4、最后执行chroot命令，把<code>$HOME/test</code>目录作为<code>/bin/bash</code>进程的根目录</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># chroot $HOME/test /bin/bash</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这时，执行<code>./bin/ls /</code>命令，就会看到返回的是<code>$HOME/test</code>目录下的内容，而不是宿主机的内容。</p>
+<p>对于被<code>chroot</code>的进程来说，它并不知道自己的根目录已经被修改了</p>
+<h3 id="32aufs">3.2、aufs</h3>
+<p>aufs全称是Advanced Multi-Layered Unification Filesystem，主要功能就是将多个不同位置的目录联合挂载到同一个目录下。</p>
+<p>例如，有两个文件夹A和B，他们分别有两个文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># tree</span>
+</span></span><span class="line"><span class="cl">.
+</span></span><span class="line"><span class="cl">├── A
+</span></span><span class="line"><span class="cl">│   ├── a
+</span></span><span class="line"><span class="cl">│   └── x
+</span></span><span class="line"><span class="cl">└── B
+</span></span><span class="line"><span class="cl">    ├── b
+</span></span><span class="line"><span class="cl">    └── x
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后，用联合挂载的方式，将这两个目录挂载到公共目录C上</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># mkdir C</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># mount -t aufs -o dirs=./A:./B none ./C</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># tree ./C</span>
+</span></span><span class="line"><span class="cl">./A
+</span></span><span class="line"><span class="cl">├── a
+</span></span><span class="line"><span class="cl">├── b
+</span></span><span class="line"><span class="cl">└── x
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="33docker使用的aufs">3.3、docker使用的aufs</h3>
+<p>查看docker使用的存储</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># docker info</span>
+</span></span><span class="line"><span class="cl"> Storage Driver: overlay2
+</span></span><span class="line"><span class="cl">  Backing Filesystem: extfs
+</span></span><span class="line"><span class="cl">  Supports d_type: <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">  Native Overlay Diff: <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">  userxattr: <span class="nb">false</span>
+</span></span><span class="line"><span class="cl"> Logging Driver: json-file
+</span></span><span class="line"><span class="cl"> Cgroup Driver: cgroupfs
+</span></span><span class="line"><span class="cl"> Cgroup Version: <span class="m">1</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到docker使用的是<code>overlay2</code>，docker在Linux上提供几种存储驱动程序:</p>
+<table>
+<thead>
+<tr>
+<th>Driver</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>overlay2</td>
+<td>是所有支持的Linux发行版的首选存储驱动程序</td>
+</tr>
+<tr>
+<td>fuse-overlayfs</td>
+<td>仅适用于不提供rootless支持的主机上运行docker</td>
+</tr>
+<tr>
+<td>btrfs和zfs</td>
+<td>允许高级选项，如创建“快照”</td>
+</tr>
+<tr>
+<td>vfs</td>
+<td>为了测试，并不能使用任何写时复制，性能较差，一般不用于生产</td>
+</tr>
+<tr>
+<td>aufs</td>
+<td>适用于ubuntu18.06或更早版本</td>
+</tr>
+<tr>
+<td>deviemapper</td>
+<td>需要<code>direct-lvm</code>，零配置但性能差，是以前的CentOS和RHEL中的存储驱动程序</td>
+</tr>
+<tr>
+<td>overlay</td>
+<td>旧<code>overlay</code>驱动程序用于不支持“multiple-lowerdir”功能的内核</td>
+</tr>
+</tbody>
+</table>
+<p>我们拉取镜像然后查看</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># docker pull centos</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># docker image inspect centos</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;GraphDriver&#34;</span>: <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;Data&#34;</span>: <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;MergedDir&#34;</span>: <span class="s2">&#34;/var/lib/docker/overlay2/25b7b27521d0dfa478b9173e0f39b726d914cebfb12a011d97093bf79f48201a/merged&#34;</span>,
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;UpperDir&#34;</span>: <span class="s2">&#34;/var/lib/docker/overlay2/25b7b27521d0dfa478b9173e0f39b726d914cebfb12a011d97093bf79f48201a/diff&#34;</span>,
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;WorkDir&#34;</span>: <span class="s2">&#34;/var/lib/docker/overlay2/25b7b27521d0dfa478b9173e0f39b726d914cebfb12a011d97093bf79f48201a/work&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>,
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;Name&#34;</span>: <span class="s2">&#34;overlay2&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>,
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;RootFS&#34;</span>: <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;Type&#34;</span>: <span class="s2">&#34;layers&#34;</span>,
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;Layers&#34;</span>: <span class="o">[</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;sha256:74ddd0ec08fa43d09f32636ba91a0a3053b02cb4627c35051aff89f853606b59&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">]</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>此时再rootfs的<code>layers</code>只有一层，接下来，以centos镜像为基础镜像，创建一个<code>changed-centos</code>的镜像。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> centos</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&#34;Hello World&#34;</span> &gt; /tmp/newfile<span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后编译镜像</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># docker build -t changed-centos .</span>
+</span></span><span class="line"><span class="cl">Sending build context to Docker daemon  5.632kB
+</span></span><span class="line"><span class="cl">Step 1/2 : FROM centos
+</span></span><span class="line"><span class="cl"> ---&gt; 5d0da3dc9764
+</span></span><span class="line"><span class="cl">Step 2/2 : RUN <span class="nb">echo</span> <span class="s2">&#34;Hello World&#34;</span> &gt; /tmp/newfile
+</span></span><span class="line"><span class="cl"> ---&gt; Running in 56f851769616
+</span></span><span class="line"><span class="cl">Removing intermediate container 56f851769616
+</span></span><span class="line"><span class="cl"> ---&gt; 9c6d811a36cd
+</span></span><span class="line"><span class="cl">Successfully built 9c6d811a36cd
+</span></span><span class="line"><span class="cl">Successfully tagged changed-centos:latest
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后查看生成的镜像信息</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># docker image inspect changed-centos</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;GraphDriver&#34;</span>: <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;Data&#34;</span>: <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;LowerDir&#34;</span>: <span class="s2">&#34;/var/lib/docker/overlay2/25b7b27521d0dfa478b9173e0f39b726d914cebfb12a011d97093bf79f48201a/diff&#34;</span>,
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;MergedDir&#34;</span>: <span class="s2">&#34;/var/lib/docker/overlay2/1962f3c14c7b78c087c80042cd0076686137a2bf4ae4d989d797813569a895a0/merged&#34;</span>,
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;UpperDir&#34;</span>: <span class="s2">&#34;/var/lib/docker/overlay2/1962f3c14c7b78c087c80042cd0076686137a2bf4ae4d989d797813569a895a0/diff&#34;</span>,
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;WorkDir&#34;</span>: <span class="s2">&#34;/var/lib/docker/overlay2/1962f3c14c7b78c087c80042cd0076686137a2bf4ae4d989d797813569a895a0/work&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>,
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;Name&#34;</span>: <span class="s2">&#34;overlay2&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>,
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;RootFS&#34;</span>: <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;Type&#34;</span>: <span class="s2">&#34;layers&#34;</span>,
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;Layers&#34;</span>: <span class="o">[</span>
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;sha256:74ddd0ec08fa43d09f32636ba91a0a3053b02cb4627c35051aff89f853606b59&#34;</span>,
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;sha256:4f3b7a0aae6d9b57d111bd1eb2e99ca900a36e2370b47266859e6ca4d97dd1f0&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">]</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到<code>layers</code>新增一层</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># docker history changed-centos</span>
+</span></span><span class="line"><span class="cl">IMAGE          CREATED         CREATED BY                                      SIZE      COMMENT
+</span></span><span class="line"><span class="cl">9c6d811a36cd   <span class="m">2</span> minutes ago   /bin/sh -c <span class="nb">echo</span> <span class="s2">&#34;Hello World&#34;</span> &gt; /tmp/newfile    12B       
+</span></span><span class="line"><span class="cl">5d0da3dc9764   <span class="m">3</span> months ago    /bin/sh -c <span class="c1">#(nop)  CMD [&#34;/bin/bash&#34;]            0B        </span>
+</span></span><span class="line"><span class="cl">&lt;missing&gt;      <span class="m">3</span> months ago    /bin/sh -c <span class="c1">#(nop)  LABEL org.label-schema.sc…   0B        </span>
+</span></span><span class="line"><span class="cl">&lt;missing&gt;      <span class="m">3</span> months ago    /bin/sh -c <span class="c1">#(nop) ADD file:805cb5e15fb6e0bb0…   231MB</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>从输出中可以看到，image layer最上层仅有12B大小，也就是说<code>changed-centos</code>镜像仅占用了12B的磁盘空间。</p>
+<h2 id="四总结">四、总结</h2>
+<p>本文主要介绍了Docker运行的三大基石：Namespace、Cgroup和rootfs。</p>
+<p>了解这些内容就能够清晰地明白docker和虚拟机的区别了，也就是说运行在Docker里的进程仍然需要宿主机的支持，比如内核版本等。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-03-07</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2022/03/namespace/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/linux/">linux</a>,&nbsp;<a href="/tags/namespace/">namespace</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2022/03/%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C/" class="prev" rel="prev" title="进程后台运行"><i class="fas fa-angle-left fa-fw"></i>进程后台运行</a>
+            <a href="/2022/03/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/" class="next" rel="next" title="kubernetes简介">kubernetes简介<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="utterances"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"评论系统","lightTheme":"github-light","repo":"betterfor/betterfor.github.io"}},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
