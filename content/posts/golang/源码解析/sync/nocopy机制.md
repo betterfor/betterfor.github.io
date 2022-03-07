@@ -3,11 +3,11 @@ title: "no copy机制"
 date: 2021-07-19T14:44:23+08:00
 draft: false
 
-tags: ['golang']
+tags: ['源码解析', 'golang']
 categories: ["月霜天的GO"]
 comment: true
 toc: true
-autoCollapseToc: false
+autoCollapseToc: true
 ---
 
 在`sync`包下面经常出现"XXX must not be copied after first use."，然后下面就有一个`noCopy`。

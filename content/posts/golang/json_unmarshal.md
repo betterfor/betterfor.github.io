@@ -3,8 +3,8 @@ title: "如何自定义让json解析出自定义值"
 date: 2020-11-25T09:54:07+08:00
 draft: false
 
-tags: ['json']
-categories: ["月霜天的GO"]
+tags: ['json', 'golang']
+categories: ["月霜天的小笔记"]
 comment: true
 toc: false
 autoCollapseToc: false

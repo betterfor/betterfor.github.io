@@ -477,7 +477,7 @@ hello-world   v2        0243f312226d   7 seconds ago   18.3kB
 
 **语法**
 
-```
+```sh
 docker image COMMAND
 
 Commands:

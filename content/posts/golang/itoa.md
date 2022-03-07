@@ -3,8 +3,8 @@ title: "Iota的使用方法"
 date: 2021-02-10T20:14:57+08:00
 draft: false
 
-tags: ['iota']
-categories: ["月霜天的GO"]
+tags: ['iota', 'golang']
+categories: ["月霜天的小笔记"]
 comment: true
 toc: true
 autoCollapseToc: false
