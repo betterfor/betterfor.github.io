@@ -1,0 +1,14 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>gin - 标签 - 月霜天的小站</title>
+        <link>https://blog.betterformile.ml/tags/gin/</link>
+        <description>gin - 标签 - 月霜天的小站</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:19:43 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/gin/" rel="self" type="application/rss+xml" /><item>
+    <title>Httprouter</title>
+    <link>https://blog.betterformile.ml/2022/03/httprouter/</link>
+    <pubDate>Mon, 07 Mar 2022 11:19:43 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/httprouter/</guid>
+    <description><![CDATA[httprouter是非常高效的http路由框架，gin框架的路由也是基于此库 一、使用方法 使用方法也比较简单，如下： 1 2 3 4 5 6 7 8 9 10 11 12]]></description>
+</item></channel>
+</rss>

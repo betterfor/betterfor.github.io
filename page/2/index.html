@@ -89,6 +89,11 @@
         alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/3869504793.png"
         title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/3869504793.png" /></a></div><h1 class="home-title">月霜天</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/2021/07/nocopy%E6%9C%BA%E5%88%B6/">no copy机制</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2021-07-19">2021-07-19</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/"><i class="far fa-folder fa-fw"></i>月霜天的GO</a></span></div><div class="content">在sync包下面经常出现&quot;XXX must not be copied after first use.&quot;，然后下面就有一个noCopy。 什么是noCopy ? 如果结构体对象</div><div class="post-footer">
+        <a href="/2021/07/nocopy%E6%9C%BA%E5%88%B6/">阅读全文</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">源码解析</a>,&nbsp;<a href="/tags/golang/">golang</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.pool/">并发编程之sync.Pool</a>
     </h1><div class="post-meta"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2021-07-16">2021-07-16</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/"><i class="far fa-folder fa-fw"></i>月霜天的GO</a></span></div><div class="content">我们通常用golang来构建高并发场景下的应用，但是由于golang内建的GC机制会影响应用的性能，为了减少GC，golang提供了对象重用</div><div class="post-footer">
         <a href="/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.pool/">阅读全文</a><div class="post-tags">
@@ -112,11 +117,6 @@
         <a href="/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.cond/">并发编程之条件变量Cond</a>
     </h1><div class="post-meta"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2021-07-16">2021-07-16</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/"><i class="far fa-folder fa-fw"></i>月霜天的GO</a></span></div><div class="content">sync.Cond字面意思就是同步条件变量，它实现的是一种监视器(Monitor)模式。 对于Cond而言，它实现一个条件变量，是gorout</div><div class="post-footer">
         <a href="/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.cond/">阅读全文</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">源码解析</a>,&nbsp;<a href="/tags/sync/">sync</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.waitgroup/">并发编程之WaitGroup</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2021-07-16">2021-07-16</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/"><i class="far fa-folder fa-fw"></i>月霜天的GO</a></span></div><div class="content">waitgroup的使用场景： 一个waitgroup对象可以等到一组协程结束，也就是等待一组goroutine返回。 首先我们来看看sync.</div><div class="post-footer">
-        <a href="/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.waitgroup/">阅读全文</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">源码解析</a>,&nbsp;<a href="/tags/sync/">sync</a></div></div>
 </article><ul class="pagination"><li class="page-item ">
                     <span class="page-link">
