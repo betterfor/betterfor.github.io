@@ -3,7 +3,21 @@
         <title>月霜天的小随笔 - 分类 - 月霜天的小站</title>
         <link>https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E9%9A%8F%E7%AC%94/</link>
         <description>月霜天的小随笔 - 分类 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:09:07 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E9%9A%8F%E7%AC%94/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:14:26 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E9%9A%8F%E7%AC%94/" rel="self" type="application/rss+xml" /><item>
+    <title>CSP并发模型</title>
+    <link>https://blog.betterformile.ml/2022/03/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/</link>
+    <pubDate>Mon, 07 Mar 2022 11:14:26 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/</guid>
+    <description><![CDATA[一、goroutine 进程：可并发执行的程序在某个数据集合上的一次计算活动，也是操作系统进行资源分配和调度的基本单位。每个进程都有自己的独立]]></description>
+</item><item>
+    <title>Context控制goroutine并发运行</title>
+    <link>https://blog.betterformile.ml/2022/03/context/</link>
+    <pubDate>Mon, 07 Mar 2022 11:12:38 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/context/</guid>
+    <description><![CDATA[在并发程序中，由于超时、取消操作或其他一些异常情况，往往需要通知其他goroutine，虽然可以使用channel来处理这些问题，但是会变得]]></description>
+</item><item>
     <title>Beego路由---前缀树</title>
     <link>https://blog.betterformile.ml/2022/03/beego_router/</link>
     <pubDate>Mon, 07 Mar 2022 11:09:07 &#43;0800</pubDate>

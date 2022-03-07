@@ -3,7 +3,21 @@
         <title>所有文章 - 月霜天的小站</title>
         <link>https://blog.betterformile.ml/posts/</link>
         <description>所有文章 | 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:09:07 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/posts/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:14:26 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>CSP并发模型</title>
+    <link>https://blog.betterformile.ml/2022/03/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/</link>
+    <pubDate>Mon, 07 Mar 2022 11:14:26 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/</guid>
+    <description><![CDATA[一、goroutine 进程：可并发执行的程序在某个数据集合上的一次计算活动，也是操作系统进行资源分配和调度的基本单位。每个进程都有自己的独立]]></description>
+</item><item>
+    <title>Context控制goroutine并发运行</title>
+    <link>https://blog.betterformile.ml/2022/03/context/</link>
+    <pubDate>Mon, 07 Mar 2022 11:12:38 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/context/</guid>
+    <description><![CDATA[在并发程序中，由于超时、取消操作或其他一些异常情况，往往需要通知其他goroutine，虽然可以使用channel来处理这些问题，但是会变得]]></description>
+</item><item>
     <title>Beego路由---前缀树</title>
     <link>https://blog.betterformile.ml/2022/03/beego_router/</link>
     <pubDate>Mon, 07 Mar 2022 11:09:07 &#43;0800</pubDate>
@@ -59,19 +73,5 @@
     <author>作者</author>
     <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.cond/</guid>
     <description><![CDATA[sync.Cond字面意思就是同步条件变量，它实现的是一种监视器(Monitor)模式。 对于Cond而言，它实现一个条件变量，是gorout]]></description>
-</item><item>
-    <title>并发编程之WaitGroup</title>
-    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.waitgroup/</link>
-    <pubDate>Fri, 16 Jul 2021 10:52:06 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.waitgroup/</guid>
-    <description><![CDATA[waitgroup的使用场景： 一个waitgroup对象可以等到一组协程结束，也就是等待一组goroutine返回。 首先我们来看看sync.]]></description>
-</item><item>
-    <title>并发编程之sync.Once</title>
-    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.once%E7%9A%84%E5%AE%9E%E7%8E%B0/</link>
-    <pubDate>Fri, 16 Jul 2021 10:50:32 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.once%E7%9A%84%E5%AE%9E%E7%8E%B0/</guid>
-    <description><![CDATA[Go语言标准库中的sync.Once可以保证go程序在运行期间的某段代码只执行一次。 而我们来看看sync.Once的源码，发现是比较少的。 去]]></description>
 </item></channel>
 </rss>

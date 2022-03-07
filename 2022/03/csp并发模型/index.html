@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>CSP并发模型 - 月霜天的小站</title><meta name="Description" content="月霜天的小站"><meta property="og:title" content="CSP并发模型" />
+<meta property="og:description" content="一、goroutine 进程：可并发执行的程序在某个数据集合上的一次计算活动，也是操作系统进行资源分配和调度的基本单位。每个进程都有自己的独立" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.betterformile.ml/2022/03/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-07T11:14:26+08:00" />
+<meta property="article:modified_time" content="2022-03-07T11:14:26+08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/>
+
+<meta name="twitter:title" content="CSP并发模型"/>
+<meta name="twitter:description" content="一、goroutine 进程：可并发执行的程序在某个数据集合上的一次计算活动，也是操作系统进行资源分配和调度的基本单位。每个进程都有自己的独立"/>
+<meta name="application-name" content="月霜天">
+<meta name="apple-mobile-web-app-title" content="月霜天"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.betterformile.ml/2022/03/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/" /><link rel="prev" href="https://blog.betterformile.ml/2022/03/context/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "CSP并发模型",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog.betterformile.ml\/2022\/03\/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B\/"
+        },"genre": "posts","keywords": "golang, csp并发模型","wordcount":  3672 ,
+        "url": "https:\/\/blog.betterformile.ml\/2022\/03\/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B\/","datePublished": "2022-03-07T11:14:26+08:00","dateModified": "2022-03-07T11:14:26+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "月霜天"},"author": {
+                "@type": "Person",
+                "name": "月霜天"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png" /></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png" /></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">CSP并发模型</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E9%9A%8F%E7%AC%94/"><i class="far fa-folder fa-fw"></i>月霜天的小随笔</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-03-07">2022-03-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 3672 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 8 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一goroutine">一、goroutine</a></li>
+    <li><a href="#二gpm模型">二、GPM模型</a>
+      <ul>
+        <li><a href="#21p和m的数量">2.1、P和M的数量</a>
+          <ul>
+            <li><a href="#1p的数量">1、P的数量</a></li>
+            <li><a href="#2m的数量">2、M的数量</a></li>
+            <li><a href="#3p数量和m数量的关系">3、P数量和M数量的关系</a></li>
+          </ul>
+        </li>
+        <li><a href="#22何时创建p和m">2.2、何时创建P和M</a>
+          <ul>
+            <li><a href="#1p何时创建">1、P何时创建</a></li>
+            <li><a href="#2m何时创建">2、M何时创建</a></li>
+          </ul>
+        </li>
+        <li><a href="#23调度器设计策略">2.3、调度器设计策略</a>
+          <ul>
+            <li><a href="#1复用线程">1、复用线程</a></li>
+            <li><a href="#2抢占">2、抢占</a></li>
+          </ul>
+        </li>
+        <li><a href="#24go-func-调度过程">2.4、go func() 调度过程</a></li>
+      </ul>
+    </li>
+    <li><a href="#三调度机制">三、调度机制</a>
+      <ul>
+        <li><a href="#31基于协作的抢占式调度">3.1、基于协作的抢占式调度</a></li>
+        <li><a href="#32基于信号的抢占式调度">3.2、基于信号的抢占式调度</a></li>
+        <li><a href="#33为什么要抢占p">3.3、为什么要抢占P</a></li>
+        <li><a href="#34如何抢占">3.4、如何抢占</a>
+          <ul>
+            <li><a href="#场景1">场景1</a></li>
+            <li><a href="#场景2">场景2</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#四实例">四、实例</a></li>
+    <li><a href="#五总结">五、总结</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="一goroutine">一、goroutine</h2>
+<ul>
+<li>进程：可并发执行的程序在某个数据集合上的一次计算活动，也是操作系统进行资源分配和调度的基本单位。每个进程都有自己的独立空间，不同进程通过进程间通信来通信。</li>
+<li>线程：从属于进程，是程序的实际执行者，一个进程可以有多个线程，每个线程会共享父进程的资源。</li>
+<li>协程：用户态的轻量级线程，协程的调度完全由用户控制。</li>
+</ul>
+<p>很明显，在并发编程中，为每个任务创建一个线程会消耗大量的资源，如高内存占用，高cpu调度。</p>
+<p>在Go中，使用goroutine让一组可复用的函数运行在一组线程上，即使协程阻塞，该线程的其他协程也会被<code>runtime</code>调度。goroutine非常轻量，一个goroutine只占用几KB，这就能运行大量的goroutine，支持高并发。</p>
+<h2 id="二gpm模型">二、GPM模型</h2>
+<p>在Go中，设计了GPM模型</p>
+<ul>
+<li>G：goroutine协程</li>
+<li>P：processor处理器</li>
+<li>M：thread线程</li>
+</ul>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/20/gpm_goroutine2.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/20/gpm_goroutine2.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/20/gpm_goroutine2.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/20/gpm_goroutine2.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/20/gpm_goroutine2.png"
+        title="gpm模型" /></p>
+<p>1、<code>全局队列</code>（Global queue）：全局存放等待运行的G</p>
+<p>2、<code>P的本地队列</code>：存放等待运行的G，不超过256。新建G时，G优先加入本地队列，如果队列满了，把本地队列中的一半移动到<code>全局队列</code>中</p>
+<p>3、<code>P列表</code>：所有的P都在程序启动时创建，并保存在数组中，最多有<code>GOMAXPROCS</code>个</p>
+<p>4、<code>M</code>：线程运行任务需要获取P，从P的本地队列中获取G，P队列为空时，会尝试从全局队列中拿一批G放到P的本地队列，或从其他P的本地队列<strong>偷</strong>一半放到自己的本地队列。</p>
+<p>goroutine调度器和OS调度器通过M结合起来，每一个M代表一个内核线程，OS调度器负责把内核线程放到CPU上执行。</p>
+<h3 id="21p和m的数量">2.1、P和M的数量</h3>
+<h4 id="1p的数量">1、P的数量</h4>
+<p>启动时由环境变量<code>GOMAXPROCS</code>或者通过<code>runtime.GOMAXPROCS()</code>确定。这就代表程序执行时最多有<code>GOMAXPROCS</code>个goroutine在同时运行。</p>
+<h4 id="2m的数量">2、M的数量</h4>
+<ul>
+<li>
+<p>go本身限制：程序启动时，会设置M的最大数量，默认是10000。<code>sched.maxmcount = 10000</code></p>
+</li>
+<li>
+<p>runtime/debug包中<code>SetMaxThreads</code>函数可以设置M的最大数量</p>
+</li>
+<li>
+<p>一个M阻塞了，会创建新的M</p>
+</li>
+</ul>
+<h4 id="3p数量和m数量的关系">3、P数量和M数量的关系</h4>
+<p>P与M的没有数量关系，一个M阻塞了，P就会去创建或切换另一个M，所以即使P=1，也有可能创建多个M</p>
+<h3 id="22何时创建p和m">2.2、何时创建P和M</h3>
+<h4 id="1p何时创建">1、P何时创建</h4>
+<p>在确定P的最大数量后，运行时程序会根据数量创建P</p>
+<h4 id="2m何时创建">2、M何时创建</h4>
+<p>没有足够的M来关联P并运行G。比如所有的M都被阻塞了，而P中有很多就绪任务，就会去寻找空闲的M，如果没有空闲的，就会去新建M</p>
+<h3 id="23调度器设计策略">2.3、调度器设计策略</h3>
+<h4 id="1复用线程">1、复用线程</h4>
+<p>避免频繁的创建、销毁线程</p>
+<ul>
+<li>work stealing机制</li>
+</ul>
+<p>当线程M没有可以执行的G时，尝试从其他线程绑定的P中偷取G，而不是销毁线程</p>
+<ul>
+<li>hand off机制</li>
+</ul>
+<p>当线程M因为G进行系统调用阻塞时，线程M释放绑定的P，把P移交给其他空闲的线程执行</p>
+<h4 id="2抢占">2、抢占</h4>
+<p>一个goroutine最多占用cpu 10ms，防止其他goroutine被饿死</p>
+<h3 id="24go-func-调度过程">2.4、go func() 调度过程</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/20/gpm_gofunc.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/20/gpm_gofunc.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/20/gpm_gofunc.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/20/gpm_gofunc.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/20/gpm_gofunc.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/20/gpm_gofunc.png" /></p>
+<p>1、通过go func()创建一个goroutine</p>
+<p>2、新创建的G会先保存在P的本地队列，如果P的本地队列满了，就会存放在全局队列中</p>
+<p>3、G只能在M中运行，一个M只能有一个P。M会从P的本地队列读取一个可执行的G来执行，如果本地队列为空，就会想其他的MP中偷取一个可执行的G来执行。</p>
+<p>4、一个M调度G的过程是循环过程</p>
+<p>5、当M执行某个G发生syscall或其他阻塞操作，M会阻塞，如果当前有一些G在执行，runtime会把这个线程M从P中摘除(detach)，然后再创建一个新的线程</p>
+<p>6、当M系统调用结束，这个G会尝试获取一个空闲的P执行，并放入到这个P的本地队列。如果获取不到P，那么这个线程M就会进入休眠状态，加入到空闲线程中，这个G会被放入全局队列中。</p>
+<blockquote>
+<p>M0：程序启动后的编号为0的主线程，这个M对应的实例会在全局变量runtime.m0中，不需要在堆中分配，M0负责执行初始化操作和启动第一个G，在之后就和其他M一样</p>
+<p>G0：启动每个M都会创建的第一个goroutine，G0仅用于负责调度的G，G0不指向任何可执行的函数。每个M都有自己的G0。在调度或系统调用时会使用G0的栈空间, 全局变量的G0是M0的G0。</p>
+</blockquote>
+<h2 id="三调度机制">三、调度机制</h2>
+<ul>
+<li>Go0.x：基于单线程的调度</li>
+<li>Go1.0：基于多线程的调度</li>
+<li>Go1.1：基于任务窃取的调度</li>
+<li>Go1.2-Go1.13：基于协作的抢占式调度</li>
+<li>Go1.14：基于信号的抢占式调度</li>
+</ul>
+<h3 id="31基于协作的抢占式调度">3.1、基于协作的抢占式调度</h3>
+<p>goroutine有个字段<code>stackguard0</code>，当该字段被设置成<code>StackPreempt</code>，意味着当前goroutine发出了抢占请求，同时触发调度器抢占让出线程。</p>
+<ul>
+<li>编译器会在调用函数前插入<code>runtime.morestack</code>，可能会调用<code>runtime.newstack</code>进行抢占</li>
+<li>Go语言运行时会在垃圾回收暂停、系统监控发现goroutine运行超过10ms发出抢占请求</li>
+<li>当发生函数调用时，调用<code>runtime.newstack</code>检查goroutine的<code>stackguard0</code>字段</li>
+<li>如果<code>stackguard0</code>是<code>StackPreempt</code>，触发抢占让出线程</li>
+</ul>
+<h3 id="32基于信号的抢占式调度">3.2、基于信号的抢占式调度</h3>
+<ul>
+<li>Go程序启动时，会在runtime.sighandler方法注册并绑定SIGURG信号</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">mstartm0</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">initsig</span><span class="p">(</span><span class="kc">false</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">initsig</span><span class="p">(</span><span class="nx">preinit</span> <span class="kt">bool</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nb">uint32</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">_NSIG</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="o">...</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">setsig</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nf">funcPC</span><span class="p">(</span><span class="nx">sighandler</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>绑定相应的runtime.doSigPreempt抢占方法</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">sighandler</span><span class="p">(</span><span class="nx">sig</span> <span class="kt">uint32</span><span class="p">,</span> <span class="nx">info</span> <span class="o">*</span><span class="nx">siginfo</span><span class="p">,</span> <span class="nx">ctxt</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span><span class="p">,</span> <span class="nx">gp</span> <span class="o">*</span><span class="nx">g</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">...</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">sig</span> <span class="o">==</span> <span class="nx">sigPreempt</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">doSigPreempt</span><span class="p">(</span><span class="nx">gp</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>同时在调度的系统监控runtime.sysmon调用retake方法处理：</p>
+<ul>
+<li>抢占阻塞在系统调用的P</li>
+<li>抢占运行时间过长的G</li>
+</ul>
+</li>
+<li>
+<p>当符合条件时，会发送信号给M。M收到信号将会睡眠正在阻塞的G，调用绑定信号方法，并重新调度。</p>
+</li>
+</ul>
+<h3 id="33为什么要抢占p">3.3、为什么要抢占P</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;runtime&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">runtime</span><span class="p">.</span><span class="nf">GOMAXPROCS</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// 协程1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span>  <span class="p">{}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}()</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 协程2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;hello world&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">select</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>在Go1.13版本，是没有输出的。</p>
+</li>
+<li>
+<p>在Go1.14版本，是能打印&quot;hello world&quot;的。</p>
+</li>
+</ul>
+<p>因为不抢占会被一直挂起(hang)。</p>
+<h3 id="34如何抢占">3.4、如何抢占</h3>
+<p>在<code>runtime.retake</code>方法，处理一下两种场景：</p>
+<ul>
+<li>抢占阻塞在系统调用上的P</li>
+<li>抢占运行时间过长的G</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">retake</span><span class="p">(</span><span class="nx">now</span> <span class="kt">int64</span><span class="p">)</span> <span class="kt">uint32</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">n</span> <span class="o">:=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">allpLock</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">allp</span><span class="p">);</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">_p_</span> <span class="o">:=</span> <span class="nx">allp</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">_p_</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">continue</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">pd</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">_p_</span><span class="p">.</span><span class="nx">sysmontick</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">s</span> <span class="o">:=</span> <span class="nx">_p_</span><span class="p">.</span><span class="nx">status</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">sysretake</span> <span class="o">:=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">allpLock</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nb">uint32</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>首先会对<code>allpLock</code>加锁，可以防止发生变更。</p>
+<p>然后对所有的P开始循环处理。</p>
+<h4 id="场景1">场景1</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">t</span> <span class="o">:=</span> <span class="nb">int64</span><span class="p">(</span><span class="nx">_p_</span><span class="p">.</span><span class="nx">syscalltick</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">!</span><span class="nx">sysretake</span> <span class="o">&amp;&amp;</span> <span class="nb">int64</span><span class="p">(</span><span class="nx">pd</span><span class="p">.</span><span class="nx">syscalltick</span><span class="p">)</span> <span class="o">!=</span> <span class="nx">t</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">pd</span><span class="p">.</span><span class="nx">syscalltick</span> <span class="p">=</span> <span class="nb">uint32</span><span class="p">(</span><span class="nx">t</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">pd</span><span class="p">.</span><span class="nx">syscallwhen</span> <span class="p">=</span> <span class="nx">now</span>
+</span></span><span class="line"><span class="cl">	<span class="k">continue</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>如果在系统调用中超过sysmon ticj周期（至少20us），则会从系统调用中抢占P</p>
+<h4 id="场景2">场景2</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="k">if</span> <span class="nf">runqempty</span><span class="p">(</span><span class="nx">_p_</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">nmspinning</span><span class="p">)</span><span class="o">+</span><span class="nx">atomic</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">npidle</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">pd</span><span class="p">.</span><span class="nx">syscallwhen</span><span class="o">+</span><span class="mi">10</span><span class="o">*</span><span class="mi">1000</span><span class="o">*</span><span class="mi">1000</span> <span class="p">&gt;</span> <span class="nx">now</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">   <span class="k">continue</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>runqempty(_p_)</code>判断p的任务队列是否为空，以此来检测有没有其他任务需要执行。</li>
+<li><code>atomic.Load(&amp;sched.nmspinning)+atomic.Load(&amp;sched.npidle) &gt; 0</code>判断是否存在空闲的P和正在进行调度窃取的P</li>
+<li><code>pd.syscallwhen+10*1000*1000 &gt; now</code>会判断系统调用是否超过了10ms</li>
+</ul>
+<p>完成条件判断后，就进入了抢占步骤</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">allpLock</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">incidlelocked</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">Cas</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">_p_</span><span class="p">.</span><span class="nx">status</span><span class="p">,</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">_Pidle</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">   <span class="nx">n</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">   <span class="nx">_p_</span><span class="p">.</span><span class="nx">syscalltick</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">   <span class="nf">handoffp</span><span class="p">(</span><span class="nx">_p_</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nf">incidlelocked</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">allpLock</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>解锁</li>
+<li>减少闲置 M：需要在原子操作（CAS）之前减少闲置 M 的数量（假设有一个正在运行）。否则在发生抢夺 M 时可能会退出系统调用，递增 nmidle 并报告死锁事件。</li>
+<li>修改P的状态为idle，以便交给其他M使用</li>
+<li>抢占P和调度M：调用<code>handoffp</code>方法从系统调用或锁定的M中强占P，会由新的M接管这个P</li>
+</ul>
+<h2 id="四实例">四、实例</h2>
+<p>1、P上存在G1，M1获取P后执行G1，G1使用<code>go func()</code>创建了G2，G2会优先加入到P的本地队列</p>
+<p>2、G1运行完后，M上运行的goroutine切换为G0，G0赋值调度协程的切换。从P的本地队列取G2，从G0切换到G2，开始运行G2。</p>
+<p>3、假设P的本地队列能存储4个G，G2要创建6个G，前4个G（G3，G4，G5，G6）已经加入到P的本地队列中，P的本地队列满了</p>
+<p>4、G2在创建G7时，发现本地队列满了，会把本地队列的前一半的G（G3，G4），还有新创建的G转移到全局队列</p>
+<p>5、G2在创建G8时，P的本地队列没有满，会加入到本地队列中</p>
+<p>6、M2绑定的P2的本地队列为空，会去从全局队列中拿一批G放到P2的本地队列。取的个数为</p>
+<p><code>n=min(len(global queue))/GOMAXPROCS+1,cap(local queue)/2</code></p>
+<p>7、加入G2一直在M1上运行，而M2运行完本地队列和全局队列的G，就会从M1的P中偷取一半的G放到自己的本地队列中执行</p>
+<p>8、此时M1正在运行G2，M2正在运行G8。G8创建了G9后，发生了阻塞的系统调用，M2和P2会发生解绑，P2会执行如下判断：如果P2本地队列有G，全局队列有G或有空闲的M，P2都会唤醒一个M和它绑定，否则P2会加入到空闲P列表，等待M来获取可用的G</p>
+<p>9、假如G8创建了G9，发生了非阻塞系统调用，M2和P2会解绑，但M2会记住P2，然后G8和M2进入系统调用状态，当G8和M2退出系统调用时，会尝试获取P2，如果无法获取，则获取空闲的P，如果没有，G8被标记为可运行状态，加入到全局队列，M2因没有P的绑定进入休眠状态。</p>
+<h2 id="五总结">五、总结</h2>
+<p>Go调度本质是把大量的goroutine分配到少量线程上去执行，并利用多核并行，实现更强大的并发。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-03-07</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2022/03/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/golang/">golang</a>,&nbsp;<a href="/tags/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/">csp并发模型</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2022/03/context/" class="prev" rel="prev" title="Context控制goroutine并发运行"><i class="fas fa-angle-left fa-fw"></i>Context控制goroutine并发运行</a></div>
+</div>
+<div id="comments"><div id="utterances"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"评论系统","lightTheme":"github-light","repo":"betterfor/betterfor.github.io"}},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
