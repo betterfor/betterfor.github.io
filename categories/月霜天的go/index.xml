@@ -3,75 +3,75 @@
         <title>月霜天的GO - 分类 - 月霜天的小站</title>
         <link>https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/</link>
         <description>月霜天的GO - 分类 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 19 Jul 2021 14:44:23 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/" rel="self" type="application/rss+xml" /><item>
-    <title>no copy机制</title>
-    <link>https://blog.betterformile.ml/2021/07/nocopy%E6%9C%BA%E5%88%B6/</link>
-    <pubDate>Mon, 19 Jul 2021 14:44:23 &#43;0800</pubDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/" rel="self" type="application/rss+xml" /><item>
+    <title>channel源码解析</title>
+    <link>https://blog.betterformile.ml/2022/03/channel/</link>
+    <pubDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/nocopy%E6%9C%BA%E5%88%B6/</guid>
-    <description><![CDATA[在sync包下面经常出现&quot;XXX must not be copied after first use.&quot;，然后下面就有一个noCopy。 什么是noCopy ? 如果结构体对象]]></description>
+    <guid>https://blog.betterformile.ml/2022/03/channel/</guid>
+    <description><![CDATA[golang有一个很重要的特性就是channel，经常配合goroutine一起使用。 一、基本用法 初始化 1 ch := make(chan bool) 发送数据 1 ch &lt;- x 接受数据 1]]></description>
 </item><item>
-    <title>并发编程之sync.Pool</title>
-    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.pool/</link>
-    <pubDate>Fri, 16 Jul 2021 10:53:06 &#43;0800</pubDate>
+    <title>Interface接口的设计</title>
+    <link>https://blog.betterformile.ml/2022/03/interface_todo/</link>
+    <pubDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.pool/</guid>
-    <description><![CDATA[我们通常用golang来构建高并发场景下的应用，但是由于golang内建的GC机制会影响应用的性能，为了减少GC，golang提供了对象重用]]></description>
+    <guid>https://blog.betterformile.ml/2022/03/interface_todo/</guid>
+    <description><![CDATA[interface在golang是一个非常重要的特性：duck typing，通过interface实现duck typing，使我们无需显式的]]></description>
 </item><item>
-    <title>sync之Map</title>
-    <link>https://blog.betterformile.ml/2021/07/map/</link>
-    <pubDate>Fri, 16 Jul 2021 10:53:02 &#43;0800</pubDate>
+    <title>map三步曲之一原理</title>
+    <link>https://blog.betterformile.ml/2022/03/map%E5%8E%9F%E7%90%86/</link>
+    <pubDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/map/</guid>
-    <description><![CDATA[我们都知道map是不并发安全的，通常通过加互斥锁或读写锁进行并发，而官方提供了一个解决方案sync.Map。适用于读多写少的场景，那么它的内]]></description>
+    <guid>https://blog.betterformile.ml/2022/03/map%E5%8E%9F%E7%90%86/</guid>
+    <description><![CDATA[在了解golang的map之前，我们需要了解哈希这个概念。 一、哈希表 哈希表，又称散列表(Hash table)，是根据键(key)而直接访问在]]></description>
 </item><item>
-    <title>sync之MUTEX</title>
-    <link>https://blog.betterformile.ml/2021/07/mutex/</link>
-    <pubDate>Fri, 16 Jul 2021 10:53:02 &#43;0800</pubDate>
+    <title>map三步曲之三实际应用</title>
+    <link>https://blog.betterformile.ml/2022/03/map_operator/</link>
+    <pubDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/mutex/</guid>
-    <description><![CDATA[并发作为go的特性之一，必然会带来对于资源的竞争，虽然我们常说使用channel进行通信，但也可以使用sync.Mutex这把互斥锁来保证临]]></description>
+    <guid>https://blog.betterformile.ml/2022/03/map_operator/</guid>
+    <description><![CDATA[之前已经介绍过了map的原理，简单了解一下map里存储的数据结构。本文主要介绍如果在map中进行操作。 一、查找 元素的查找有三种方式： v := m[]]></description>
 </item><item>
-    <title>sync之ONCE</title>
-    <link>https://blog.betterformile.ml/2021/07/once/</link>
-    <pubDate>Fri, 16 Jul 2021 10:53:02 &#43;0800</pubDate>
+    <title>map三步曲之二拉链法</title>
+    <link>https://blog.betterformile.ml/2022/03/map_struct/</link>
+    <pubDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/once/</guid>
-    <description><![CDATA[如何在代码中执行某个函数只运行一次，特别是在go这种高并发的情况下。 go给出了一个解法，sync.Once就是用来解决这种问题的，我们常用来]]></description>
+    <guid>https://blog.betterformile.ml/2022/03/map_struct/</guid>
+    <description><![CDATA[一、拉链法 之前提到过的拉链法，看这里 二、map底层数据结构 map中的数据被存放在一个数组中，数组的元素是桶(bucket)，每个桶至多包含8]]></description>
 </item><item>
-    <title>sync之Pool</title>
-    <link>https://blog.betterformile.ml/2021/07/pool/</link>
-    <pubDate>Fri, 16 Jul 2021 10:53:02 &#43;0800</pubDate>
+    <title>panic的设计</title>
+    <link>https://blog.betterformile.ml/2022/03/panic/</link>
+    <pubDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/pool/</guid>
-    <description><![CDATA[之前的文章httprouter路由框架为什么高性能提到过一点高性能的原因就是它减少了内存分配。因为分配内存是在堆上分配的，调用mallocg]]></description>
+    <guid>https://blog.betterformile.ml/2022/03/panic/</guid>
+    <description><![CDATA[GO中的defer会在当前函数返回前执行传入的函数，常用于关闭文件描述符，关闭链接及解锁等操作。 Go语言中使用defer时会遇到两个常见问题]]></description>
 </item><item>
-    <title>sync之RWMutex</title>
-    <link>https://blog.betterformile.ml/2021/07/rwmutex/</link>
-    <pubDate>Fri, 16 Jul 2021 10:53:02 &#43;0800</pubDate>
+    <title>runtime内存分配</title>
+    <link>https://blog.betterformile.ml/2022/03/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/</link>
+    <pubDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/rwmutex/</guid>
-    <description><![CDATA[在go中，每次读写时都需要加互斥锁，这个对程序的影响还是比较大的。所以我们在sync包中能够找到另外一个锁&mdash;读写锁。当然，读写锁]]></description>
+    <guid>https://blog.betterformile.ml/2022/03/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/</guid>
+    <description><![CDATA[Go语言运行时runtime，自主管理内存。 内存分配模型基于gcmalloc，Tcmalloc是Google gperftools里的组件之一]]></description>
 </item><item>
-    <title>并发编程之Map</title>
-    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.map/</link>
-    <pubDate>Fri, 16 Jul 2021 10:53:02 &#43;0800</pubDate>
+    <title>slice的设计</title>
+    <link>https://blog.betterformile.ml/2022/03/slice/</link>
+    <pubDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.map/</guid>
-    <description><![CDATA[golang原生的map是不支持并发，而在sync/map是线程安全的，可以并发读写，适用于读多写少的场景。 sync.Map是Go map[i]]></description>
+    <guid>https://blog.betterformile.ml/2022/03/slice/</guid>
+    <description><![CDATA[在Golang语言开发过程中，我们经常会用到数组和切片数据结构，数组是固定长度的，而切片是可以扩张的数组，那么切片底层到底有什么不同？接下来]]></description>
 </item><item>
-    <title>并发编程之读写锁</title>
-    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%AF%BB%E5%86%99%E9%94%81/</link>
-    <pubDate>Fri, 16 Jul 2021 10:52:34 &#43;0800</pubDate>
+    <title>string和[]byte相互转换</title>
+    <link>https://blog.betterformile.ml/2022/03/interface/</link>
+    <pubDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%AF%BB%E5%86%99%E9%94%81/</guid>
-    <description><![CDATA[读写锁是基于互斥锁Mutex实现的读写互斥锁，一个goroutine可以持有多个读锁或一个写锁，同一时刻只能同时持有读锁或写锁。 RWMute]]></description>
+    <guid>https://blog.betterformile.ml/2022/03/interface/</guid>
+    <description><![CDATA[在之前的slice中有提到到[]byte和string之间可以使用copy命令转换，那么string和[]byte还有什么其他方式可以转化？]]></description>
 </item><item>
-    <title>并发编程之互斥锁</title>
-    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.mutex/</link>
-    <pubDate>Fri, 16 Jul 2021 10:52:20 &#43;0800</pubDate>
+    <title>垃圾回收</title>
+    <link>https://blog.betterformile.ml/2022/03/%E4%B8%89%E8%89%B2%E6%A0%87%E8%AE%B0-%E6%B7%B7%E5%90%88%E5%86%99%E5%B1%8F%E9%9A%9C/</link>
+    <pubDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.mutex/</guid>
-    <description><![CDATA[并发必然会带来对于资源的竞争，这时需要使用go提供的sync.Mutex这把互斥锁来保证临界资源的访问互斥了。 锁的性质 在代码注释开篇就有一大]]></description>
+    <guid>https://blog.betterformile.ml/2022/03/%E4%B8%89%E8%89%B2%E6%A0%87%E8%AE%B0-%E6%B7%B7%E5%90%88%E5%86%99%E5%B1%8F%E9%9A%9C/</guid>
+    <description><![CDATA[垃圾回收（Garbage Collection，简称GC）是Go语言中提供的内存管理机制，自动释放不需要的内存对象。GC过程无需程序员手动执行]]></description>
 </item></channel>
 </rss>

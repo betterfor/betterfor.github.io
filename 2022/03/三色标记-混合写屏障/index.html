@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>垃圾回收 - 月霜天的小站</title><meta name="Description" content="月霜天的小站"><meta property="og:title" content="垃圾回收" />
+<meta property="og:description" content="垃圾回收（Garbage Collection，简称GC）是Go语言中提供的内存管理机制，自动释放不需要的内存对象。GC过程无需程序员手动执行" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.betterformile.ml/2022/03/%E4%B8%89%E8%89%B2%E6%A0%87%E8%AE%B0-%E6%B7%B7%E5%90%88%E5%86%99%E5%B1%8F%E9%9A%9C/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-07T11:16:04+08:00" />
+<meta property="article:modified_time" content="2022-03-07T11:16:04+08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/>
+
+<meta name="twitter:title" content="垃圾回收"/>
+<meta name="twitter:description" content="垃圾回收（Garbage Collection，简称GC）是Go语言中提供的内存管理机制，自动释放不需要的内存对象。GC过程无需程序员手动执行"/>
+<meta name="application-name" content="月霜天">
+<meta name="apple-mobile-web-app-title" content="月霜天"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.betterformile.ml/2022/03/%E4%B8%89%E8%89%B2%E6%A0%87%E8%AE%B0-%E6%B7%B7%E5%90%88%E5%86%99%E5%B1%8F%E9%9A%9C/" /><link rel="prev" href="https://blog.betterformile.ml/2022/03/time/" /><link rel="next" href="https://blog.betterformile.ml/2022/03/interface/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "垃圾回收",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog.betterformile.ml\/2022\/03\/%E4%B8%89%E8%89%B2%E6%A0%87%E8%AE%B0-%E6%B7%B7%E5%90%88%E5%86%99%E5%B1%8F%E9%9A%9C\/"
+        },"genre": "posts","keywords": "GC, 三色标记","wordcount":  3530 ,
+        "url": "https:\/\/blog.betterformile.ml\/2022\/03\/%E4%B8%89%E8%89%B2%E6%A0%87%E8%AE%B0-%E6%B7%B7%E5%90%88%E5%86%99%E5%B1%8F%E9%9A%9C\/","datePublished": "2022-03-07T11:16:04+08:00","dateModified": "2022-03-07T11:16:04+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "月霜天"},"author": {
+                "@type": "Person",
+                "name": "月霜天"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png" /></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png" /></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">垃圾回收</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/"><i class="far fa-folder fa-fw"></i>月霜天的GO</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-03-07">2022-03-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 3530 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 8 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一标记-清除算法">一、标记-清除算法</a>
+      <ul>
+        <li><a href="#11具体步骤">1.1、具体步骤</a></li>
+        <li><a href="#12缺点">1.2、缺点</a></li>
+      </ul>
+    </li>
+    <li><a href="#二三色标记法">二、三色标记法</a>
+      <ul>
+        <li><a href="#21具体步骤">2.1、具体步骤</a></li>
+      </ul>
+    </li>
+    <li><a href="#三屏障机制">三、屏障机制</a>
+      <ul>
+        <li><a href="#31强-弱三色不等式">3.1、强-弱三色不等式</a></li>
+        <li><a href="#32插入屏障">3.2、插入屏障</a></li>
+        <li><a href="#33删除屏障">3.3、删除屏障</a></li>
+      </ul>
+    </li>
+    <li><a href="#四混合写屏障">四、混合写屏障</a>
+      <ul>
+        <li><a href="#具体场景">具体场景</a></li>
+      </ul>
+    </li>
+    <li><a href="#五垃圾回收过程">五、垃圾回收过程</a>
+      <ul>
+        <li><a href="#51marking-setup">5.1、Marking setup</a></li>
+        <li><a href="#52marking">5.2、Marking</a></li>
+        <li><a href="#53mark终止">5.3、Mark终止</a></li>
+      </ul>
+    </li>
+    <li><a href="#六如何触发gc">六、如何触发GC</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>垃圾回收（Garbage Collection，简称GC）是Go语言中提供的内存管理机制，自动释放不需要的内存对象。GC过程无需程序员手动执行。</p>
+<p>Go在GC的演进过程中经历很多次变革：</p>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>GC算法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v1.1</td>
+<td>STW（Stop the world）</td>
+</tr>
+<tr>
+<td>v1.3</td>
+<td>Mark STW，Sweep（标记清除）</td>
+</tr>
+<tr>
+<td>v1.5</td>
+<td>三色标记</td>
+</tr>
+<tr>
+<td>v1.8</td>
+<td>三色标记+写屏障</td>
+</tr>
+</tbody>
+</table>
+<h2 id="一标记-清除算法">一、标记-清除算法</h2>
+<p>此算法主要有两个步骤</p>
+<ul>
+<li>标记</li>
+<li>清除</li>
+</ul>
+<h3 id="11具体步骤">1.1、具体步骤</h3>
+<p>1、暂停程序业务逻辑，分类出可达和不可达的对象，然后做上标记。</p>
+<p>图示表示程序与对象的可达关系，目前程序的可达对象有1-2-3，4-7共5个对象</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep1.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep1.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep1.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep1.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep1.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep1.png" /></p>
+<p>2、开始标记，程序找出它所有可达的对象，并做上标记</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep2.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep2.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep2.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep2.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep2.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep2.png" /></p>
+<p>3、标记完之后，开始清除未标记的对象</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep3.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep3.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep3.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep3.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep3.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_mark_sweep3.png" /></p>
+<p>mark and sweep算法在执行时，需要程序暂停，即STW，STW过程中，CPU不执行用户代码，全部用于垃圾回收，这个过程影响很大。</p>
+<p>4、STW结束，程序继续运行，直到程序生命周期结束。</p>
+<h3 id="12缺点">1.2、缺点</h3>
+<ul>
+<li>STW，让程序暂停，程序出现卡顿</li>
+<li>标记需要扫描整个heap</li>
+<li>清除数据会产生heap碎片</li>
+</ul>
+<p>Go1.3版本之前按照<code>启动STW</code>-&gt;<code>Mark标记</code>-&gt;<code>Sweep清除</code>-&gt;<code>停止STW</code>这个流程，全部的GC时间都在STW范围内，Go1.3版本做了简单优化，因为<code>Sweep清除</code>可以不需要STW停止，因为这些对象都是不可达对象，不会出现回收写冲突的问题。</p>
+<h2 id="二三色标记法">二、三色标记法</h2>
+<p>Go中的垃圾回收主要应用三色标记法，GC过程和其他goroutine可并发运行，但需要一定时间STW。</p>
+<h3 id="21具体步骤">2.1、具体步骤</h3>
+<p>三色标记法其实就是通过三个阶段的标记对象的状态。</p>
+<p>1、每次新创建的对象，默认都被标记为“白色”</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b01.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b01.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b01.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b01.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_三色标记1.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_三色标记1.png" /></p>
+<p>我们将程序展开</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b02.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b02.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b02.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b02.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_三色标记2.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_三色标记2.png" /></p>
+<p>2、每次GC回收开始，会从根结点开始遍历所有对象，把遍历到的对象从白色集合放入到灰色集合中</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b03.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b03.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b03.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b03.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_三色标记3.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_三色标记3.png" /></p>
+<p>3、遍历灰色集合，将灰色引用的对象从白色集合放入灰色集合，之后将此灰色对象放入黑色集合</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b04.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b04.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b04.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b04.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_三色标记4.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_三色标记4.png" /></p>
+<p>4、重复第三步，直到灰色中无任何对象</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b05.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b05.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b05.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b05.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_三色标记5.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_三色标记5.png" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b06.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b06.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b06.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e4%b8%89%e8%89%b2%e6%a0%87%e8%ae%b06.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_三色标记6.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_三色标记6.png" /></p>
+<p>当我们全部的可达对象遍历完后，灰色标记中不再存在灰色对象，全部内存的数据只有黑色和白色。那么黑色对象就是程序逻辑可达（需要）的对象，是合法有用的数据，支持程序运行的数据，不可删除，而白色对象就是全部不可达数据，就是内存中的垃圾数据，需要被清除。</p>
+<p>5、回收所有的白色对象，也就是回收垃圾</p>
+<p>可以看出这里面可能会有很多并发流程都会被扫描，执行并发流程的内存可能会互相依赖，为了在GC过程中保护数据安全，在三色标记前加STW，在扫描确定黑白对象后放开STW。但是很明显这样的GC扫描性能太低了。</p>
+<p>如果不添加STW，在标记完黑色对象后，有可能黑色对象重新指向新的对象，而这个新的对象是不能被扫描到的。</p>
+<h2 id="三屏障机制">三、屏障机制</h2>
+<p>让GC满足以下两种情况时，保证对象不丢失。</p>
+<h3 id="31强-弱三色不等式">3.1、强-弱三色不等式</h3>
+<p>1、强三色不等式</p>
+<p>不存在黑色对象引用到白色对象的指针。也就是说，强制性的不允许黑色对象引用白色对象，只能引用灰色对象，这样就不会出现白色对象被误删的情况。</p>
+<p>2、弱三色不等式</p>
+<p>所有被黑色对象引用的白色对象都处于灰色保护状态。</p>
+<p>黑色对象可以引用白色对象，白色对象存在其他灰色对象对它的引用，或可达它的链路上游存在灰色对象。这样实则是黑色对象引用白色对象，白色对象处于一个被删除的状态，但是上游灰色对象的引用，可以保护白色对象，使其安全。</p>
+<p>为了遵循上述两种方式，GC算法演进到两种屏障方式，“插入屏障”和“删除屏障”</p>
+<h3 id="32插入屏障">3.2、插入屏障</h3>
+<p>在A对象引用B对象时，B对象被标记为灰色。（将B挂在A下游，B必须被标记为灰色）</p>
+<p>满足强三色不等式。</p>
+<p>插入屏障机制在栈空间的对象操作不使用，仅仅使用在堆空间对象的操作中。</p>
+<p>1、程序创建时，全部对象标记为白色</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c1.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c1.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c1.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c1.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_插入屏障1.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_插入屏障1.png" /></p>
+<p>2、遍历Root Set，得到灰色对象</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c12.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c12.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c12.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c12.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_插入屏障12.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_插入屏障12.png" /></p>
+<p>3、遍历灰色对象，将可达对象，从白色标记为灰色，灰色标记为黑色</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c3.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c3.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c3.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c3.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_插入屏障3.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_插入屏障3.png" /></p>
+<p>4、由于并发特性，此时向对象1添加对象8，对象4添加对象9，触发插入屏障机制，对象1不触发</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c4.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c4.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c4.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c4.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_插入屏障4.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_插入屏障4.png" /></p>
+<p>5、由于插入写屏障，对象9变成灰色对象，对象8依然为白色对象</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c5.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c5.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c5.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c5.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_插入屏障5.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_插入屏障5.png" /></p>
+<p>6、继续上述流程进行三色标记，知道没有灰色节点</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c6.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c6.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c6.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c6.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_插入屏障6.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_插入屏障6.png" /></p>
+<p>7、在准备回收白色对象前，重新扫描遍历一次栈空间，此时加STW暂停保护栈，防止外界干扰（有新的白色被黑色添加）</p>
+<p>8、在STW中，将栈中的对象一次三色标记，知道没有灰色节点</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c7.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c7.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c7.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%8f%92%e5%85%a5%e5%b1%8f%e9%9a%9c7.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_插入屏障7.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_插入屏障7.png" /></p>
+<p>10、最后将栈和堆空间的全部白色对象清除，这次STW大约时间在10~100ms之间</p>
+<h3 id="33删除屏障">3.3、删除屏障</h3>
+<p>被删除的对象，如果本身为灰色或白色，那么标记为灰色。</p>
+<p>满足弱三色不等式</p>
+<p>1、程序初创建，所有对象被标记为白色</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e5%88%a0%e9%99%a4%e5%b1%8f%e9%9a%9c1.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e5%88%a0%e9%99%a4%e5%b1%8f%e9%9a%9c1.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e5%88%a0%e9%99%a4%e5%b1%8f%e9%9a%9c1.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e5%88%a0%e9%99%a4%e5%b1%8f%e9%9a%9c1.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_删除屏障1.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_删除屏障1.png" /></p>
+<p>2、遍历Root Set，得到灰色节点</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e5%88%a0%e9%99%a4%e5%b1%8f%e9%9a%9c2.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e5%88%a0%e9%99%a4%e5%b1%8f%e9%9a%9c2.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e5%88%a0%e9%99%a4%e5%b1%8f%e9%9a%9c2.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e5%88%a0%e9%99%a4%e5%b1%8f%e9%9a%9c2.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_删除屏障2.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_删除屏障2.png" /></p>
+<p>3、灰色对象1删除对象5，对象5被标记为灰色</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e5%88%a0%e9%99%a4%e5%b1%8f%e9%9a%9c3.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e5%88%a0%e9%99%a4%e5%b1%8f%e9%9a%9c3.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e5%88%a0%e9%99%a4%e5%b1%8f%e9%9a%9c3.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e5%88%a0%e9%99%a4%e5%b1%8f%e9%9a%9c3.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_删除屏障3.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_删除屏障3.png" /></p>
+<p>4、继续遍历灰色对象，将可达对象从白色标记为灰色，遍历后的灰色标记为黑色</p>
+<p>5、继续循环上述流程，知道没有灰色节点</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e5%88%a0%e9%99%a4%e5%b1%8f%e9%9a%9c4.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e5%88%a0%e9%99%a4%e5%b1%8f%e9%9a%9c4.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e5%88%a0%e9%99%a4%e5%b1%8f%e9%9a%9c4.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e5%88%a0%e9%99%a4%e5%b1%8f%e9%9a%9c4.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_删除屏障4.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_删除屏障4.png" /></p>
+<p>6、清除白色节点</p>
+<p>这种回收方式精度低，一个对象即时被删除了也可以活过这一轮GC，在下一轮GC被清除掉</p>
+<h2 id="四混合写屏障">四、混合写屏障</h2>
+<p>插入写屏障和删除写屏障的缺点：</p>
+<ul>
+<li>插入写屏障：结束时需要STW来重新扫描栈，标记栈上引用的白色对象存活</li>
+<li>删除写屏障：回收精度低，GC开始时STW扫描堆栈来记录快照，这个过程会保护开始时刻的所有的存活对象</li>
+</ul>
+<p>Go1.8引入混合写屏障机制，避免了对栈的重复扫描过程，极大减少了STW的时间。</p>
+<p>1、GC开始将栈上的对象全部扫描并标记为黑色（之后不再进行第二次重复扫描，无需STW）</p>
+<p>2、GC期间，任何在栈上创建的新对象，都标记为黑色</p>
+<p>3、被删除的对象标记为灰色</p>
+<p>4、被添加的对象标记为灰色</p>
+<h3 id="具体场景">具体场景</h3>
+<p>1、GC开始，默认为白色</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%b7%b7%e5%90%88%e5%86%99%e5%b1%8f%e9%9a%9c1.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%b7%b7%e5%90%88%e5%86%99%e5%b1%8f%e9%9a%9c1.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%b7%b7%e5%90%88%e5%86%99%e5%b1%8f%e9%9a%9c1.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%b7%b7%e5%90%88%e5%86%99%e5%b1%8f%e9%9a%9c1.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_混合写屏障1.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_混合写屏障1.png" /></p>
+<p>2、优先扫描栈对象，将可达对象标记为黑色</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%b7%b7%e5%90%88%e5%86%99%e5%b1%8f%e9%9a%9c2.png"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%b7%b7%e5%90%88%e5%86%99%e5%b1%8f%e9%9a%9c2.png, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%b7%b7%e5%90%88%e5%86%99%e5%b1%8f%e9%9a%9c2.png 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_%e6%b7%b7%e5%90%88%e5%86%99%e5%b1%8f%e9%9a%9c2.png 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_混合写屏障2.png"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/barrier_混合写屏障2.png" /></p>
+<hr>
+<p>场景一：对象被一个堆对象引用删除，成为栈对象的下游</p>
+<p>1、将对象7添加到对象1下游，因为栈不启用写屏障，所以直接挂在下面</p>
+<p>2、对象4删除对象7的引用关系，因为对象4是堆区，所以触发写屏障，标记被删除的对象7为灰</p>
+<p>场景二：对象被一个栈对象删除引用，成为另一个栈对象的下游</p>
+<p>1、新建一个对象9在栈上，混合写屏障中，GC过程中任何新创建的对象均标记为黑色</p>
+<p>2、对象9添加下游引用栈对象3，直接添加，栈不启用屏障，无屏障效果</p>
+<p>3、对象2删除对象3的引用关系，是直接删除，栈不启用屏障，无屏障效果</p>
+<p>场景三：对象被一个堆对象引用删除，称为另一个堆对象的下游</p>
+<p>1、新建一个堆对象10，已经被扫描标记为黑色</p>
+<p>2、堆对象10添加下游引用堆对象7，触发屏障机制，被添加的对象标记为灰色</p>
+<p>场景四：对象从一个栈对象删除引用，成为另一个堆对象的下游</p>
+<p>1、栈对象1删除栈对象2的引用</p>
+<p>2、堆对象4删除对象7的引用关系，添加引用到对象2</p>
+<p>3、对象4在删除的时候触发写屏障，标记被删除的对象7为灰色</p>
+<hr>
+<p>混合写屏障满足弱三色不等式，结合了删除写屏障和插入写屏障的优点，只需要在开始时并发扫描各个goroutine的栈，使其变黑并一直保持，这个过程不需要STW，而标记结束后，因为栈在扫描后始终是黑色的，也无需再进行re-scan操作了，减少了STW的时间。</p>
+<h2 id="五垃圾回收过程">五、垃圾回收过程</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/03/11/golang_gc.jpg"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/03/11/golang_gc.jpg, https://gitee.com/zongl/cloudImage/raw/master/images/2021/03/11/golang_gc.jpg 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/03/11/golang_gc.jpg 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/03/11/golang_gc.jpg"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/03/11/golang_gc.jpg" /></p>
+<h3 id="51marking-setup">5.1、Marking setup</h3>
+<p>为了打开写屏障，必须停止每个goroutine，让垃圾收集器观察并等待每个goroutine进行函数调用，等待函数调用是为了保证goroutine停止时处于安全点。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/marking_setup.webp"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/marking_setup.webp, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/marking_setup.webp 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/marking_setup.webp 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/marking_setup.webp"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/marking_setup.webp" /></p>
+<p>下面的代码中，由于<code>for{}</code> 循环所在的goroutine 永远不会中断，导致始终无法进入STW阶段，资源浪费；Go 1.14 之后，此类goroutine 能被异步抢占，使得进入STW的时间不会超过抢占信号触发的周期，程序也不会因为仅仅等待一个goroutine的停止而停顿在进入STW之前的操作上。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}()</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Milliecond</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">runtime</span><span class="p">.</span><span class="nf">GC</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">println</span><span class="p">(</span><span class="s">&#34;done&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="52marking">5.2、Marking</h3>
+<p>一旦写屏障打开，垃圾收集器就开始标记阶段。</p>
+<p>标记阶段需要标记在堆内存中仍然在使用中的值。首先检查所有现goroutine的堆栈，以找到堆内存的根指针。然后收集器必须从那些根指针遍历堆内存图，标记可以回收的内存。</p>
+<p>当存在新的内存分配时，会暂停分配内存过快的那些 goroutine，并将其转去执行一些辅助标记（Mark Assist）的工作，从而达到放缓继续分配、辅助 GC 的标记工作的目的。</p>
+<h3 id="53mark终止">5.3、Mark终止</h3>
+<p>关闭写屏障，执行各种清理任务（STW）</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/mark_stop.webp"
+        data-srcset="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/mark_stop.webp, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/mark_stop.webp 1.5x, https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/mark_stop.webp 2x"
+        data-sizes="auto"
+        alt="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/mark_stop.webp"
+        title="https://gitee.com/zongl/cloudImage/raw/master/images/2021/12/21/mark_stop.webp" /></p>
+<p>5.4、Sweep清理</p>
+<p>清理阶段用于回收标记阶段中标记出来的可回收内存。当应用程序goroutine尝试在堆内存中分配新内存时，会触发该操作，清理导致的延迟和吞吐量降低被分散到每次内存分配时。</p>
+<h2 id="六如何触发gc">六、如何触发GC</h2>
+<p>1、<code>runtime.GC()</code>强制触发GC</p>
+<p>2、再分配内存时，判断当前内存是否达到阈值会触发新一轮GC（比如当前为4MB，GOGC=100，4MB+4MB*GOGC/100）</p>
+<p>3、上次GC间隔达到了runtime.forcegcperiod(默认2分钟)，会启动GC</p>
+<p><strong>调优方法</strong></p>
+<p>1、合理化内存分配速度</p>
+<p>2、降低并复用已经申请的内存</p>
+<p>3、调整GOGC</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-03-07</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2022/03/%E4%B8%89%E8%89%B2%E6%A0%87%E8%AE%B0-%E6%B7%B7%E5%90%88%E5%86%99%E5%B1%8F%E9%9A%9C/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/gc/">GC</a>,&nbsp;<a href="/tags/%E4%B8%89%E8%89%B2%E6%A0%87%E8%AE%B0/">三色标记</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2022/03/time/" class="prev" rel="prev" title="计时器的设计"><i class="fas fa-angle-left fa-fw"></i>计时器的设计</a>
+            <a href="/2022/03/interface/" class="next" rel="next" title="string和[]byte相互转换">string和[]byte相互转换<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="utterances"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"评论系统","lightTheme":"github-light","repo":"betterfor/betterfor.github.io"}},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

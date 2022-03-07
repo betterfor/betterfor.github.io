@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>runtime内存分配 - 月霜天的小站</title><meta name="Description" content="月霜天的小站"><meta property="og:title" content="runtime内存分配" />
+<meta property="og:description" content="Go语言运行时runtime，自主管理内存。 内存分配模型基于gcmalloc，Tcmalloc是Google gperftools里的组件之一" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.betterformile.ml/2022/03/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" /><meta property="og:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-07T11:16:04+08:00" />
+<meta property="article:modified_time" content="2022-03-07T11:16:04+08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"/>
+
+<meta name="twitter:title" content="runtime内存分配"/>
+<meta name="twitter:description" content="Go语言运行时runtime，自主管理内存。 内存分配模型基于gcmalloc，Tcmalloc是Google gperftools里的组件之一"/>
+<meta name="application-name" content="月霜天">
+<meta name="apple-mobile-web-app-title" content="月霜天"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://blog.betterformile.ml/2022/03/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" /><link rel="prev" href="https://blog.betterformile.ml/2022/03/slice/" /><link rel="next" href="https://blog.betterformile.ml/2022/03/panic/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "runtime内存分配",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/blog.betterformile.ml\/2022\/03\/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D\/"
+        },"genre": "posts","keywords": "内存, malloc","wordcount":  4542 ,
+        "url": "https:\/\/blog.betterformile.ml\/2022\/03\/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D\/","datePublished": "2022-03-07T11:16:04+08:00","dateModified": "2022-03-07T11:16:04+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "月霜天"},"author": {
+                "@type": "Person",
+                "name": "月霜天"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png" /></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="月霜天的小站"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/07/08/golang_symbol.png" /></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/betterfor" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">runtime内存分配</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="github.com/betterfor" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>月霜天</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84go/"><i class="far fa-folder fa-fw"></i>月霜天的GO</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-03-07">2022-03-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 4542 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 10 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1内存管理单元">1、内存管理单元</a></li>
+        <li><a href="#2内存管理组件">2、内存管理组件</a>
+          <ul>
+            <li><a href="#21mcache">2.1、mcache</a></li>
+            <li><a href="#22mcentral">2.2、mcentral</a></li>
+            <li><a href="#23mheap">2.3、mheap</a></li>
+            <li><a href="#24fixalloc">2.4、fixalloc</a></li>
+          </ul>
+        </li>
+        <li><a href="#3内存分配流程">3、内存分配流程</a></li>
+        <li><a href="#4总结">4、总结</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>Go语言运行时runtime，自主管理内存。</p>
+<p>内存分配模型基于gcmalloc，Tcmalloc是Google gperftools里的组件之一。全名是 thread cache malloc（线程缓存分配器）,其内存管理分为线程内存和中央堆两部分。在并行程序下分配小对象（&lt;=32k）的效率很高。</p>
+<p>Tcmalloc核心思想是把内存分成多级来降低锁的粒度。每个线程都有一个cache，用于无锁分配小对象，当内存不足分配小对象，就去central申请，再不足就去heap申请，heap最终是向操作系统申请。</p>
+<p>这样的分配模型，维护一个用户态的内存池，不仅提高了在频繁分配、释放的效率，而且有效地减少了内存碎片。</p>
+<p>Go在程序启动时，会向操作系统申请一段连续的内存，切成小块后自己进行管理。</p>
+<p>申请到的内存块被分成三个区域，在64位上分别是512MB，16GB，512GB大小。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/21/memory_addr_space_design.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/21/memory_addr_space_design.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/21/memory_addr_space_design.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/21/memory_addr_space_design.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/21/memory_addr_space_design.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/21/memory_addr_space_design.png" /></p>
+<blockquote>
+<p>这里只是内存虚拟地址空间限制，并不是golang内存最大就是512GB.</p>
+<p>只是有个比例关系：</p>
+<ul>
+<li>spans区域，一个指针大小（8Byte）对应arena的一个page（8KB），倍数时1024</li>
+<li>bitmap区域，一个字节（8Byte）对应arena的32Bytes，倍数时32</li>
+</ul>
+</blockquote>
+<ul>
+<li><code>arena</code>区域就是所谓的堆区，Go动态分配的内存都在这个区域，它把内存分割成<code>8KB</code>大小的页，这些页组合起来称为<code>mspan</code></li>
+<li><code>bitmap</code>区域标识<code>arena</code>区域哪些地址保存了对象，并用<code>4bit</code>标志位标识对象是否包含指针、GC标记信息。<code>bitmap</code>中一个<code>byte</code>大小的内存对应<code>arena</code>区域中4个指针大小(指针大小为8B)，<code>bitmap</code>区域的大小是<code>heapArenaBytes/(sys.PtrSize*8/2)=heapArenaBytes/(4*8B)</code></li>
+<li><code>spans</code>区域存放<code>mspan</code>的指针，每个指针对应一页，所以<code>spans</code>区域的大小是<code>heapArenaBytes / pageSize=heapArenaBytes / 8KB</code></li>
+</ul>
+<h3 id="1内存管理单元">1、内存管理单元</h3>
+<p><code>mspan</code>：GO中内存管理的基本单元，是由一片连续的8KB的页组成的大块内存。</p>
+<p>我们先看看一般情况下的对象和内存是如何分配的</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/22/memory_malloc.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/22/memory_malloc.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/22/memory_malloc.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/22/memory_malloc.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/22/memory_malloc.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/22/memory_malloc.png" /></p>
+<p>此时，如果再分配&quot;p4&quot;时，是不是内存不足没法分配了，有很多碎片。</p>
+<p>在Go中，是按需分配来处理这种问题。Go将内存块分为大小不同的67种，然后再把这67种大小的内存块，逐个分成小块，称为<code>span</code>(连续的<code>span</code>)，这就是<code>mspan</code></p>
+<p>对象分配时，根据对象的大小选择大小相近的<code>span</code>，这样，碎片的问题就解决了。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// class  bytes/obj  bytes/span  objects  tail waste  max waste
+</span></span></span><span class="line"><span class="cl"><span class="c1">//     1          8        8192     1024           0     87.50%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//     2         16        8192      512           0     43.75%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//     3         32        8192      256           0     46.88%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//     4         48        8192      170          32     31.52%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//     5         64        8192      128           0     23.44%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//     6         80        8192      102          32     19.07%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//     7         96        8192       85          32     15.95%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//     8        112        8192       73          16     13.56%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//     9        128        8192       64           0     11.72%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    10        144        8192       56         128     11.82%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    11        160        8192       51          32      9.73%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    12        176        8192       46          96      9.59%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    13        192        8192       42         128      9.25%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    14        208        8192       39          80      8.12%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    15        224        8192       36         128      8.15%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    16        240        8192       34          32      6.62%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    17        256        8192       32           0      5.86%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    18        288        8192       28         128     12.16%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    19        320        8192       25         192     11.80%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    20        352        8192       23          96      9.88%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    21        384        8192       21         128      9.51%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    22        416        8192       19         288     10.71%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    23        448        8192       18         128      8.37%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    24        480        8192       17          32      6.82%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    25        512        8192       16           0      6.05%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    26        576        8192       14         128     12.33%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    27        640        8192       12         512     15.48%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    28        704        8192       11         448     13.93%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    29        768        8192       10         512     13.94%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    30        896        8192        9         128     15.52%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    31       1024        8192        8           0     12.40%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    32       1152        8192        7         128     12.41%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    33       1280        8192        6         512     15.55%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    34       1408       16384       11         896     14.00%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    35       1536        8192        5         512     14.00%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    36       1792       16384        9         256     15.57%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    37       2048        8192        4           0     12.45%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    38       2304       16384        7         256     12.46%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    39       2688        8192        3         128     15.59%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    40       3072       24576        8           0     12.47%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    41       3200       16384        5         384      6.22%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    42       3456       24576        7         384      8.83%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    43       4096        8192        2           0     15.60%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    44       4864       24576        5         256     16.65%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    45       5376       16384        3         256     10.92%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    46       6144       24576        4           0     12.48%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    47       6528       32768        5         128      6.23%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    48       6784       40960        6         256      4.36%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    49       6912       49152        7         768      3.37%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    50       8192        8192        1           0     15.61%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    51       9472       57344        6         512     14.28%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    52       9728       49152        5         512      3.64%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    53      10240       40960        4           0      4.99%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    54      10880       32768        3         128      6.24%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    55      12288       24576        2           0     11.45%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    56      13568       40960        3         256      9.99%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    57      14336       57344        4           0      5.35%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    58      16384       16384        1           0     12.49%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    59      18432       73728        4           0     11.11%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    60      19072       57344        3         128      3.57%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    61      20480       40960        2           0      6.87%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    62      21760       65536        3         256      6.25%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    63      24576       24576        1           0     11.45%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    64      27264       81920        3         128     10.00%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    65      28672       57344        2           0      4.91%
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    66      32768       32768        1           0     12.50%
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>class：classID，每个span结构中都有一个classID，表示该span可处理的对象类型</li>
+<li>bytes/obj：该class代表对象的字节数</li>
+<li>bytes/span：每个span占用堆的字节数，也就是页数*页大小(8KB)</li>
+<li>objects：每个span可分配的对象个数，即 (<code>bytes/span</code>) / (<code>bytes/obj</code>)</li>
+<li>tail waste：浪费的外部碎片，比如1个page8KB，1个元素8byte，刚好对齐，如果一个元素是48byte，会余32byte</li>
+<li>max waste：最大的内部碎片率，每一个放进该span的对象大小都是最小值的情况，例如第一类class，最小对象是1byte，浪费7byte，最大碎片率为1-1/8=87.5%</li>
+</ul>
+<p>以class为1的span为例，span中的元素大小是8byte，span本身一页是8KB，一共可以保存1024个对象。</p>
+<p>如果有超过32KB的对象出现时，会从heap分配一个特殊的span，这个特殊的span对象类型是0，只包含一个大对象，span的大小由对象的大小决定。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">const</span> <span class="nx">_NumSizeClasses</span> <span class="p">=</span> <span class="mi">67</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">class_to_size</span> <span class="p">=</span> <span class="p">[</span><span class="nx">_NumSizeClasses</span><span class="p">]</span><span class="kt">uint16</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">144</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">176</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">208</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">288</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">352</span><span class="p">,</span> <span class="mi">384</span><span class="p">,</span> <span class="mi">416</span><span class="p">,</span> <span class="mi">448</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">576</span><span class="p">,</span> <span class="mi">640</span><span class="p">,</span> <span class="mi">704</span><span class="p">,</span> <span class="mi">768</span><span class="p">,</span> <span class="mi">896</span><span class="p">,</span> <span class="mi">1024</span><span class="p">,</span> <span class="mi">1152</span><span class="p">,</span> <span class="mi">1280</span><span class="p">,</span> <span class="mi">1408</span><span class="p">,</span> <span class="mi">1536</span><span class="p">,</span> <span class="mi">1792</span><span class="p">,</span> <span class="mi">2048</span><span class="p">,</span> <span class="mi">2304</span><span class="p">,</span> <span class="mi">2688</span><span class="p">,</span> <span class="mi">3072</span><span class="p">,</span> <span class="mi">3200</span><span class="p">,</span> <span class="mi">3456</span><span class="p">,</span> <span class="mi">4096</span><span class="p">,</span> <span class="mi">4864</span><span class="p">,</span> <span class="mi">5376</span><span class="p">,</span> <span class="mi">6144</span><span class="p">,</span> <span class="mi">6528</span><span class="p">,</span> <span class="mi">6784</span><span class="p">,</span> <span class="mi">6912</span><span class="p">,</span> <span class="mi">8192</span><span class="p">,</span> <span class="mi">9472</span><span class="p">,</span> <span class="mi">9728</span><span class="p">,</span> <span class="mi">10240</span><span class="p">,</span> <span class="mi">10880</span><span class="p">,</span> <span class="mi">12288</span><span class="p">,</span> <span class="mi">13568</span><span class="p">,</span> <span class="mi">14336</span><span class="p">,</span> <span class="mi">16384</span><span class="p">,</span> <span class="mi">18432</span><span class="p">,</span> <span class="mi">19072</span><span class="p">,</span> <span class="mi">20480</span><span class="p">,</span> <span class="mi">21760</span><span class="p">,</span> <span class="mi">24576</span><span class="p">,</span> <span class="mi">27264</span><span class="p">,</span> <span class="mi">28672</span><span class="p">,</span> <span class="mi">32768</span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>对于<code>mspan</code>来说，它的<code>size class</code>会决定它能分配到的页数</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">class_to_allocnpages</span> <span class="p">=</span> <span class="p">[</span><span class="nx">_NumSizeClasses</span><span class="p">]</span><span class="kt">uint8</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>比如当我们要申请一个object大小为32B的<code>mspan</code>时，在<code>class_to_size</code>对应的索引是3，而3在<code>class_to_allocnpages</code>对应的页数就是1</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">mspan</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">next</span> <span class="o">*</span><span class="nx">mspan</span>    
+</span></span><span class="line"><span class="cl">	<span class="nx">prev</span> <span class="o">*</span><span class="nx">mspan</span>   
+</span></span><span class="line"><span class="cl">	<span class="nx">list</span> <span class="o">*</span><span class="nx">mSpanList</span> <span class="c1">// For debugging. TODO: Remove.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">startAddr</span> <span class="kt">uintptr</span> 
+</span></span><span class="line"><span class="cl">	<span class="nx">npages</span>    <span class="kt">uintptr</span> 
+</span></span><span class="line"><span class="cl">	<span class="nx">manualFreeList</span> <span class="nx">gclinkptr</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">freeindex</span> <span class="kt">uintptr</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">nelems</span> <span class="kt">uintptr</span> 
+</span></span><span class="line"><span class="cl">	<span class="nx">allocCache</span> <span class="kt">uint64</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">allocBits</span>  <span class="o">*</span><span class="nx">gcBits</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">gcmarkBits</span> <span class="o">*</span><span class="nx">gcBits</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">sweepgen</span>    <span class="kt">uint32</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">divMul</span>      <span class="kt">uint16</span>       
+</span></span><span class="line"><span class="cl">	<span class="nx">baseMask</span>    <span class="kt">uint16</span>       
+</span></span><span class="line"><span class="cl">	<span class="nx">allocCount</span>  <span class="kt">uint16</span>       
+</span></span><span class="line"><span class="cl">	<span class="nx">spanclass</span>   <span class="nx">spanClass</span>    
+</span></span><span class="line"><span class="cl">	<span class="nx">state</span>       <span class="nx">mSpanStateBox</span> 
+</span></span><span class="line"><span class="cl">	<span class="nx">needzero</span>    <span class="kt">uint8</span>        
+</span></span><span class="line"><span class="cl">	<span class="nx">divShift</span>    <span class="kt">uint8</span>        
+</span></span><span class="line"><span class="cl">	<span class="nx">divShift2</span>   <span class="kt">uint8</span>        
+</span></span><span class="line"><span class="cl">	<span class="nx">elemsize</span>    <span class="kt">uintptr</span>      
+</span></span><span class="line"><span class="cl">	<span class="nx">limit</span>       <span class="kt">uintptr</span>     
+</span></span><span class="line"><span class="cl">	<span class="nx">speciallock</span> <span class="nx">mutex</span>        
+</span></span><span class="line"><span class="cl">	<span class="nx">specials</span>    <span class="o">*</span><span class="nx">special</span>     
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>有几个比较重要的字段：</p>
+<ul>
+<li>next：链表后驱指针，用于将span链接</li>
+<li>prev：链表前驱指针，用于将span链接</li>
+<li>startAddr：起始地址，也就是所管理页的地址</li>
+<li>npages：管理的页数</li>
+<li>nelems：块个数，表示有多少个块可供分配</li>
+<li>allocBits：分配位图，每一位代表一个块是否已分配</li>
+<li>allocCount：已分配块的个数</li>
+<li>spanClass：class表中的classID，和size class关联</li>
+</ul>
+<p><code>span class = size class * 2</code>，这是因为每个size class有两个mspan，也就是有两个span class。其中一个分配给含有指针的对象，另一个分配给不含有指针的对象，不包含指针的对象不需要被GC扫描。</p>
+<ul>
+<li>elemsize：class表中的对象大小，也即块的大小</li>
+</ul>
+<h3 id="2内存管理组件">2、内存管理组件</h3>
+<h4 id="21mcache">2.1、mcache</h4>
+<p>每个工作线程<code>P</code>都会绑定一个mcache，本地缓存可用的mspan资源，这样就可以直接给G分配，就不存在多个G竞争的情况。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">mcache</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">tiny</span>             <span class="kt">uintptr</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">tinyoffset</span>       <span class="kt">uintptr</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">local_tinyallocs</span> <span class="kt">uintptr</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">alloc</span> <span class="p">[</span><span class="nx">numSpanClasses</span><span class="p">]</span><span class="o">*</span><span class="nx">mspan</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nx">numSpanClasses</span> <span class="p">=</span> <span class="nx">_NumSizeClasses</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="22mcentral">2.2、mcentral</h4>
+<p>为所有的<code>mcache</code>提供切分好的<code>mspan</code>资源。每个<code>central</code>保存一种特定大小的全局<code>mspan</code>列表，包括已分配出去的和未分配出去的。每个<code>mcentral</code>对应一种<code>mspan</code>，而<code>mspan</code>的重量导致它分割的<code>object</code>大小不同。当工作线程的<code>mcache</code>中没有合适的<code>mspan</code>时就会从<code>mcentral</code>获取。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">mcentral</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">lock</span>      <span class="nx">mutex</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">spanclass</span> <span class="nx">spanClass</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">nonempty</span>  <span class="nx">mSpanList</span> 
+</span></span><span class="line"><span class="cl">	<span class="nx">empty</span>     <span class="nx">mSpanList</span> 
+</span></span><span class="line"><span class="cl">	<span class="nx">nmalloc</span> <span class="kt">uint64</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>noempty：有空闲的spans</li>
+<li>empty：没有空闲的spans</li>
+<li>nmalloc：已累计分配的对象个数，原子写，在STW下读</li>
+</ul>
+<p><strong>分配一个<code>span</code>在<code>mcache</code>使用的流程</strong></p>
+<ul>
+<li>加锁</li>
+<li>从<code>nonempty</code>链表中找到一个可用的<code>mspan</code></li>
+<li>将其从<code>nonempty</code>链表中删除</li>
+<li>将取出的<code>mspan</code>插入到<code>empty</code>链表中</li>
+<li>将<code>mspan</code>返回给工作线程</li>
+<li>解锁</li>
+</ul>
+<p><strong>从<code>mcache</code>返还<code>span</code>流程</strong></p>
+<ul>
+<li>加锁</li>
+<li>将<code>mspan</code>从<code>empty</code>链表中删除，将<code>mspan</code>插入到<code>nonempty</code>链表</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">c</span><span class="p">.</span><span class="nx">empty</span><span class="p">.</span><span class="nf">remove</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">c</span><span class="p">.</span><span class="nx">nonempty</span><span class="p">.</span><span class="nf">insert</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>解锁</li>
+</ul>
+<h4 id="23mheap">2.3、mheap</h4>
+<p>代表Go程序持有的所有堆空间，使用全局对象<code>mheap_</code>来管理堆内存。</p>
+<p>当<code>mcentral</code>没有空闲的<code>mspan</code>时，会向<code>mspan</code>申请。而<code>mheap</code>没有资源时，会向操作系统申请新内存。<code>mheap</code>主要用于大对象的内存分配，以及管理未切割的<code>mspan</code>，用于给<code>mcentral</code>切割成小对象。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">mheap</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">lock</span>      <span class="nx">mutex</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">allspans</span> <span class="p">[]</span><span class="o">*</span><span class="nx">mspan</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">central</span> <span class="p">[</span><span class="mi">67</span><span class="o">*</span><span class="mi">2</span><span class="p">]</span><span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">mcentral</span> <span class="nx">mcentral</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">pad</span>      <span class="p">[</span><span class="nx">cpu</span><span class="p">.</span><span class="nx">CacheLinePadSize</span> <span class="o">-</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nf">Sizeof</span><span class="p">(</span><span class="nx">mcentral</span><span class="p">{})</span><span class="o">%</span><span class="nx">cpu</span><span class="p">.</span><span class="nx">CacheLinePadSize</span><span class="p">]</span><span class="kt">byte</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到<code>mheap</code>中含有所有规格的<code>mcentral</code>，当一个<code>mcache</code>从<code>mcentral</code>申请<code>mspan</code>时，只需要在它的<code>mcentral</code>里使用锁，并不会影响到其他<code>mspan</code></p>
+<h4 id="24fixalloc">2.4、fixalloc</h4>
+<p>注意到<code>mspan</code>，<code>mcache</code>都是<code>fixalloc</code>来分配，这是一个free-list的块分配器，用来分配指定大小的块。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">fixalloc</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">size</span>   <span class="kt">uintptr</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">first</span>  <span class="kd">func</span><span class="p">(</span><span class="nx">arg</span><span class="p">,</span> <span class="nx">p</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span><span class="p">)</span> <span class="c1">// called first time p is returned
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">arg</span>    <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">list</span>   <span class="o">*</span><span class="nx">mlink</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">chunk</span>  <span class="kt">uintptr</span> <span class="c1">// use uintptr instead of unsafe.Pointer to avoid write barriers
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">nchunk</span> <span class="kt">uint32</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">inuse</span>  <span class="kt">uintptr</span> <span class="c1">// in-use bytes now
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">stat</span>   <span class="o">*</span><span class="kt">uint64</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">zero</span>   <span class="kt">bool</span> <span class="c1">// zero allocations
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>分配时，如果list为空，就申请一整块内存chunk，每次按需分配，释放时再放回到list中。</p>
+<p>因为size是固定的，所以没有内存碎片产生。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <span class="o">*</span><span class="nx">fixalloc</span><span class="p">)</span> <span class="nf">alloc</span><span class="p">()</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">f</span><span class="p">.</span><span class="nx">size</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">print</span><span class="p">(</span><span class="s">&#34;runtime: use of FixAlloc_Alloc before FixAlloc_Init\n&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">throw</span><span class="p">(</span><span class="s">&#34;runtime: internal error&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">f</span><span class="p">.</span><span class="nx">list</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">v</span> <span class="o">:=</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="nx">f</span><span class="p">.</span><span class="nx">list</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">f</span><span class="p">.</span><span class="nx">list</span> <span class="p">=</span> <span class="nx">f</span><span class="p">.</span><span class="nx">list</span><span class="p">.</span><span class="nx">next</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">f</span><span class="p">.</span><span class="nx">inuse</span> <span class="o">+=</span> <span class="nx">f</span><span class="p">.</span><span class="nx">size</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">f</span><span class="p">.</span><span class="nx">zero</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nf">memclrNoHeapPointers</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span> <span class="nx">f</span><span class="p">.</span><span class="nx">size</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">v</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nb">uintptr</span><span class="p">(</span><span class="nx">f</span><span class="p">.</span><span class="nx">nchunk</span><span class="p">)</span> <span class="p">&lt;</span> <span class="nx">f</span><span class="p">.</span><span class="nx">size</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">f</span><span class="p">.</span><span class="nx">chunk</span> <span class="p">=</span> <span class="nb">uintptr</span><span class="p">(</span><span class="nf">persistentalloc</span><span class="p">(</span><span class="nx">_FixAllocChunk</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">f</span><span class="p">.</span><span class="nx">stat</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">f</span><span class="p">.</span><span class="nx">nchunk</span> <span class="p">=</span> <span class="nx">_FixAllocChunk</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">v</span> <span class="o">:=</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="nx">f</span><span class="p">.</span><span class="nx">chunk</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">f</span><span class="p">.</span><span class="nx">first</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">f</span><span class="p">.</span><span class="nf">first</span><span class="p">(</span><span class="nx">f</span><span class="p">.</span><span class="nx">arg</span><span class="p">,</span> <span class="nx">v</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">f</span><span class="p">.</span><span class="nx">chunk</span> <span class="p">=</span> <span class="nx">f</span><span class="p">.</span><span class="nx">chunk</span> <span class="o">+</span> <span class="nx">f</span><span class="p">.</span><span class="nx">size</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">f</span><span class="p">.</span><span class="nx">nchunk</span> <span class="o">-=</span> <span class="nb">uint32</span><span class="p">(</span><span class="nx">f</span><span class="p">.</span><span class="nx">size</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">f</span><span class="p">.</span><span class="nx">inuse</span> <span class="o">+=</span> <span class="nx">f</span><span class="p">.</span><span class="nx">size</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">v</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <span class="o">*</span><span class="nx">fixalloc</span><span class="p">)</span> <span class="nf">free</span><span class="p">(</span><span class="nx">p</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">f</span><span class="p">.</span><span class="nx">inuse</span> <span class="o">-=</span> <span class="nx">f</span><span class="p">.</span><span class="nx">size</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">v</span> <span class="o">:=</span> <span class="p">(</span><span class="o">*</span><span class="nx">mlink</span><span class="p">)(</span><span class="nx">p</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">v</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="nx">f</span><span class="p">.</span><span class="nx">list</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">f</span><span class="p">.</span><span class="nx">list</span> <span class="p">=</span> <span class="nx">v</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="3内存分配流程">3、内存分配流程</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/22/memory_mallocgc.png"
+        data-srcset="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/22/memory_mallocgc.png, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/22/memory_mallocgc.png 1.5x, https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/22/memory_mallocgc.png 2x"
+        data-sizes="auto"
+        alt="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/22/memory_mallocgc.png"
+        title="https://cdn.jsdelivr.net/gh/betterfor/cloudImage/images/2021/12/22/memory_mallocgc.png" /></p>
+<ul>
+<li>size&gt;32KB，是大对象，直接从mheap中分配</li>
+<li>size&lt;16B，使用mcache的tiny allocator分配，将小对象合并存储
+<ul>
+<li>&gt;=8B的对象，其内存地址按照8B对齐</li>
+<li>&lt;8B且&gt;=4B的对象，其内存地址按照4B对齐</li>
+<li>&lt;4B且&gt;1B的对象，其内存地址按照2B对齐</li>
+<li>&lt;=1B的对象，无对齐要求</li>
+</ul>
+</li>
+</ul>
+<p><strong>这样对齐会有部分内存浪费，但却能提升内存访问的效率。</strong></p>
+<ul>
+<li>size 在16B ~ 32k 间，计算需要使用的sizeClass，然后使用mcache中对应的sizeClass的块分配；如果mcache对应的sizeClass已无可用块，则向mcentral申请；如果mcentral也没有可用的块，则向mheap申请，使用BestFit找到最合适的mspan。如果超过申请大小则按需切分，返回用户需要的页面数，剩余的页面构成一个新的mspan，放回mheap的空闲链表；如果mheap也无可用span，则向操作系统申请一组新的页(至少1MB)</li>
+</ul>
+<h3 id="4总结">4、总结</h3>
+<p>Go内存管理内存池的总体思路是，针对不同大小的对象，使用不同的内存结构分配内存。对操作系统申请的一整块连续地址，进行切分，多级缓存。对内存分配都按规定大小分配，减少内存碎片，也利于内存释放后，回收管理。</p>
+<p>针对小对象(&lt; 16byte)，使用当前调度器（p）的mcache中的tiny allocator来分配，这样多个小对象可以放一起管理，避免内存浪费。</p>
+<p>针对稍大对象（16byte ~ 32K）,是用指定sizeClass取对应的块来分配。
+针对大对象（&gt;32K），直接从heap中分配</p>
+<p>其中mcache不足向mcentral中申请、mcentral不足向mheap申请，这些请求都是一次申请平摊了加锁（mcentral或mheap）的开销</p>
+<p>mheap不足向操作系统申请一组页，则是平摊了操作系统分配的开销</p>
+<p><a href="https://www.cnblogs.com/zkweb/p/7880099.html" target="_blank" rel="noopener noreffer">https://www.cnblogs.com/zkweb/p/7880099.html</a></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-03-07</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2022/03/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/%E5%86%85%E5%AD%98/">内存</a>,&nbsp;<a href="/tags/malloc/">malloc</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2022/03/slice/" class="prev" rel="prev" title="slice的设计"><i class="fas fa-angle-left fa-fw"></i>slice的设计</a>
+            <a href="/2022/03/panic/" class="next" rel="next" title="panic的设计">panic的设计<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="utterances"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://utteranc.es/">Utterances</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.93.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2019 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="github.com/betterfor" target="_blank">月霜天</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"utterances":{"darkTheme":"github-dark","issueTerm":"pathname","label":"评论系统","lightTheme":"github-light","repo":"betterfor/betterfor.github.io"}},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
