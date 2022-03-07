@@ -1,7 +1,7 @@
 ---
 title: "Interface接口的设计"
 date: 2022-03-07T11:16:04+08:00
-draft: true
+draft: false
 
 tags: ['interface','duck']
 categories: ["月霜天的GO"]
