@@ -4,12 +4,12 @@
         <link>https://blog.betterformile.ml/tags/map/</link>
         <description>map - 标签 - 月霜天的小站</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/map/" rel="self" type="application/rss+xml" /><item>
-    <title>map三步曲之一原理</title>
-    <link>https://blog.betterformile.ml/2022/03/map%E5%8E%9F%E7%90%86/</link>
+    <title>map三步曲之二拉链法</title>
+    <link>https://blog.betterformile.ml/2022/03/map_struct/</link>
     <pubDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/map%E5%8E%9F%E7%90%86/</guid>
-    <description><![CDATA[在了解golang的map之前，我们需要了解哈希这个概念。 一、哈希表 哈希表，又称散列表(Hash table)，是根据键(key)而直接访问在]]></description>
+    <guid>https://blog.betterformile.ml/2022/03/map_struct/</guid>
+    <description><![CDATA[一、拉链法 之前提到过的拉链法，看这里 二、map底层数据结构 map中的数据被存放在一个数组中，数组的元素是桶(bucket)，每个桶至多包含8]]></description>
 </item><item>
     <title>map三步曲之三实际应用</title>
     <link>https://blog.betterformile.ml/2022/03/map_operator/</link>
@@ -18,12 +18,12 @@
     <guid>https://blog.betterformile.ml/2022/03/map_operator/</guid>
     <description><![CDATA[之前已经介绍过了map的原理，简单了解一下map里存储的数据结构。本文主要介绍如果在map中进行操作。 一、查找 元素的查找有三种方式： v := m[]]></description>
 </item><item>
-    <title>map三步曲之二拉链法</title>
-    <link>https://blog.betterformile.ml/2022/03/map_struct/</link>
+    <title>map三步曲之一原理</title>
+    <link>https://blog.betterformile.ml/2022/03/map%E5%8E%9F%E7%90%86/</link>
     <pubDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/map_struct/</guid>
-    <description><![CDATA[一、拉链法 之前提到过的拉链法，看这里 二、map底层数据结构 map中的数据被存放在一个数组中，数组的元素是桶(bucket)，每个桶至多包含8]]></description>
+    <guid>https://blog.betterformile.ml/2022/03/map%E5%8E%9F%E7%90%86/</guid>
+    <description><![CDATA[在了解golang的map之前，我们需要了解哈希这个概念。 一、哈希表 哈希表，又称散列表(Hash table)，是根据键(key)而直接访问在]]></description>
 </item><item>
     <title>深入理解Golang Map</title>
     <link>https://blog.betterformile.ml/2021/07/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3map/</link>

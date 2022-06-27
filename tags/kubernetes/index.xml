@@ -4,6 +4,20 @@
         <link>https://blog.betterformile.ml/tags/kubernetes/</link>
         <description>kubernetes - 标签 - 月霜天的小站</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/kubernetes/" rel="self" type="application/rss+xml" /><item>
+    <title>client-go架构</title>
+    <link>https://blog.betterformile.ml/2022/03/client-go/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/client-go/</guid>
+    <description><![CDATA[以下是client-go的官方架构图 一、Indexer Indexer保存来自api-server的资源，使用list-watch方式来维护资]]></description>
+</item><item>
+    <title>client-go之队列</title>
+    <link>https://blog.betterformile.ml/2022/03/03-deltafifo/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/03-deltafifo/</guid>
+    <description><![CDATA[看这个client-go的架构图，DeltaFIFO是一个生产者-消费者队列，生产者是Reflector，消费者是Pop()方法。 一、Del]]></description>
+</item><item>
     <title>client-go之工作队列</title>
     <link>https://blog.betterformile.ml/2022/03/02-workqueue/</link>
     <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
@@ -17,20 +31,6 @@
     <author>作者</author>
     <guid>https://blog.betterformile.ml/2022/03/01-indexer/</guid>
     <description><![CDATA[以下是client-go的官方架构图 先主要针对这个Indexer来分析。 一、Indexer Indexer保存来自api-server的资源，]]></description>
-</item><item>
-    <title>client-go之队列</title>
-    <link>https://blog.betterformile.ml/2022/03/03-deltafifo/</link>
-    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/03-deltafifo/</guid>
-    <description><![CDATA[看这个client-go的架构图，DeltaFIFO是一个生产者-消费者队列，生产者是Reflector，消费者是Pop()方法。 一、Del]]></description>
-</item><item>
-    <title>client-go架构</title>
-    <link>https://blog.betterformile.ml/2022/03/client-go/</link>
-    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/client-go/</guid>
-    <description><![CDATA[以下是client-go的官方架构图 一、Indexer Indexer保存来自api-server的资源，使用list-watch方式来维护资]]></description>
 </item><item>
     <title>kubernetes简介</title>
     <link>https://blog.betterformile.ml/2022/03/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</link>

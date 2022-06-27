@@ -3,9 +3,30 @@
         <title>月霜天的小站</title>
         <link>https://blog.betterformile.ml/</link>
         <description>月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 27 Jun 2022 09:40:41 &#43;0800</lastBuildDate>
             <atom:link href="https://blog.betterformile.ml/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>Harbor源码架构解析</title>
+    <link>https://blog.betterformile.ml/2022/06/harbor%E6%BA%90%E7%A0%81%E6%9E%B6%E6%9E%84%E8%A7%A3%E6%9E%90/</link>
+    <pubDate>Mon, 27 Jun 2022 09:40:41 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/06/harbor%E6%BA%90%E7%A0%81%E6%9E%B6%E6%9E%84%E8%A7%A3%E6%9E%90/</guid>
+    <description><![CDATA[Harbor源码分析之Core组件 版本：v1.10.11 一、core目录架构 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 $ tree -L 1 . ├── api ├── auth ├─]]></description>
+</item><item>
+    <title>client-go架构</title>
+    <link>https://blog.betterformile.ml/2022/03/client-go/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/client-go/</guid>
+    <description><![CDATA[以下是client-go的官方架构图 一、Indexer Indexer保存来自api-server的资源，使用list-watch方式来维护资]]></description>
+</item><item>
+    <title>client-go之队列</title>
+    <link>https://blog.betterformile.ml/2022/03/03-deltafifo/</link>
+    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.betterformile.ml/2022/03/03-deltafifo/</guid>
+    <description><![CDATA[看这个client-go的架构图，DeltaFIFO是一个生产者-消费者队列，生产者是Reflector，消费者是Pop()方法。 一、Del]]></description>
+</item><item>
     <title>client-go之工作队列</title>
     <link>https://blog.betterformile.ml/2022/03/02-workqueue/</link>
     <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
@@ -19,20 +40,6 @@
     <author>作者</author>
     <guid>https://blog.betterformile.ml/2022/03/01-indexer/</guid>
     <description><![CDATA[以下是client-go的官方架构图 先主要针对这个Indexer来分析。 一、Indexer Indexer保存来自api-server的资源，]]></description>
-</item><item>
-    <title>client-go之队列</title>
-    <link>https://blog.betterformile.ml/2022/03/03-deltafifo/</link>
-    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/03-deltafifo/</guid>
-    <description><![CDATA[看这个client-go的架构图，DeltaFIFO是一个生产者-消费者队列，生产者是Reflector，消费者是Pop()方法。 一、Del]]></description>
-</item><item>
-    <title>client-go架构</title>
-    <link>https://blog.betterformile.ml/2022/03/client-go/</link>
-    <pubDate>Mon, 07 Mar 2022 13:32:36 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/client-go/</guid>
-    <description><![CDATA[以下是client-go的官方架构图 一、Indexer Indexer保存来自api-server的资源，使用list-watch方式来维护资]]></description>
 </item><item>
     <title>kubernetes简介</title>
     <link>https://blog.betterformile.ml/2022/03/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</link>
@@ -68,12 +75,5 @@
     <author>作者</author>
     <guid>https://blog.betterformile.ml/2022/03/struct/</guid>
     <description><![CDATA[golang里有个重要的类型就是结构体，虽然不能像C++一样有类的功能和特性，但也有自己独特的魅力。 这里着重介绍一下经常遇到的空结构体，我们]]></description>
-</item><item>
-    <title>Httprouter</title>
-    <link>https://blog.betterformile.ml/2022/03/httprouter/</link>
-    <pubDate>Mon, 07 Mar 2022 11:19:43 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/httprouter/</guid>
-    <description><![CDATA[httprouter是非常高效的http路由框架，gin框架的路由也是基于此库 一、使用方法 使用方法也比较简单，如下： 1 2 3 4 5 6 7 8 9 10 11 12]]></description>
 </item></channel>
 </rss>
