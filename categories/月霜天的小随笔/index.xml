@@ -1,56 +1,56 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>月霜天的小随笔 - 分类 - 月霜天的小站</title>
-        <link>https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E9%9A%8F%E7%AC%94/</link>
+        <link>https://blog.luxgreat.tk/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E9%9A%8F%E7%AC%94/</link>
         <description>月霜天的小随笔 - 分类 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:22:28 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E9%9A%8F%E7%AC%94/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:22:28 &#43;0800</lastBuildDate><atom:link href="https://blog.luxgreat.tk/categories/%E6%9C%88%E9%9C%9C%E5%A4%A9%E7%9A%84%E5%B0%8F%E9%9A%8F%E7%AC%94/" rel="self" type="application/rss+xml" /><item>
     <title>逃逸分析</title>
-    <link>https://blog.betterformile.ml/2022/03/%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90/</link>
+    <link>https://blog.luxgreat.tk/2022/03/%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90/</link>
     <pubDate>Mon, 07 Mar 2022 11:22:28 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90/</guid>
+    <guid>https://blog.luxgreat.tk/2022/03/%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90/</guid>
     <description><![CDATA[一个程序占用的内存分为以下几个部分： 栈区（stack）：由编译器自动分配，存放函数的参数，局部变量等 堆区（heap）：由程序员分配释放 全局静]]></description>
 </item><item>
     <title>Struct的使用场景</title>
-    <link>https://blog.betterformile.ml/2022/03/struct/</link>
+    <link>https://blog.luxgreat.tk/2022/03/struct/</link>
     <pubDate>Mon, 07 Mar 2022 11:21:14 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/struct/</guid>
+    <guid>https://blog.luxgreat.tk/2022/03/struct/</guid>
     <description><![CDATA[golang里有个重要的类型就是结构体，虽然不能像C++一样有类的功能和特性，但也有自己独特的魅力。 这里着重介绍一下经常遇到的空结构体，我们]]></description>
 </item><item>
     <title>Httprouter</title>
-    <link>https://blog.betterformile.ml/2022/03/httprouter/</link>
+    <link>https://blog.luxgreat.tk/2022/03/httprouter/</link>
     <pubDate>Mon, 07 Mar 2022 11:19:43 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/httprouter/</guid>
+    <guid>https://blog.luxgreat.tk/2022/03/httprouter/</guid>
     <description><![CDATA[httprouter是非常高效的http路由框架，gin框架的路由也是基于此库 一、使用方法 使用方法也比较简单，如下： 1 2 3 4 5 6 7 8 9 10 11 12]]></description>
 </item><item>
     <title>Nil的使用场景</title>
-    <link>https://blog.betterformile.ml/2022/03/nil/</link>
+    <link>https://blog.luxgreat.tk/2022/03/nil/</link>
     <pubDate>Mon, 07 Mar 2022 11:17:34 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/nil/</guid>
+    <guid>https://blog.luxgreat.tk/2022/03/nil/</guid>
     <description><![CDATA[在日常Golang使用中，你有没有这样的疑惑？ nil是什么？哪些可以用nil？哪些不能用nil？ 接下来，我将对这些内容进行总结。 一、什么是n]]></description>
 </item><item>
     <title>CSP并发模型</title>
-    <link>https://blog.betterformile.ml/2022/03/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/</link>
+    <link>https://blog.luxgreat.tk/2022/03/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/</link>
     <pubDate>Mon, 07 Mar 2022 11:14:26 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/</guid>
+    <guid>https://blog.luxgreat.tk/2022/03/csp%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/</guid>
     <description><![CDATA[一、goroutine 进程：可并发执行的程序在某个数据集合上的一次计算活动，也是操作系统进行资源分配和调度的基本单位。每个进程都有自己的独立]]></description>
 </item><item>
     <title>Context控制goroutine并发运行</title>
-    <link>https://blog.betterformile.ml/2022/03/context/</link>
+    <link>https://blog.luxgreat.tk/2022/03/context/</link>
     <pubDate>Mon, 07 Mar 2022 11:12:38 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/context/</guid>
+    <guid>https://blog.luxgreat.tk/2022/03/context/</guid>
     <description><![CDATA[在并发程序中，由于超时、取消操作或其他一些异常情况，往往需要通知其他goroutine，虽然可以使用channel来处理这些问题，但是会变得]]></description>
 </item><item>
     <title>Beego路由---前缀树</title>
-    <link>https://blog.betterformile.ml/2022/03/beego_router/</link>
+    <link>https://blog.luxgreat.tk/2022/03/beego_router/</link>
     <pubDate>Mon, 07 Mar 2022 11:09:07 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/beego_router/</guid>
+    <guid>https://blog.luxgreat.tk/2022/03/beego_router/</guid>
     <description><![CDATA[beego 是一个快速开发 Go 应用的 HTTP 框架，可以用来快速开发 API、Web 及后端服务等各种应用，是一个 RESTful 的框架。 那么这种RESTfule路由到底是怎么实]]></description>
 </item></channel>
 </rss>

@@ -1,28 +1,28 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>pod - 标签 - 月霜天的小站</title>
-        <link>https://blog.betterformile.ml/tags/pod/</link>
+        <link>https://blog.luxgreat.tk/tags/pod/</link>
         <description>pod - 标签 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 24 Mar 2021 22:51:40 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/pod/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 24 Mar 2021 22:51:40 &#43;0800</lastBuildDate><atom:link href="https://blog.luxgreat.tk/tags/pod/" rel="self" type="application/rss+xml" /><item>
     <title>Pod升级与回滚</title>
-    <link>https://blog.betterformile.ml/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</link>
+    <link>https://blog.luxgreat.tk/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</link>
     <pubDate>Wed, 24 Mar 2021 22:51:40 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</guid>
+    <guid>https://blog.luxgreat.tk/2021/03/pod%E5%8D%87%E7%BA%A7%E4%B8%8E%E5%9B%9E%E6%BB%9A/</guid>
     <description><![CDATA[一、简介 当集群中的某个服务需要升级时，我们需要停止目前与该服务的相关的所有pod，然后下载新版本镜像并创建新的pod。如果集群规模比较大，则]]></description>
 </item><item>
     <title>Pod调度</title>
-    <link>https://blog.betterformile.ml/2021/03/pod%E8%B0%83%E5%BA%A6/</link>
+    <link>https://blog.luxgreat.tk/2021/03/pod%E8%B0%83%E5%BA%A6/</link>
     <pubDate>Tue, 23 Mar 2021 22:32:36 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/03/pod%E8%B0%83%E5%BA%A6/</guid>
+    <guid>https://blog.luxgreat.tk/2021/03/pod%E8%B0%83%E5%BA%A6/</guid>
     <description><![CDATA[一、简介 在大多数情况下，我们不关心pod会被调度到哪个节点，只关心pod是否被成功调度到集群的一个可用节点。但是，在真实生产环境中存在一种需]]></description>
 </item><item>
     <title>Pod的基础</title>
-    <link>https://blog.betterformile.ml/2021/03/pod%E5%9F%BA%E7%A1%80/</link>
+    <link>https://blog.luxgreat.tk/2021/03/pod%E5%9F%BA%E7%A1%80/</link>
     <pubDate>Mon, 22 Mar 2021 21:55:59 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/03/pod%E5%9F%BA%E7%A1%80/</guid>
+    <guid>https://blog.luxgreat.tk/2021/03/pod%E5%9F%BA%E7%A1%80/</guid>
     <description><![CDATA[一、简介 pod在整个生命周期中被系统定义为各种状态，熟悉pod的各种状态对于理解如何设置pod的调度策略、重启策略都是很有必要的。 二、pod]]></description>
 </item></channel>
 </rss>

@@ -1,77 +1,77 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>sync - 标签 - 月霜天的小站</title>
-        <link>https://blog.betterformile.ml/tags/sync/</link>
+        <link>https://blog.luxgreat.tk/tags/sync/</link>
         <description>sync - 标签 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 16 Jul 2021 10:53:06 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/sync/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 16 Jul 2021 10:53:06 &#43;0800</lastBuildDate><atom:link href="https://blog.luxgreat.tk/tags/sync/" rel="self" type="application/rss+xml" /><item>
     <title>并发编程之sync.Pool</title>
-    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.pool/</link>
+    <link>https://blog.luxgreat.tk/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.pool/</link>
     <pubDate>Fri, 16 Jul 2021 10:53:06 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.pool/</guid>
+    <guid>https://blog.luxgreat.tk/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.pool/</guid>
     <description><![CDATA[我们通常用golang来构建高并发场景下的应用，但是由于golang内建的GC机制会影响应用的性能，为了减少GC，golang提供了对象重用]]></description>
 </item><item>
     <title>sync之Map</title>
-    <link>https://blog.betterformile.ml/2021/07/map/</link>
+    <link>https://blog.luxgreat.tk/2021/07/map/</link>
     <pubDate>Fri, 16 Jul 2021 10:53:02 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/map/</guid>
+    <guid>https://blog.luxgreat.tk/2021/07/map/</guid>
     <description><![CDATA[我们都知道map是不并发安全的，通常通过加互斥锁或读写锁进行并发，而官方提供了一个解决方案sync.Map。适用于读多写少的场景，那么它的内]]></description>
 </item><item>
     <title>sync之MUTEX</title>
-    <link>https://blog.betterformile.ml/2021/07/mutex/</link>
+    <link>https://blog.luxgreat.tk/2021/07/mutex/</link>
     <pubDate>Fri, 16 Jul 2021 10:53:02 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/mutex/</guid>
+    <guid>https://blog.luxgreat.tk/2021/07/mutex/</guid>
     <description><![CDATA[并发作为go的特性之一，必然会带来对于资源的竞争，虽然我们常说使用channel进行通信，但也可以使用sync.Mutex这把互斥锁来保证临]]></description>
 </item><item>
     <title>sync之ONCE</title>
-    <link>https://blog.betterformile.ml/2021/07/once/</link>
+    <link>https://blog.luxgreat.tk/2021/07/once/</link>
     <pubDate>Fri, 16 Jul 2021 10:53:02 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/once/</guid>
+    <guid>https://blog.luxgreat.tk/2021/07/once/</guid>
     <description><![CDATA[如何在代码中执行某个函数只运行一次，特别是在go这种高并发的情况下。 go给出了一个解法，sync.Once就是用来解决这种问题的，我们常用来]]></description>
 </item><item>
     <title>sync之Pool</title>
-    <link>https://blog.betterformile.ml/2021/07/pool/</link>
+    <link>https://blog.luxgreat.tk/2021/07/pool/</link>
     <pubDate>Fri, 16 Jul 2021 10:53:02 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/pool/</guid>
+    <guid>https://blog.luxgreat.tk/2021/07/pool/</guid>
     <description><![CDATA[之前的文章httprouter路由框架为什么高性能提到过一点高性能的原因就是它减少了内存分配。因为分配内存是在堆上分配的，调用mallocg]]></description>
 </item><item>
     <title>sync之RWMutex</title>
-    <link>https://blog.betterformile.ml/2021/07/rwmutex/</link>
+    <link>https://blog.luxgreat.tk/2021/07/rwmutex/</link>
     <pubDate>Fri, 16 Jul 2021 10:53:02 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/rwmutex/</guid>
+    <guid>https://blog.luxgreat.tk/2021/07/rwmutex/</guid>
     <description><![CDATA[在go中，每次读写时都需要加互斥锁，这个对程序的影响还是比较大的。所以我们在sync包中能够找到另外一个锁&mdash;读写锁。当然，读写锁]]></description>
 </item><item>
     <title>并发编程之Map</title>
-    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.map/</link>
+    <link>https://blog.luxgreat.tk/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.map/</link>
     <pubDate>Fri, 16 Jul 2021 10:53:02 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.map/</guid>
+    <guid>https://blog.luxgreat.tk/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.map/</guid>
     <description><![CDATA[golang原生的map是不支持并发，而在sync/map是线程安全的，可以并发读写，适用于读多写少的场景。 sync.Map是Go map[i]]></description>
 </item><item>
     <title>并发编程之读写锁</title>
-    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%AF%BB%E5%86%99%E9%94%81/</link>
+    <link>https://blog.luxgreat.tk/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%AF%BB%E5%86%99%E9%94%81/</link>
     <pubDate>Fri, 16 Jul 2021 10:52:34 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%AF%BB%E5%86%99%E9%94%81/</guid>
+    <guid>https://blog.luxgreat.tk/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E8%AF%BB%E5%86%99%E9%94%81/</guid>
     <description><![CDATA[读写锁是基于互斥锁Mutex实现的读写互斥锁，一个goroutine可以持有多个读锁或一个写锁，同一时刻只能同时持有读锁或写锁。 RWMute]]></description>
 </item><item>
     <title>并发编程之互斥锁</title>
-    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.mutex/</link>
+    <link>https://blog.luxgreat.tk/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.mutex/</link>
     <pubDate>Fri, 16 Jul 2021 10:52:20 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.mutex/</guid>
+    <guid>https://blog.luxgreat.tk/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.mutex/</guid>
     <description><![CDATA[并发必然会带来对于资源的竞争，这时需要使用go提供的sync.Mutex这把互斥锁来保证临界资源的访问互斥了。 锁的性质 在代码注释开篇就有一大]]></description>
 </item><item>
     <title>并发编程之条件变量Cond</title>
-    <link>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.cond/</link>
+    <link>https://blog.luxgreat.tk/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.cond/</link>
     <pubDate>Fri, 16 Jul 2021 10:52:14 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.cond/</guid>
+    <guid>https://blog.luxgreat.tk/2021/07/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8Bsync.cond/</guid>
     <description><![CDATA[sync.Cond字面意思就是同步条件变量，它实现的是一种监视器(Monitor)模式。 对于Cond而言，它实现一个条件变量，是gorout]]></description>
 </item></channel>
 </rss>

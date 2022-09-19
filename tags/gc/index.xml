@@ -1,14 +1,14 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>GC - 标签 - 月霜天的小站</title>
-        <link>https://blog.betterformile.ml/tags/gc/</link>
+        <link>https://blog.luxgreat.tk/tags/gc/</link>
         <description>GC - 标签 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/gc/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</lastBuildDate><atom:link href="https://blog.luxgreat.tk/tags/gc/" rel="self" type="application/rss+xml" /><item>
     <title>垃圾回收</title>
-    <link>https://blog.betterformile.ml/2022/03/%E4%B8%89%E8%89%B2%E6%A0%87%E8%AE%B0-%E6%B7%B7%E5%90%88%E5%86%99%E5%B1%8F%E9%9A%9C/</link>
+    <link>https://blog.luxgreat.tk/2022/03/%E4%B8%89%E8%89%B2%E6%A0%87%E8%AE%B0-%E6%B7%B7%E5%90%88%E5%86%99%E5%B1%8F%E9%9A%9C/</link>
     <pubDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/%E4%B8%89%E8%89%B2%E6%A0%87%E8%AE%B0-%E6%B7%B7%E5%90%88%E5%86%99%E5%B1%8F%E9%9A%9C/</guid>
+    <guid>https://blog.luxgreat.tk/2022/03/%E4%B8%89%E8%89%B2%E6%A0%87%E8%AE%B0-%E6%B7%B7%E5%90%88%E5%86%99%E5%B1%8F%E9%9A%9C/</guid>
     <description><![CDATA[垃圾回收（Garbage Collection，简称GC）是Go语言中提供的内存管理机制，自动释放不需要的内存对象。GC过程无需程序员手动执行]]></description>
 </item></channel>
 </rss>

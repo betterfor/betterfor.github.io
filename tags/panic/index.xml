@@ -1,14 +1,14 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>panic - 标签 - 月霜天的小站</title>
-        <link>https://blog.betterformile.ml/tags/panic/</link>
+        <link>https://blog.luxgreat.tk/tags/panic/</link>
         <description>panic - 标签 - 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</lastBuildDate><atom:link href="https://blog.betterformile.ml/tags/panic/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</lastBuildDate><atom:link href="https://blog.luxgreat.tk/tags/panic/" rel="self" type="application/rss+xml" /><item>
     <title>panic的设计</title>
-    <link>https://blog.betterformile.ml/2022/03/panic/</link>
+    <link>https://blog.luxgreat.tk/2022/03/panic/</link>
     <pubDate>Mon, 07 Mar 2022 11:16:04 &#43;0800</pubDate>
     <author>作者</author>
-    <guid>https://blog.betterformile.ml/2022/03/panic/</guid>
+    <guid>https://blog.luxgreat.tk/2022/03/panic/</guid>
     <description><![CDATA[GO中的defer会在当前函数返回前执行传入的函数，常用于关闭文件描述符，关闭链接及解锁等操作。 Go语言中使用defer时会遇到两个常见问题]]></description>
 </item></channel>
 </rss>
