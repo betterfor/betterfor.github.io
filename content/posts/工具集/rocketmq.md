@@ -4,7 +4,7 @@ date: 2021-01-07T16:50:55+08:00
 draft: false
 
 tags: ['docker','rocketmq']
-categories: ["月霜天的小教程"]
+categories: ["tutorial"]
 comment: true
 toc: true
 autoCollapseToc: false

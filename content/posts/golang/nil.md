@@ -4,7 +4,7 @@ date: 2022-03-07T11:17:34+08:00
 draft: false
 
 tags: ['nil']
-categories: ["月霜天的小随笔"]
+categories: ["note"]
 comment: true
 toc: true
 autoCollapseToc: false

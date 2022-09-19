@@ -4,7 +4,7 @@ date: 2020-11-27T18:30:01+08:00
 draft: false
 
 tags: ['raspberry']
-categories: ["月霜天的小教程"]
+categories: ["tutorial"]
 comment: true
 toc: true
 autoCollapseToc: false

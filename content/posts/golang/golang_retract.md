@@ -4,7 +4,7 @@ date: 2021-02-25T15:15:36+08:00
 draft: false
 
 tags: ['golang']
-categories: ["月霜天的小笔记"]
+categories: ["note"]
 comment: true
 toc: true
 autoCollapseToc: false

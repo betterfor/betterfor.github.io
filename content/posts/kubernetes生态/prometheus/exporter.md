@@ -4,7 +4,7 @@ date: 2020-11-20T15:45:29+08:00
 draft: false
 
 tags: ['prometheus']
-categories: ["月霜天的小教程"]
+categories: ["note"]
 comment: true
 toc: true
 autoCollapseToc: false

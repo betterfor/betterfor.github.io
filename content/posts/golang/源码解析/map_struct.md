@@ -3,8 +3,8 @@ title: "map三步曲之二拉链法"
 date: 2022-03-07T11:16:04+08:00
 draft: false
 
-tags: ['map']
-categories: ["月霜天的GO"]
+tags: ['map','analysis']
+categories: ["go"]
 comment: true
 toc: true
 autoCollapseToc: false

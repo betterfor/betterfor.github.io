@@ -3,8 +3,8 @@ title: "golang源码剖析 准备"
 date: 2020-11-25T15:25:38+08:00
 draft: true
 
-tags: ["源码分析"]
-categories: ["月霜天的GO"]
+tags: ["analysis"]
+categories: ["go"]
 comment: true
 toc: true
 autoCollapseToc: false

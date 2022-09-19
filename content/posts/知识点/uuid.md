@@ -4,7 +4,7 @@ date: 2021-02-08T14:16:15+08:00
 draft: false
 
 tags: ['uuid','snowflake']
-categories: ["月霜天的小笔记"]
+categories: ["note"]
 comment: true
 toc: true
 autoCollapseToc: false

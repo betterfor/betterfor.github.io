@@ -3,8 +3,8 @@ title: "使用Navicate连接Oracle失败 ORA-25847:connection to server failed,p
 date: 2021-01-18T14:04:32+08:00
 draft: false
 
-tags: ['问题','oracle']
-categories: ["月霜天的小教程"]
+tags: ['problem','oracle']
+categories: ["tutorial"]
 comment: true
 toc: true
 autoCollapseToc: false

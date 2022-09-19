@@ -3,8 +3,8 @@ title: "Go定时器源码分析"
 date: 2021-07-01T15:44:20+08:00
 draft: false
 
-tags: ['源码解析','time']
-categories: ["月霜天的GO"]
+tags: ['analysis','time']
+categories: ["go"]
 comment: true
 toc: true
 autoCollapseToc: true

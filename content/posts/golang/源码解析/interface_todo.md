@@ -3,8 +3,8 @@ title: "Interface接口的设计"
 date: 2022-03-07T11:16:04+08:00
 draft: false
 
-tags: ['interface','duck']
-categories: ["月霜天的GO"]
+tags: ['interface','duck','analysis']
+categories: ["go"]
 comment: true
 toc: true
 autoCollapseToc: false

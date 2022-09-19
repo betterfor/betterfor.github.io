@@ -3,8 +3,8 @@ title: "CSP并发模型"
 date: 2022-03-07T11:14:26+08:00
 draft: false
 
-tags: ['golang','csp并发模型']
-categories: ["月霜天的小随笔"]
+tags: ['golang','goroutine']
+categories: ["go"]
 comment: true
 toc: true
 autoCollapseToc: false

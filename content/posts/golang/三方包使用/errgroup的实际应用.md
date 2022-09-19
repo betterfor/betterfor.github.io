@@ -4,7 +4,7 @@ date: 2021-07-05T10:00:08+08:00
 draft: false
 
 tags: ['sync','errgroup']
-categories: ["月霜天的GO"]
+categories: ["go"]
 comment: true
 toc: true
 autoCollapseToc: false

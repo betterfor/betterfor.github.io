@@ -4,7 +4,7 @@ date: 2022-03-07T13:28:41+08:00
 draft: false
 
 tags: ['linux','namespace']
-categories: ["月霜天的小笔记"]
+categories: ["note"]
 comment: true
 toc: true
 autoCollapseToc: false

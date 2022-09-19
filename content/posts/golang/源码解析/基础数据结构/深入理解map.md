@@ -3,8 +3,8 @@ title: "深入理解Golang Map"
 date: 2021-07-14T09:34:50+08:00
 draft: false
 
-tags: ['源码解析','map']
-categories: ["月霜天的GO"]
+tags: ['analysis','map']
+categories: ["go"]
 comment: true
 toc: true
 autoCollapseToc: false

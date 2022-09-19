@@ -3,8 +3,8 @@ title: "深入理解channel"
 date: 2021-07-15T15:00:10+08:00
 draft: false
 
-tags: ['源码解析','channel']
-categories: ["月霜天的GO"]
+tags: ['analysis','channel']
+categories: ["go"]
 comment: true
 toc: true
 autoCollapseToc: false

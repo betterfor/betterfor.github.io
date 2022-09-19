@@ -3,8 +3,8 @@ title: "Struct的使用场景"
 date: 2022-03-07T11:21:14+08:00
 draft: false
 
-tags: ['struct']
-categories: ["月霜天的小随笔"]
+tags: ['struct', 'analysis']
+categories: ["go"]
 comment: true
 toc: true
 autoCollapseToc: false

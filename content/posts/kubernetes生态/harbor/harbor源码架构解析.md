@@ -3,8 +3,8 @@ title: "Harbor源码架构解析"
 date: 2022-06-27T09:40:41+08:00
 draft: false
 
-tags: ['linux','develop']
-categories: ["月霜天的GO"]
+tags: ['harbor']
+categories: ["note"]
 comment: true
 toc: true
 autoCollapseToc: false

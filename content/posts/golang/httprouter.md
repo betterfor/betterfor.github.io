@@ -4,7 +4,7 @@ date: 2022-03-07T11:19:43+08:00
 draft: false
 
 tags: ['gin','router']
-categories: ["月霜天的小随笔"]
+categories: ["note"]
 comment: true
 toc: true
 autoCollapseToc: false

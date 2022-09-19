@@ -3,8 +3,8 @@ title: "并发编程之sync.Once"
 date: 2021-07-16T10:50:32+08:00
 draft: false
 
-tags: ['源码解析','sync']
-categories: ["月霜天的GO"]
+tags: ['analysis','sync']
+categories: ["go"]
 comment: true
 toc: true
 autoCollapseToc: false

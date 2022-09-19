@@ -4,7 +4,7 @@ date: 2021-03-24T22:51:40+08:00
 draft: false
 
 tags: ['kubernetes','pod']
-categories: ["月霜天的小笔记"]
+categories: ["note"]
 comment: true
 toc: true
 autoCollapseToc: false

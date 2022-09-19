@@ -3,8 +3,8 @@ title: "no copy机制"
 date: 2021-07-19T14:44:23+08:00
 draft: false
 
-tags: ['源码解析', 'golang']
-categories: ["月霜天的GO"]
+tags: ['analysis', 'nocopy']
+categories: ["go"]
 comment: true
 toc: true
 autoCollapseToc: true

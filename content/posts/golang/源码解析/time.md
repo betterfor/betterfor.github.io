@@ -1,10 +1,10 @@
 ---
-title: "计时器的设计"
+title: "Go1.14版本之后计时器的设计及与之前版本的对比"
 date: 2022-03-07T11:16:04+08:00
 draft: false
 
-tags: ['time']
-categories: ["月霜天的GO"]
+tags: ['time','analysis']
+categories: ["go"]
 comment: true
 toc: true
 autoCollapseToc: false

@@ -4,7 +4,7 @@ date: 2021-09-01T16:27:07+08:00
 draft: true
 
 tags: ['cache','golang']
-categories: ["月霜天的golang"]
+categories: ["go"]
 comment: true
 toc: true
 autoCollapseToc: false
