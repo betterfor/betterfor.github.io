@@ -1,0 +1,14 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>nocopy - 标签 - 月霜天的小站</title>
+        <link>https://blog.luxgreat.tk/tags/nocopy/</link>
+        <description>nocopy - 标签 - 月霜天的小站</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 19 Jul 2021 14:44:23 &#43;0800</lastBuildDate><atom:link href="https://blog.luxgreat.tk/tags/nocopy/" rel="self" type="application/rss+xml" /><item>
+    <title>no copy机制</title>
+    <link>https://blog.luxgreat.tk/2021/07/nocopy%E6%9C%BA%E5%88%B6/</link>
+    <pubDate>Mon, 19 Jul 2021 14:44:23 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.luxgreat.tk/2021/07/nocopy%E6%9C%BA%E5%88%B6/</guid>
+    <description><![CDATA[在sync包下面经常出现&quot;XXX must not be copied after first use.&quot;，然后下面就有一个noCopy。 什么是noCopy ? 如果结构体对象]]></description>
+</item></channel>
+</rss>

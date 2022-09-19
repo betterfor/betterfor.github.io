@@ -3,14 +3,7 @@
         <title>所有文章 - 月霜天的小站</title>
         <link>https://blog.luxgreat.tk/posts/</link>
         <description>所有文章 | 月霜天的小站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 19 Sep 2022 15:43:57 &#43;0800</lastBuildDate><atom:link href="https://blog.luxgreat.tk/posts/" rel="self" type="application/rss+xml" /><item>
-    <title>Test</title>
-    <link>https://blog.luxgreat.tk/2022/09/test/</link>
-    <pubDate>Mon, 19 Sep 2022 15:43:57 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>https://blog.luxgreat.tk/2022/09/test/</guid>
-    <description><![CDATA[this is a template test]]></description>
-</item><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 27 Jun 2022 09:40:41 &#43;0800</lastBuildDate><atom:link href="https://blog.luxgreat.tk/posts/" rel="self" type="application/rss+xml" /><item>
     <title>Harbor源码架构解析</title>
     <link>https://blog.luxgreat.tk/2022/06/harbor%E6%BA%90%E7%A0%81%E6%9E%B6%E6%9E%84%E8%A7%A3%E6%9E%90/</link>
     <pubDate>Mon, 27 Jun 2022 09:40:41 &#43;0800</pubDate>
@@ -73,5 +66,12 @@
     <author>作者</author>
     <guid>https://blog.luxgreat.tk/2022/03/%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90/</guid>
     <description><![CDATA[一个程序占用的内存分为以下几个部分： 栈区（stack）：由编译器自动分配，存放函数的参数，局部变量等 堆区（heap）：由程序员分配释放 全局静]]></description>
+</item><item>
+    <title>Struct的使用场景</title>
+    <link>https://blog.luxgreat.tk/2022/03/struct/</link>
+    <pubDate>Mon, 07 Mar 2022 11:21:14 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://blog.luxgreat.tk/2022/03/struct/</guid>
+    <description><![CDATA[golang里有个重要的类型就是结构体，虽然不能像C++一样有类的功能和特性，但也有自己独特的魅力。 这里着重介绍一下经常遇到的空结构体，我们]]></description>
 </item></channel>
 </rss>
