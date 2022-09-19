@@ -551,4 +551,4 @@ enableEmoji = true
   page = ["HTML", "MarkDown"]
   section = ["HTML", "RSS"]
   taxonomy = ["HTML", "RSS"]
-  taxono/myTerm = ["HTML"]
+  taxonomyTerm = ["HTML"]
